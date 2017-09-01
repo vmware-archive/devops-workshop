@@ -1,0 +1,487 @@
+= Enhancing Boot Application with Metrics
+
+== Set up the Actuator
+
+Spring Boot includes a number of additional features to help you monitor and manage your application when it’s pushed to production. These features are added by adding _spring-boot-starter-actuator_ to the classpath.  During our initial project setup with *start.spring.io* we've already included that.
+
+. Verify the Spring Boot Actuator dependency the following file: */cloud-native-spring/pom.xml*.  You should see the following dependency in the list:
++
+[source, xml]
+---------------------------------------------------------------------
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+---------------------------------------------------------------------
+
+. By default Spring Boot will use Spring Security to protect these management endpoints (which is a good thing!).  Though you wouldn't want to disable this in production, we'll do so in this sample app to make demonstration a bit easier and simpler.  . Add the following properties to *cloud-native-spring/src/main/resources/application.yml*. You must create the file first.
++
+[source, yaml]
+---------------------------------------------------------------------
+endpoints: # add this section
+  sensitive: false
+---------------------------------------------------------------------
+
+. Run the updated application
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
++
+Try out the following endpoints. The output is omitted here because it can be quite large:
++
+http://localhost:8080/health
++
+Displays Application and Datasource health information.  This can be customized based on application functionality, which we'll do later.
++
+http://localhost:8080/beans
++
+Dumps all of the beans in the Spring context.
++
+http://localhost:8080/autoconfig
++
+Dumps all of the auto-configuration performed as part of application bootstrapping.
++
+http://localhost:8080/configprops
++
+Displays a collated list of all @ConfigurationProperties.
++
+http://localhost:8080/env
++
+Dumps the application’s shell environment as well as all Java system properties.
++
+http://localhost:8080/mappings
++
+Dumps all URI request mappings and the controller methods to which they are mapped.
++
+http://localhost:8080/dump
++
+Performs a thread dump.
++
+http://localhost:8080/trace
++
+Displays trace information (by default the last few HTTP requests).
+
+. Stop the cloud-native-spring application.
+
+== Include Version Control Info
+
+Spring Boot provides an endpoint (http://localhost:8080/info) that allows the exposure of arbitrary metadata. By default, it is empty.
+
+One thing that _actuator_ does well is expose information about the specific build and version control coordinates for a given deployment.
+
+. Edit the following file: */cloud-native-spring/pom.xml*. Add the _git-commit-id-plugin_ to your Maven build. You must edit the file and add the plugin code below into the existing _<plugins>_ XML structure, which should already have one plugin defined. The _git-commit-id-plugin_ adds Git branch and commit coordinates to the */info* endpoint:
++
+[source, xml]
+---------------------------------------------------------------------
+<plugin>
+	<groupId>pl.project13.maven</groupId>
+	<artifactId>git-commit-id-plugin</artifactId>
+	<configuration>
+		<dotGitDirectory>../../../.git</dotGitDirectory>
+	</configuration>
+</plugin>
+---------------------------------------------------------------------
++
+*NOTE* The path *../../../.git* refers to the .git directory at the root of the lab materials repo.
++
+Completed:
++
+[source, xml]
+---------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.pivotal</groupId>
+	<artifactId>cloud-native-spring</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>cloud-native-spring</name>
+	<description>Demo project for Spring Boot</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.6.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<configuration>
+					<dotGitDirectory>../../../.git</dotGitDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
+---------------------------------------------------------------------
+
+. Run the _cloud-native-spring_ application:
++
+$ mvn clean spring-boot:run
+
+. Browse to http://localhost:8080/info. Git commit information is now included
++
+[source,json]
+---------------------------------------------------------------------
+{
+ "git":{
+    "branch": "master",
+    "commit": {
+      "id": "123456",
+      "time": "2016-03-03T12:05:10-0500"
+    }
+  }
+}
+---------------------------------------------------------------------
+
+. Stop the _cloud-native-spring_ application
++
+*What Just Happened?*
++
+By including the _git-commit-id-plugin_, details about git commit information will be included in the */info* endpoint. Git information is captured in a _git.properties_ file that is generated with the build. Review the following file: */cloud-native-spring/target/classes/git.properties*
+
+== Include Build Info
+
+. Add the following properties to *cloud-native-spring/src/main/resources/application.yml*. You must create the file first.
++
+[source, yaml]
+---------------------------------------------------------------------
+info: # add this section
+  build:
+    artifact: @project.artifactId@
+    name: @project.name@
+    description: @project.description@
+    version: @project.version@
+---------------------------------------------------------------------
++
+These will add the project’s Maven coordinates to the /info endpoint. The Spring Boot Maven plugin will cause them to automatically be replaced in the assembled JAR.
++
+*NOTE:* if STS reports a problem with the application.yml due to @ character the problem can safely be ignored.
+
+. Build and run the cloud-native-spring application:
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
+
+. Browse to http://localhost:8080/info. Build information is now included.
++
+[source,json]
+---------------------------------------------------------------------
+{
+ "build": {
+    "artifact": "cloud-native-spring",
+    "name": "cloud-native-spring",
+    "description": "Demo project for Spring Boot",
+    "version": "0.0.1-SNAPSHOT"
+ },
+ "git":{
+    "branch": "master",
+    "commit": {
+      "id": "123456",
+      "time": "2016-03-03T12:05:10-0500"
+    }
+  }
+}
+---------------------------------------------------------------------
+
+. Stop the cloud-native-spring application.
++
+*What Just Happened?*
++
+We have mapped Maven properties from the pom.xml into the /info endpoint.
++
+Read more about exposing data in the /info endpoint link:http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready[here]
+
+== Health Indicators
+
+Spring Boot provides an endpoint http://localhost:8080/health that exposes various health indicators that describe the health of the given application.
+
+Normally, when Spring Security is not enabled, the /health endpoint will only expose an UP or DOWN value.
+
+[source,json]
+---------------------------------------------------------------------
+{
+  "status": "UP"
+}
+---------------------------------------------------------------------
+
+. To simplify working with the endpoint for this lab, we will turn off additional security for the health endpoint. Add the following to */cloud-native-spring/src/main/resources/application.yml*:
++
+[source, yaml]
+---------------------------------------------------------------------
+management:
+  security:
+    enabled: false
+---------------------------------------------------------------------
+
+. Build and run the cloud-native-spring application:
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
+
+. Browse to http://localhost:8080/health. Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
++
+[source,json]
+---------------------------------------------------------------------
+{
+  "status": "UP",
+  "diskSpace": {
+      "status": "UP",
+      "free": 42345678945,
+      "threshold": 12345678
+  }
+}
+---------------------------------------------------------------------
+
+. Stop the cloud-native-spring application.
+
+. Create the class _io.pivotal.FlappingHealthIndicator_ (/cloud-native-spring/src/main/java/io/pivotal/FlappingHealthIndicator.java) and into it paste the following code:
++
+[source,java]
+---------------------------------------------------------------------
+package io.pivotal;
+
+import java.util.Random;
+
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
+
+@Component
+public class FlappingHealthIndicator implements HealthIndicator {
+
+    private Random random = new Random(System.currentTimeMillis());
+
+    @Override
+    public Health health() {
+        int result = random.nextInt(100);
+        if (result < 50) {
+            return Health.down().withDetail("flapper", "failure").withDetail("random", result).build();
+        } else {
+            return Health.up().withDetail("flapper", "ok").withDetail("random", result).build();
+        }
+    }
+}
+---------------------------------------------------------------------
++
+This demo health indicator will randomize the health check.
+
+. Build and run the _cloud-native-spring_ application:
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
+
+. Browse to http://localhost:8080/health and verify that the output is similar to the following (and changes randomly!).
++
+[source,json]
+---------------------------------------------------------------------
+{
+  "status": "UP",
+  "flapping": {
+      "status": "UP",
+      "flapper": "ok",
+      "random": 42
+  },
+  "diskSpace": {
+      "status": "UP",
+      "free": 42345678945,
+      "threshold": 12345678
+  }
+}
+---------------------------------------------------------------------
+
+== Metrics
+
+Spring Boot provides an endpoint http://localhost:8080/metrics that exposes several automatically collected metrics for your application. It also allows for the creation of custom metrics.
+
+. Browse to http://localhost:8080/metrics. Review the metrics exposed.
++
+[source,json]
+---------------------------------------------------------------------
+{
+"mem": 418830,
+"mem.free": 239376,
+"processors": 8,
+"instance.uptime": 59563,
+"uptime": 69462,
+"systemload.average": 1.5703125,
+"heap.committed": 341504,
+"heap.init": 262144,
+"heap.used": 102127,
+"heap": 3728384,
+"nonheap.committed": 79696,
+"nonheap.init": 2496,
+"nonheap.used": 77326,
+"nonheap": 0,
+"threads.peak": 14,
+"threads.daemon": 11,
+"threads.totalStarted": 17,
+"threads": 13,
+"classes": 9825,
+"classes.loaded": 9825,
+"classes.unloaded": 0,
+"gc.ps_scavenge.count": 9,
+"gc.ps_scavenge.time": 80,
+"gc.ps_marksweep.count": 2,
+"gc.ps_marksweep.time": 157,
+"httpsessions.max": -1,
+"httpsessions.active": 0,
+"gauge.response.metrics": 75,
+"gauge.response.star-star.favicon.ico": 9,
+"counter.status.200.star-star.favicon.ico": 1,
+"counter.status.200.metrics": 1
+}
+---------------------------------------------------------------------
+
+. Stop the cloud-native-spring application.
+
+== Deploy _cloud-native-spring_ to Pivotal Cloud Foundry
+. Build the application
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean package
+---------------------------------------------------------------------
+
+. When running a Spring Boot application on Pivotal Cloud Foundry with the actuator endpoints enabled, you can visualize actuator management information on the Applications Manager app dashboard.  To enable this there are a few properties we need to add.  Add the following to */cloud-native-spring/src/main/resources/application.yml*:
++
+[source, yaml]
+---------------------------------------------------------------------
+management:
+  security:
+    enabled: false
+  info:
+    git:
+      mode: full
+  cloudfoundry:
+    enabled: true
+    skip-ssl-validation: true
+---------------------------------------------------------------------
+
+. In order to add full build information to you artifact that is pushed to cloudfoundry, update */cloud-native-spring/pom.xml* and add the following execution and classifier to the spring-boot-maven-plugin:
++
+[source, xml]
+---------------------------------------------------------------------
+<executions>
+  <execution>
+	  <goals>
+		  <goal>build-info</goal>
+		</goals>
+	</execution>
+</executions>
+<configuration>
+	<classifier>exec</classifier>
+</configuration>
+---------------------------------------------------------------------
++
+The full plugin config should look like the following:
++
+[source, xml]
+---------------------------------------------------------------------
+<plugin>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-maven-plugin</artifactId>
+	<executions>
+		<execution>
+			<goals>
+			  <goal>build-info</goal>
+		  </goals>
+	  </execution>
+  </executions>
+	<configuration>
+	  <classifier>exec</classifier>
+  </configuration>
+</plugin>
+---------------------------------------------------------------------
+
+. By specifying a classifier we actually just produced 2 jars, one that is executable and one that can be used as an artifact that could be included in other apps (such as our Client UI app we'll create later).  Because of this we need to chance the name of the jar we included in our manifest.yml file.  Change the jar in the path property to *./target/cloud-native-spring-0.0.1-SNAPSHOT-exec.jar*:
++
+[source, yaml]
+---------------------------------------------------------------------
+---
+applications:
+- name: cloud-native-spring
+  host: cloud-native-spring
+  memory: 512M
+  instances: 1
+  path: ./target/cloud-native-spring-0.0.1-SNAPSHOT-exec.jar
+  buildpack: java_buildpack
+  timeout: 180 # to give time for the data to import
+  env:
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
+---------------------------------------------------------------------
+. Push application into Cloud Foundry
++
+$ mvn clean package
+$ cf push -f manifest.yml
+
+. Find the URL created for your app in the health status report. Browse to your app.  Also view your application details in the Apps Manager UI:
++
+image::images/appsman.jpg[]
+
+. From this UI you can also dynamically change logging levels:
++
+image::images/logging.jpg[]
+
+*Congratulations!* You’ve just learned how to add health and metrics to any Spring Boot application.

@@ -1,0 +1,389 @@
+:compat-mode:
+= Adding Persistence to Boot Application
+
+In this lab we'll utilize Spring Boot, Spring Data, and Spring Data REST to create a fully-functional hypermedia-driven RESTful web service. We'll then deploy it to Pivotal Cloud Foundry.
+
+== Create a Hypermedia-Driven RESTful Web Service with Spring Data REST (using JPA)
+
+This application will create a simple reading list by asking for books you have read and storing them in a simple relational repository. We'll continue building upon the Spring Boot application we build in Lab 1.  The first stereotype we will need is the domain model itself, which is `City`.
+
+== Add the domain object - City
+. Create the package `io.pivotal.domain` and in that package create the class `City`. Into that file you can paste the following source code, which represents cities based on postal codes, global coordinates, etc:
++
+[source, java, numbered]
+---------------------------------------------------------------------
+package io.pivotal.domain;
+
+@Entity
+@Table(name="city")
+public class City implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String county;
+
+    @Column(nullable = false)
+    private String stateCode;
+
+    @Column(nullable = false)
+    private String postalCode;
+
+    @Column
+    private String latitude;
+
+    @Column
+    private String longitude;
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getPostalCode() { return postalCode; }
+
+    public void setPostalCode(String postalCode) { this.postalCode = postalCode; }
+
+    public long getId() { return id; }
+
+    public void setId(long id) { this.id = id; }
+
+    public String getStateCode() { return stateCode; }
+
+    public void setStateCode(String stateCode) { this.stateCode = stateCode; }
+
+    public String getCounty() { return county; }
+
+    public void setCounty(String county) { this.county = county; }
+
+    public String getLatitude() { return latitude; }
+
+    public void setLatitude(String latitude) { this.latitude = latitude; }
+
+    public String getLongitude() { return longitude; }
+
+    public void setLongitude(String longitude) { this.longitude = longitude; }
+}
+
+---------------------------------------------------------------------
++
+Notice that we're using JPA annotations on the class and its fields. You'll need to use your IDE's features to add the appropriate import statements.
+
+. Create the package +io.pivotal.repositories+ and in that package create the interface +CityRepository+. Paste the following code and add appropriate imports:
++
+[source,java]
+---------------------------------------------------------------------
+package io.pivotal.repositories;
+
+@RepositoryRestResource(collectionResourceRel = "cities", path = "cities")
+public interface CityRepository extends PagingAndSortingRepository<City, Long> {
+}
+---------------------------------------------------------------------
+
+You’ll need to use your IDE’s features to add the appropriate import statements.
+
+. Add JPA and REST Repository support to the +io.pivotal.CloudNativeSpringApplication+ Spring Boot Application class.
++
+[source,java]
+---------------------------------------------------------------------
+@SpringBootApplication
+@RestController
+@EnableJpaRepositories // <---- Add this
+@Import(RepositoryRestMvcConfiguration.class) // <---- And this
+public class CloudNativeSpringApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CloudNativeSpringApplication.class, args);
+    }
+}
+---------------------------------------------------------------------
+
+== Run the _cloud-native-spring_ Application
+
+. Run the application
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
+
+. Access the application using +curl+ or your web browser using the newly added REST repository endpoint at http://localhost:8080/cities. You'll see that the primary endpoint automatically exposes the ability to page, size, and sort the response JSON.
++
+[source,bash]
+---------------------------------------------------------------------
+$ curl -i http://localhost:8080/cities
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Content-Type: application/hal+json;charset=UTF-8
+Transfer-Encoding: chunked
+Date: Thu, 28 Apr 2016 14:44:06 GMT
+
+{
+  "_embedded" : {
+    "cities" : [ ]
+  },
+  "_links" : {
+    "self" : {
+      "href" : "http://localhost:8080/cities"
+    },
+    "profile" : {
+      "href" : "http://localhost:8080/profile/cities"
+    }
+  },
+  "page" : {
+    "size" : 20,
+    "totalElements" : 0,
+    "totalPages" : 0,
+    "number" : 0
+  }
+}
+---------------------------------------------------------------------
+
+So what have you done? Created four small classes and one build file, resulting in a fully-functional REST microservice. The application's +DataSource+ is created automatically by Spring Boot using the in-memory database because no other +DataSource+ was detected in the project.
+
+Next we'll import some data.
+
+== Importing Data
+
+. Add this https://raw.githubusercontent.com/Pivotal-Field-Engineering/CN-Workshop-Boeing/master/labs/lab02/import.sql[import.sql file] found in *CN-Workshop-Boeing/labs/lab02/* to +src/main/resources+. This is a rather large dataset containing all of the postal codes in the United States and its territories. This file will automatically be picked up by Hibernate and imported into the in-memory database.
+
+. Restart the application.
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
+
+. Access the application again. Notice the appropriate hypermedia is included for +next+, +previous+, and +self+. You can also select pages and page size by utilizing +?size=n&page=n+ on the URL string. Finally, you can sort the data utilizing +?sort=fieldName+ (replace fieldName with a cities attribute).
++
+[source,bash]
+---------------------------------------------------------------------
+$ curl -i localhost:8080/cities
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+X-Application-Context: application
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Tue, 27 May 2014 19:59:58 GMT
+
+{
+  "_links" : {
+    "next" : {
+      "href" : "http://localhost:8080/cities?page=1&size=20"
+    },
+    "self" : {
+      "href" : "http://localhost:8080/cities{?page,size,sort}",
+      "templated" : true
+    }
+  },
+  "_embedded" : {
+    "cities" : [ {
+      "name" : "HOLTSVILLE",
+      "county" : "SUFFOLK",
+      "stateCode" : "NY",
+      "postalCode" : "00501",
+      "latitude" : "+40.922326",
+      "longitude" : "-072.637078",
+      "_links" : {
+        "self" : {
+          "href" : "http://localhost:8080/cities/1"
+        }
+      }
+    },
+
+    // ...
+
+    {
+      "name" : "CASTANER",
+      "county" : "LARES",
+      "stateCode" : "PR",
+      "postalCode" : "00631",
+      "latitude" : "+18.269187",
+      "longitude" : "-066.864993",
+      "_links" : {
+        "self" : {
+          "href" : "http://localhost:8080/cities/20"
+        }
+      }
+    } ]
+  },
+  "page" : {
+    "size" : 20,
+    "totalElements" : 42741,
+    "totalPages" : 2138,
+    "number" : 0
+  }
+}
+---------------------------------------------------------------------
+
+. Try the following URL Paths in your browser or +curl+ to see how the application behaves:
++
+http://localhost:8080/cities?size=5
++
+http://localhost:8080/cities?size=5&page=3
++
+http://localhost:8080/cities?sort=postalCode,desc
+
+Next we'll add searching capabilities.
+
+== Adding Search
+
+. Let's add some additional finder methods to +CityRepository+:
++
+[source,java]
+---------------------------------------------------------------------
+@RestResource(path = "name", rel = "name")
+Page<City> findByNameIgnoreCase(@Param("q") String name, Pageable pageable);
+
+@RestResource(path = "nameContains", rel = "nameContains")
+Page<City> findByNameContainsIgnoreCase(@Param("q") String name, Pageable pageable);
+
+@RestResource(path = "state", rel = "state")
+Page<City> findByStateCodeIgnoreCase(@Param("q") String stateCode, Pageable pageable);
+
+@RestResource(path = "postalCode", rel = "postalCode")
+Page<City> findByPostalCode(@Param("q") String postalCode, Pageable pageable);
+---------------------------------------------------------------------
+
+. Run the application
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean spring-boot:run
+---------------------------------------------------------------------
+
+. Access the application again. Notice that hypermedia for a new +search+ endpoint has appeared.
++
+[source,bash]
+---------------------------------------------------------------------
+$ curl -i "localhost:8080/cities"
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+X-Application-Context: application
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Tue, 27 May 2014 20:33:52 GMT
+
+{
+  "_links" : {
+    "next" : {
+      "href" : "http://localhost:8080/cities?page=1&size=20"
+    },
+    "self" : {
+      "href" : "http://localhost:8080/cities{?page,size,sort}",
+      "templated" : true
+    },
+    "search" : {
+      "href" : "http://localhost:8080/cities/search"
+    }
+},
+// (Remainder omitted...)
+---------------------------------------------------------------------
+
+. Access the new +search+ endpoint:
++
+http://localhost:8080/cities/search
++
+[source,bash]
+---------------------------------------------------------------------
+$ curl -i "localhost:8080/cities/search"
+HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+X-Application-Context: application
+Content-Type: application/hal+json
+Transfer-Encoding: chunked
+Date: Tue, 27 May 2014 20:38:32 GMT
+
+{
+  "_links" : {
+    "postalCode" : {
+      "href" : "http://localhost:8080/cities/search/postalCode{?q,page,size,sort}",
+      "templated" : true
+    },
+    "state" : {
+      "href" : "http://localhost:8080/cities/search/state{?q,page,size,sort}",
+      "templated" : true
+    },
+    "name" : {
+      "href" : "http://localhost:8080/cities/search/name{?q,page,size,sort}",
+      "templated" : true
+    },
+    "nameContains" : {
+      "href" : "http://localhost:8080/cities/search/nameContains{?q,page,size,sort}",
+      "templated" : true
+    }
+  }
+}
+---------------------------------------------------------------------
++
+Note that we now have new search endpoints for each of the finders that we added.
+
+. Try a few of these endpoints. Feel free to substitute your own values for the parameters.
++
+http://localhost:8080/cities/search/postalCode?q=75202
++
+http://localhost:8080/cities/search/name?q=Boston
++
+http://localhost:8080/cities/search/nameContains?q=Fort&size=1
+
+== Pushing to Cloud Foundry
+
+. Build the application
++
+[source,bash]
+---------------------------------------------------------------------
+$ mvn clean package
+---------------------------------------------------------------------
+
+. You should already have an application manifest, +manifest.yml+, created in lab 1; this can be reused.  You'll want to add a timeout param so that our service has enough time to initialize with its data loading:
++
+[source,yml]
+---------------------------------------------------------------------
+---
+applications:
+- name: cloud-native-spring
+  host: cloud-native-spring
+  memory: 512M
+  instances: 1
+  path: ./target/cloud-native-spring-0.0.1-SNAPSHOT.jar
+  buildpack: java_buildpack
+  timeout: 180 # to give time for the data to import
+  env:
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
+---------------------------------------------------------------------
+
+. Push to Cloud Foundry:
++
+[source,bash]
+---------------------------------------------------------------------
+$ cf push
+
+...
+
+1 of 1 instances running
+
+App started
+
+Showing health and status for app cloud-native-spring...
+OK
+
+requested state: started
+instances: 1/1
+usage: 512M x 1 instances
+urls: cloud-native-spring.cfapps.io
+
+     state     since                    cpu    memory         disk
+#0   running   2014-05-27 04:15:05 PM   0.0%   433M of 512M   128.9M of 1G
+---------------------------------------------------------------------
+
+. Access the application at the random route provided by CF:
++
+[source,bash]
+---------------------------------------------------------------------
+$ curl -i cloud-native-spring.cf.mycloud.com/cities
+---------------------------------------------------------------------
