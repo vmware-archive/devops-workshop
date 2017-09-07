@@ -347,7 +347,7 @@ $ mvn clean package
 ---
 applications:
 - name: cloud-native-spring
-  host: cloud-native-spring
+  host: cloud-native-spring-${random-word}
   memory: 512M
   instances: 1
   path: ./target/cloud-native-spring-0.0.1-SNAPSHOT.jar
@@ -385,5 +385,5 @@ urls: cloud-native-spring.cfapps.io
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ curl -i cloud-native-spring.cf.mycloud.com/cities
+$ curl -k https://cloud-native-spring-{random-word}.{domain}.com/cities
 ---------------------------------------------------------------------

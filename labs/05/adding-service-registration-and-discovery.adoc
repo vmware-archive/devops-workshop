@@ -38,6 +38,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableJpaRepositories
 @EnableDiscoveryClient
 @Import(RepositoryRestMvcAutoConfiguration.class)
+@RefreshScope
 public class CloudNativeSpringApplication {
 
 	public static void main(String[] args) {
@@ -152,13 +154,13 @@ Artifact:: +cloud-native-spring-ui+
 
 . Click the _Generate Project_ button. Your browser will download a zip file.
 
-. Copy then unpack the downloaded zip file to *CN-Workshop-Boeing/labs/my_work/cloud-native-spring-ui*
+. Copy then unpack the downloaded zip file to *devops-workshop-boeing/labs/my_work/cloud-native-spring-ui*
 +
 Your directory structure should now look like:
 +
 [source, bash]
 ---------------------------------------------------------------------
-CN-Workshop-TM:
+devops-workshop-boeing:
 ├── labs
 │   ├── my_work
 │   │   ├── cloud-native-spring
@@ -311,11 +313,13 @@ public class AppUI extends UI {
     }
 }
 ---------------------------------------------------------------------
-. We'll also want to give our UI App a name so that it can register properly with Eureka and potentially use cloud config in the future.  Add the following configuration to */cloud-native-spring-ui/src/main/resources/application.properties*:
+. We'll also want to give our UI App a name so that it can register properly with Eureka and potentially use cloud config in the future.  Add the following configuration to */cloud-native-spring-ui/src/main/resources/application.yml*:
 +
 [source, yaml]
 ---------------------------------------------------------------------
-spring.application.name=cloud-native-spring-ui
+spring:
+  application:
+    name: cloud-native-spring-ui
 ---------------------------------------------------------------------
 
 == Deploy and test application
@@ -338,7 +342,7 @@ $ touch manifest.yml
 ---
 applications:
 - name: cloud-native-spring-ui
-  host: cloud-native-spring-ui
+  host: cloud-native-spring-ui-${random-word}
   memory: 1G
   instances: 1
   path: ./target/cloud-native-spring-ui-0.0.1-SNAPSHOT.jar
@@ -354,7 +358,7 @@ applications:
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf push -f manifest.yml
+$ cf push
 ---------------------------------------------------------------------
 
 . Test your application by navigating to the root URL of the application, which will invoke Vaadin UI.  You should now see a table listing the first set of rows returned from the cities microservice:

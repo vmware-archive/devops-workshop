@@ -17,13 +17,13 @@ Artifact:: +cloud-native-spring+
 
 . Click the _Generate Project_ button. Your browser will download a zip file.
 
-. Copy then unpack the downloaded zip file to *CN-Workshop-Boeing/labs/my_work/cloud-native-spring*
+. Copy then unpack the downloaded zip file to *devops-workshop-boeing/labs/my_work/cloud-native-spring*
 +
 Your directory structure should now look like:
 +
 [source, bash]
 ---------------------------------------------------------------------
-CN-Workshop-Boeing:
+devops-workshop-boeing:
 ├── labs
 │   ├── my_work
 │   │   ├── cloud-native-spring
@@ -97,7 +97,7 @@ public class CloudNativeSpringApplication {
 
 . In a terminal, change working directory to *CN-Workshop-Boeing/labs/my_work/cloud-native-spring*
 +
-$ cd /CN-Workshop-Boeing/labs/my_work/cloud-native-spring
+$ cd /devops-workshop-boeing/labs/my_work/cloud-native-spring
 
 . Run the application
 +
@@ -146,7 +146,7 @@ applications:
 
 . Push application into Cloud Foundry
 +
-$ cf push -f manifest.yml
+$ cf push
 
 . Find the URL created for your app in the health status report. Browse to your app.
 

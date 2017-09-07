@@ -139,11 +139,6 @@ Completed:
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -462,7 +457,7 @@ The full plugin config should look like the following:
 ---
 applications:
 - name: cloud-native-spring
-  host: cloud-native-spring
+  host: cloud-native-spring-${random-word}
   memory: 512M
   instances: 1
   path: ./target/cloud-native-spring-0.0.1-SNAPSHOT-exec.jar
@@ -474,7 +469,7 @@ applications:
 . Push application into Cloud Foundry
 +
 $ mvn clean package
-$ cf push -f manifest.yml
+$ cf push
 
 . Find the URL created for your app in the health status report. Browse to your app.  Also view your application details in the Apps Manager UI:
 +

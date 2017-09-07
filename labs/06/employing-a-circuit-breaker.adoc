@@ -101,7 +101,7 @@ public class CloudNativeSpringUiApplication {
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf create-service p-circuit-breaker-dashboard standard circuit-breaker-dashboard
+$ cf create-service p-circuit-breaker standard circuit-breaker
 ---------------------------------------------------------------------
 
 . If we view the Circuit Breaker Dashboard (accessible from the _manage_ link in Apps Manager) you will see that a dashboard has been deployed but is empty (You may get an _initializing_ message for a few seconds.  This should eventually refresh to a dashboard):
@@ -114,7 +114,7 @@ image::images/dash.jpg[]
 ---------------------------------------------------------------------
   services:
   - service-registry
-  - circuit-breaker-dashboard
+  - circuit-breaker
 ---------------------------------------------------------------------
 
 == Deploy and test application
@@ -130,7 +130,7 @@ $ mvn clean package -DskipTests
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf push -f manifest.yml
+$ cf push
 ---------------------------------------------------------------------
 
 . Test your application by navigating to the root URL of the application.  If the dependent cities REST service is still stopped, you should simply see a blank table.  Remember that last time you received a nasty exception in the browser?  Now your Circuit Breaker fallback method is automatically called and the fallback behavior is executed.

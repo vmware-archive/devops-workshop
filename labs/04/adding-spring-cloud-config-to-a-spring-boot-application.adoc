@@ -61,6 +61,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,6 +71,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableJpaRepositories
 @Import(RepositoryRestMvcAutoConfiguration.class)
+@RefreshScope
 public class CloudNativeSpringApplication {
 
 	public static void main(String[] args) {
@@ -134,6 +136,7 @@ management:
 
 security:
   basic:
+    enabled: false
 ---------------------------------------------------------------------
 
 == Run the _cloud-native-spring_ Application and verify dynamic config is working
@@ -189,7 +192,7 @@ Complete:
 ---
 applications:
 - name: cloud-native-spring
-  host: cloud-native-spring
+  host: cloud-native-spring-${random-word}
   memory: 512M
   instances: 1
   path: ./target/cloud-native-spring-0.0.1-SNAPSHOT.jar
@@ -214,7 +217,7 @@ $ mvn clean package
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf push -f manifest.yml
+$ cf push
 ---------------------------------------------------------------------
 
 . Test your application by navigating to the root URL of the application, which will invoke the hello() service.  You should now see a greeting that is read from the cloud config server!
