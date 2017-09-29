@@ -1,0 +1,80 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.7.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+    id "com.gorylenko.gradle-git-properties" version "1.4.17"
+}
+
+gitProperties {
+	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormatTimeZone = "UTC"
+    gitRepositoryRoot = new File("${project.rootDir}/../../../..")
+}
+
+import org.apache.tools.ant.filters.*
+
+processResources {
+    filter ReplaceTokens, tokens: [
+		"application.name": project.property("application.name"),
+		"application.description": project.property("application.description"),
+        "application.version": project.property("version")
+    ]
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'org.springframework.boot'
+
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compileOnly('org.projectlombok:lombok:1.16.18')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-data-rest')
+	compile('org.springframework.boot:spring-boot-starter-hateoas')
+	compile('org.springframework.data:spring-data-rest-hal-browser')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	runtime('com.h2database:h2')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+
+jar {
+    excludes = ['**/application.yml']
+}
+
+task execJar (type: Jar, dependsOn: jar) {
+    classifier = 'exec'
+    from sourceSets.main.output
+}
+
+bootRepackage  {
+    withJarTask = tasks['execJar']
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+			groupId 'io.pivotal'
+            from components.java
+        }
+    }
+	repositories {
+        mavenLocal()
+    }
+}

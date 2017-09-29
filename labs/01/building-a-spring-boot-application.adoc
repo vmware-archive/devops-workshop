@@ -1,63 +1,46 @@
 = Building a Spring Boot Application
 
-== Create a Spring Boot Project
+In this lab we'll build and deploy a simple https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/[Spring Boot] application to Cloud Foundry whose sole purpose is to reply with a standard greeting.
 
-. Browse to https://start.spring.io
+== Getting started
 
-. Generate a Maven Project with Spring Boot 1.5.6.
+While we could visit https://start.spring.io to create a new Spring Boot project, we will start with a skeleton
 
-. Fill out the *Project metadata* fields as follows:
+. Open a Terminal (e.g., _cmd_ or _bash_ shell)
+
+. Change the working directory to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
 +
-Group:: +io.pivotal+
-Artifact:: +cloud-native-spring+
+  cd /devops-workshop-boeing/labs/my_work/cloud-native-spring
 
-. In the dependencies section, add the following manually:
+. Open this project in your editor/IDE of choice.
 +
-*Web* *Rest Repositories* *JPA* *H2* *Actuator*
-
-. Click the _Generate Project_ button. Your browser will download a zip file.
-
-. Copy then unpack the downloaded zip file to *devops-workshop-boeing/labs/my_work/cloud-native-spring*
+*_STS Import Help_*
 +
-Your directory structure should now look like:
-+
-[source, bash]
----------------------------------------------------------------------
-devops-workshop-boeing:
-├── labs
-│   ├── my_work
-│   │   ├── cloud-native-spring
----------------------------------------------------------------------
-
-. Import the project’s pom.xml into your editor/IDE of choice.
-+
-*_STS Import Help:_*
-+
-Select File > Import… Then select Maven > Existing Maven Projects. On the Import Maven Projects page, browse to the /cloud-native-spring directory (e.g. CN-Workshop-Boeing/labs/my_work/cloud-native-spring)
+Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop-boeing/labs/my_work/cloud-native-spring_) then click the _Open_ button, then click the _Finish_ button.
 
 == Add an Endpoint
 
-. Add an @RestController annotation to the class _io.pivotal.CloudNativeSpringApplication_ (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java).
-+
-[source, java, numbered]
----------------------------------------------------------------------
-package io.pivotal;
+Within your editor/IDE complete the following steps:
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+. Create a new package _io.pivotal.controller_ underneath _src/main/java_.
+
+. Create a new class named _GreetingController_ in the aforementioned package.
+
+. Add an _@RestController_ annotation to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
++
+[source, java]
+---------------------------------------------------------------------
+package io.pivotal.controller;
+
 import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootApplication
 @RestController
-public class CloudNativeSpringApplication {
+public class GreetingController {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CloudNativeSpringApplication.class, args);
-    }
 }
 ---------------------------------------------------------------------
 
-. Add the following request handler to the class _io.pivotal.CloudNativeSpringApplication (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java).
+. Add the following request handler to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -71,62 +54,71 @@ Completed:
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal;
+package io.pivotal.controller;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@SpringBootApplication
 @RestController
-public class CloudNativeSpringApplication {
+public class GreetingController {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CloudNativeSpringApplication.class, args);
-    }
-
-    @RequestMapping("/")
+    @RequestMapping("/hello")
     public String hello() {
         return "Hello World!";
     }
+    
 }
 ---------------------------------------------------------------------
 
-== Run the _cloud-native-spring_ Application
 
-. In a terminal, change working directory to *CN-Workshop-Boeing/labs/my_work/cloud-native-spring*
-+
-$ cd /devops-workshop-boeing/labs/my_work/cloud-native-spring
+== Build the _cloud-native-spring_ application
 
-. Run the application
+Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+
+. Find out what tasks are vailable to you with
 +
-$ mvn clean spring-boot:run
+  gradle tasks
+  
+. First we'll run tests
++
+  gradle test
+
+. Next we'll package the application as a libary artifact (it cannot be run on its own)
++
+  gradle jar
+  
+. Next we'll package the application as an executable artifact (that can be run on its own because it will include all transitive dependencies along with embedding a servlet container)
++
+  gradle bootRepackage
+
+
+== Run the _cloud-native-spring_ application
+
+Now we're ready to run the application
+
+. Run the application with
++
+  gradle bootRun
 
 . You should see the application start up an embedded Apache Tomcat server on port 8080 (review terminal output):
 +
 [source,bash]
 ---------------------------------------------------------------------
 2015-10-02 13:26:59.264  INFO 44749 --- [lication.main()] s.b.c.e.t.TomcatEmbeddedServletContainer: Tomcat started on port(s): 8080 (http)
-2015-10-02 13:26:59.267  INFO 44749 --- [lication.main()] io.pivotal.hello.CloudNativeSpringApplication: Started CloudNativeSpringApplication in 2.541 seconds (JVM running for 9.141)
+2015-10-02 13:26:59.267  INFO 44749 --- [lication.main()] io.pivotal.CloudNativeSpringApplication: Started CloudNativeSpringApplication in 2.541 seconds (JVM running for 9.141)
 ---------------------------------------------------------------------
 
 . Browse to http://localhost:8080
 
-. Stop the _cloud-native-spring_ application. In the terminal window: *Ctrl + C*
+. Stop the _cloud-native-spring_ application. In the terminal window type *Ctrl + C*
 
 == Deploy _cloud-native-spring_ to Pivotal Cloud Foundry
 
-. Build the application
-+
-[source,bash]
----------------------------------------------------------------------
-$ mvn clean package
----------------------------------------------------------------------
+We've built and run the application locally.  Now we'll deploy it to Cloud Foundry.
 
-. Create an application manifest in the root folder /cloud-native-spring
+. Create an application manifest in the root folder _devops-workshop-boeing/labs/my_work/cloud-native-spring_
 +
-$ touch manifest.yml
+  touch manifest.yml
 
 . Add application metadata, using a text editor (of choice)
 +
@@ -135,10 +127,9 @@ $ touch manifest.yml
 ---
 applications:
 - name: cloud-native-spring
-  host: cloud-native-spring-${random-word}
-  memory: 1G
+  random-route: true
   instances: 1
-  path: ./target/cloud-native-spring-0.0.1-SNAPSHOT.jar
+  path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
   buildpack: java_buildpack
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -146,8 +137,10 @@ applications:
 
 . Push application into Cloud Foundry
 +
-$ cf push
+  cf push
 
 . Find the URL created for your app in the health status report. Browse to your app.
 
 *Congratulations!* You’ve just completed your first Spring Boot application.
+
+

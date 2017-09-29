@@ -1,0 +1,19 @@
+management:
+  security:
+    enabled: false
+  info:
+    git:
+      mode: full
+  cloudfoundry:
+    enabled: true
+    skip-ssl-validation: true
+
+info: # add this section
+  build:
+    name: @application.name@
+    description: @application.description@
+    version: @application.version@
+
+security:
+  basic:
+    enabled:  false

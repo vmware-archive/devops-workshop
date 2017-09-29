@@ -1,90 +1,49 @@
 = Adding Spring Cloud Config to Boot Application
 
-In this lab we'll utilize Spring Boot and Spring Cloud to configure our application from a configuration dynamically retrieved from a git repository. We'll then deploy it to Pivotal Cloud Foundry and auto-provision an instance of a configuration server using Pivotal Spring Cloud Services.
+In this lab we'll utilize Spring Boot and Spring Cloud to configure our application from a configuration dynamically retrieved from a Git repository. We'll then deploy it to Pivotal Cloud Foundry and auto-provision an instance of a configuration server using Pivotal Spring Cloud Services.
 
 == Update _Hello_ REST service
 
-. These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.  Open your Maven POM found here: */cloud-native-spring/pom.xml*.  Add the following spring cloud services dependency:
-+
-[source, xml]
----------------------------------------------------------------------
-<dependency>
-  <groupId>io.pivotal.spring.cloud</groupId>
-	<artifactId>spring-cloud-services-starter-config-client</artifactId>
-</dependency>
----------------------------------------------------------------------
+These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.  
 
-. We also need to add a general entry for Spring Cloud dependency management.  Add this snippet to your POM:
+. Open your Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes, consult the image below. You will want to include all the red highlighted updates on the right-handside of the image below.
 +
-[source, xml]
----------------------------------------------------------------------
-<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.pivotal.spring.cloud</groupId>
-				<artifactId>spring-cloud-services-dependencies</artifactId>
-				<version>1.5.0.RELEASE</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Dalston.SR2</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
----------------------------------------------------------------------
+image::images/beyond-compare-lab03-to-lab04-build.gradle.png[]
 
-. Add an @Value annotation, private field, and associated usage to the class _io.pivotal.CloudNativeSpringApplication_ (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java):
+. Add an _@Value_ annotation, private field, and update the existing _@RequestMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
-[source, java, numbered]
+[source, java]
 ---------------------------------------------------------------------
     @Value("${greeting:Hola}")
-    private String _greeting;
+    private String greeting;
 
-    @RequestMapping("/")
+    @RequestMapping("/hello")
     public String hello() {
-        return _greeting + " World!";
+        return String.join(greeting, " World!");
     }
 ---------------------------------------------------------------------
 +
 Completed:
 +
-[source,java,numbered]
+[source,java]
 ---------------------------------------------------------------------
-package io.pivotal;
+package io.pivotal.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Value;
 
-@SpringBootApplication
 @RestController
-@EnableJpaRepositories
-@Import(RepositoryRestMvcAutoConfiguration.class)
-@RefreshScope
-public class CloudNativeSpringApplication {
+public class GreetingController {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CloudNativeSpringApplication.class, args);
-	}
+    @Value("${greeting:Hola}")
+    private String greeting;
 
-	@Value("${greeting:Hola}")
-	private String _greeting;
-
-	@RequestMapping("/")
-	public String hello() {
-		return _greeting + " World!";
-	}
+    @RequestMapping("/hello")
+    public String hello() {
+        return String.join(" ", greeting, "World!");
+    }
+    
 }
 ---------------------------------------------------------------------
 
@@ -97,46 +56,13 @@ security:
     enabled:  false
 ---------------------------------------------------------------------
 
-. We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/application.yml*:
+. We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
 [source, yaml]
 ---------------------------------------------------------------------
 spring:
   application:
     name: cloud-native-spring
----------------------------------------------------------------------
-
-. Complete YML:
-+
-[source, yaml]
----------------------------------------------------------------------
-spring:
-  application:
-    name: cloud-native-spring
-
-endpoints: # add this section
-  sensitive: false
-
-info: # add this section
-  build:
-    artifact: @project.artifactId@
-    name: @project.name@
-    description: @project.description@
-    version: @project.version@
-
-management:
-  security:
-    enabled: false
-  info:
-    git:
-      mode: full
-  cloudfoundry:
-    enabled: true
-    skip-ssl-validation: true
-
-security:
-  basic:
-    enabled: false
 ---------------------------------------------------------------------
 
 == Run the _cloud-native-spring_ Application and verify dynamic config is working
@@ -145,7 +71,7 @@ security:
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ mvn clean spring-boot:run
+gradle clean bootRun
 ---------------------------------------------------------------------
 
 . Browse to http://localhost:8080 and verify you now see your new greeting.
@@ -154,15 +80,15 @@ $ mvn clean spring-boot:run
 
 == Create Spring Cloud Config Server instance
 
-. Now that our application is ready to read its config from a cloud config server, we need to deploy one!  This can be done through cloudfoundry using the services marketplace.  Browse to the marketplace in Pivotal Cloud Foundry Apps Manager, navigate to the space you have been using to push your app, and select Config Server:
+. Now that our application is ready to read its config from a Cloud Config server, we need to deploy one!  This can be done through Cloud Foundry using the services Marketplace.  Browse to the Marketplace in Pivotal Cloud Foundry Apps Manager, navigate to the Space you have been using to push your app, and select Config Server:
 +
 image::images/config-scs.jpg[]
 
-. In the resulting details page, select the _standard_, single tenant plan.  Name the instance *config-server*, select the space that you've been using to push all your applications.  At this time you don't need to select a application to bind to the service:
+. In the resulting details page, select the _standard_, single tenant plan.  Name the instance *config-server*, select the Space that you've been using to push all your applications.  At this time you don't need to select an application to bind to the service:
 +
 image::images/config-scs1.jpg[]
 
-. After we create the service instance you'll be redirected to your _Space_ landing page that lists your apps and services.  The config server is deployed on-demand and will take a few moments to deploy.  Once the messsage _The Service Instance is Initializing_ disappears click on the service you provisioned.  Select the manage link towards the top of the resulting screen to view the instance id and a JSON document with a single element, count, which validates that the instance provisioned correctly:
+. After we create the service instance you'll be redirected to your _Space_ landing page that lists your apps and services.  The config server is deployed on-demand and will take a few moments to deploy.  Once the messsage _The Service Instance is Initializing_ disappears click on the service you provisioned.  Select the Manage link towards the top of the resulting screen to view the instance id and a JSON document with a single element, count, which validates that the instance provisioned correctly:
 +
 image::images/config-scs2.jpg[]
 
@@ -170,7 +96,7 @@ image::images/config-scs2.jpg[]
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf update-service config-server -c '{"git": { "uri": "https://github.com/pacphi/config-repo" } }'
+cf update-service config-server -c '{"git": { "uri": "https://github.com/pacphi/config-repo" } }'
 ---------------------------------------------------------------------
 
 . Refresh you Config Server management page and you will see the following message.  Wait until the screen refreshes and the service is reintialized:
@@ -193,9 +119,9 @@ Complete:
 applications:
 - name: cloud-native-spring
   host: cloud-native-spring-${random-word}
-  memory: 512M
+  memory: 1024M
   instances: 1
-  path: ./target/cloud-native-spring-0.0.1-SNAPSHOT.jar
+  path: ./target/cloud-native-spring-1.0-SNAPSHOT-exec.jar
   buildpack: java_buildpack
   timeout: 180
   env:
@@ -210,27 +136,29 @@ applications:
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ mvn clean package
+gradle clean bootRepackage
 ---------------------------------------------------------------------
 
 . Push application into Cloud Foundry
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf push
+cf push
 ---------------------------------------------------------------------
 
-. Test your application by navigating to the root URL of the application, which will invoke the hello() service.  You should now see a greeting that is read from the cloud config server!
+. Test your application by navigating to the root URL of the application, which will invoke the hello() service.  You should now see a greeting that is read from the Cloud Config Server!
 +
-Bon Jour World!
+Ohai World!
++
+*What just happened??*
++ 
+-> A Spring component within the Spring Cloud Starter Config Client module called a _service connector_ automatically detected that there was a Cloud Config service bound into the application.  The service connector configured the application automatically to connect to the Cloud Config Server and downloaded the configuration and wired it into the application
 
-. What just happened??  A Spring component within the Spring Cloud Starter Config Client module called a _service connector_ automatically detected that there was a Cloud Config service bound into the application.  The service connector configured the application automatically to connect to the cloud config server and download the configuration and wire it into the application
-
-. If you navigate to the GIT repo we specified for our configuration, https://github.com/pacphi/config-repo, you'll see a file named cloud-native-spring.yml.  This filename is the same as our spring.application.name value for our Boot application.  The configuration is read from this file, in our case the following property:
+. If you navigate to the Git repo we specified for our configuration, https://github.com/pacphi/config-repo, you'll see a file named _cloud-native-spring.yml_.  This filen ame is the same as our _spring.application.name_ value for our Boot application.  The configuration is read from this file, in our case the following property:
 +
 [source, yaml]
 ---------------------------------------------------------------------
-greeting: Guten Tag
+greeting: Ohai
 ---------------------------------------------------------------------
 
-. Next we'll learn how to register our service with a service registry and load balance requests using Spring Cloud components.
+. Next we'll learn how to register our service with a Service Registry and load balance requests using Spring Cloud components.

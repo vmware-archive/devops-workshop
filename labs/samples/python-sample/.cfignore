@@ -1,0 +1,4 @@
+# Ignore `LICENSE` file and / *.md type files
+# See more details at https://docs.cloudfoundry.org/devguide/deploy-apps/prepare-to-deploy.html#exclude
+LICENSE
+*.md
