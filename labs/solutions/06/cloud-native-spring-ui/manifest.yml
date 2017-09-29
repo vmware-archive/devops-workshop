@@ -11,3 +11,4 @@ applications:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
   services:
   - service-registry
+  - circuit-breaker
