@@ -75,7 +75,7 @@ public class GreetingController {
 
 Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
 
-. Find out what tasks are vailable to you with
+. Find out what tasks are available to you with
 +
   gradle tasks
   

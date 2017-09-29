@@ -4,19 +4,19 @@ In this lab we'll utilize Spring Boot and Spring Cloud to make our UI Applicatio
 
 == Define a Circuit Breaker within the _UI Application_
 
-. These features are added by adding _spring-cloud-services-starter-circuit-breaker_ to the classpath.  Open you Maven POM found here: */cloud-native-spring-ui/pom.xml*.  Add the following spring cloud services dependency:
+. These features are added by adding _spring-cloud-services-starter-circuit-breaker_ to the classpath.  Open your Gradle build file, found here: */cloud-native-spring-ui/build.gradle*.  Add the following Spring Cloud Services dependency:
 +
-[source, xml]
+[source, groovy]
 ---------------------------------------------------------------------
-<dependency>
-  <groupId>io.pivotal.spring.cloud</groupId>
-	<artifactId>spring-cloud-services-starter-circuit-breaker</artifactId>
-</dependency>
+dependencies {
+	// add this dependency
+	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
+}
 ---------------------------------------------------------------------
 
-. The first thing we need to add to our application is an @EnableCircuitBreaker annotation to the Spring Boot application.  Add this annotation below the other ones on the CloudNativeSpringUIApplication declaration in the class _io.pivotal.CloudNativeSpringUIApplication_ (/cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUIApplication.java):
+. The first thing we need to add to our application is an _@EnableCircuitBreaker_ annotation to the Spring Boot application.  Add this annotation below the other ones on the _CloudNativeSpringUiApplication_ declaration in the class _io.pivotal.CloudNativeSpringUiApplication_ (/cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java):
 +
-[source, java, numbered]
+[source, java]
 ---------------------------------------------------------------------
 @SpringBootApplication
 @EnableFeignClients
@@ -25,75 +25,28 @@ In this lab we'll utilize Spring Boot and Spring Cloud to make our UI Applicatio
 public class CloudNativeSpringUiApplication {
 ---------------------------------------------------------------------
 
-. When we introduced an @FeignClient into our application we were only required to provide an interface.  We'll provide a dummy class that implements that interface for our fallback.  We'll also reference that class as a fallback in our FeignClient annotion.  First, create this inner class in the _CloudNativeSpringUIApplication_:
+. When we introduced an _@FeignClient_ into our application we were only required to provide an interface.  We'll provide a dummy class that implements that interface for our fallback.  We'll also reference that class as a fallback in our _@FeignClient_ annotation.  First, create this class in the _io.pivotal_ package:
 +
-[source, java, numbered]
+[source, java]
 ---------------------------------------------------------------------
-    @Component
-	public class CityClientFallback implements CityClient {
-		@Override
-		public Resources<City> getCities() {
-			//We'll just return an empty response
-			return new Resources<City>(Collections.emptyList());
-		}
-	}
----------------------------------------------------------------------
-+
-. Also modify the _@FeignClient_ annotation to reference this class as the fallback in case of failure:
-+
-[source, java, numbered]
----------------------------------------------------------------------
-@FeignClient(name = "cloud-native-spring", fallback = CityClientFallback.class)
-public interface CityClient {
----------------------------------------------------------------------
-+
-. Your Boot Application should now look like this _CloudNativeSpringUiApplication_:
-+
-[source, java, numbered]
----------------------------------------------------------------------
-package io.pivotal;
-
-import io.pivotal.domain.City;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.hateoas.Resources;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.Collections;
-
-@SpringBootApplication
-@EnableFeignClients
-@EnableDiscoveryClient
-@EnableCircuitBreaker
-public class CloudNativeSpringUiApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(CloudNativeSpringUiApplication.class, args);
-	}
-
-	@FeignClient(name = "cloud-native-spring", fallback = CityClientFallback.class)
-	public interface CityClient {
-		@GetMapping(value="/cities", consumes="application/hal+json")
-		Resources<City> getCities();
-	}
-
-	@Component
-	public class CityClientFallback implements CityClient {
-		@Override
-		public Resources<City> getCities() {
-			//We'll just return an empty response
-			return new Resources<City>(Collections.emptyList());
-		}
+@Component
+public class CityClientFallback implements CityClient {
+	@Override
+	public Resources<City> getCities() {
+		//We'll just return an empty response
+		return new Resources<City>(Collections.emptyList());
 	}
 }
-
 ---------------------------------------------------------------------
+
+. Also modify the _@FeignClient_ annotation to reference this class as the fallback in case of failure:
++
+[source, java]
+---------------------------------------------------------------------
+@FeignClient(name = "https://cloud-native-spring", fallback = CityClientFallback.class)
+public interface CityClient {
+---------------------------------------------------------------------
+
 
 == Create the Circuit Breaker Dashboard
 
@@ -101,14 +54,14 @@ public class CloudNativeSpringUiApplication {
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf create-service p-circuit-breaker standard circuit-breaker
+cf create-service p-circuit-breaker-dashboard standard circuit-breaker
 ---------------------------------------------------------------------
 
-. If we view the Circuit Breaker Dashboard (accessible from the _manage_ link in Apps Manager) you will see that a dashboard has been deployed but is empty (You may get an _initializing_ message for a few seconds.  This should eventually refresh to a dashboard):
+. If we view the Circuit Breaker Dashboard (accessible from the _Manage_ link in Apps Manager) you will see that a dashboard has been deployed but is empty (You may get an _Initializing_ message for a few seconds.  This should eventually refresh to a dashboard):
 +
 image::images/dash.jpg[]
 
-. We will now bind our application to our circuit-breaker-dashboard within our Cloud Foundry deployment manifest.  Add these additional reference to a the service to the bottom of */cloud-native-spring-ui/manifest.yml* in the services list:
+. We will now bind our application to our _circuit-breaker-dashboard_ within our Cloud Foundry deployment manifest.  Add this additional reference to a service at the bottom of */cloud-native-spring-ui/manifest.yml* in the services list:
 +
 [source, yml]
 ---------------------------------------------------------------------
@@ -123,25 +76,25 @@ image::images/dash.jpg[]
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ mvn clean package -DskipTests
+gradle bootRepackage -x test
 ---------------------------------------------------------------------
 
 . Push application into Cloud Foundry
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf push
+cf push
 ---------------------------------------------------------------------
 
 . Test your application by navigating to the root URL of the application.  If the dependent cities REST service is still stopped, you should simply see a blank table.  Remember that last time you received a nasty exception in the browser?  Now your Circuit Breaker fallback method is automatically called and the fallback behavior is executed.
 +
 image::images/empty.jpg[]
 
-. From a commandline start the cloud-native-spring microservice (the original city service, not the new UI)
+. From a commandline start the _cloud-native-spring_ microservice (the original City service, not the new UI)
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf start cloud-native-spring
+cf start cloud-native-spring
 ---------------------------------------------------------------------
 
 . Refresh the UI app and you should once again see a table listing the first page of cities.

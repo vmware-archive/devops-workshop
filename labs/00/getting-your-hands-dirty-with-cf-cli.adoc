@@ -34,6 +34,10 @@ Enter your PWS account username and password, then select an org and space.
 . Let's see what buildpacks are available to us
 +
   cf buildpacks
+
+. Peruse the services you can provision and bind your applications to
++
+  cf marketplace
   
 . Time to deploy an app. How about Node.js? 
 +
@@ -63,8 +67,16 @@ Enter your PWS account username and password, then select an org and space.
   cf stop cf-nodejs
   cf apps
   
+== How to cleanup after yourself
+
 . Finally, let's delete an app
 +
   cf delete cf-nodejs
 +  
--> Don't forget to clean-up after yourself. Repeat `cf delete` for each app you deployed.
+-> Repeat `cf delete` for each app you deployed.
+
+== Where to go for more help
+
+-> https://docs.cloudfoundry.org/cf-cli/getting-started.html[Getting Started with the CF CLI]
+
+-> http://www.appservgrid.com/refcards/refcards/dzonerefcards/rc207-010d-cloud-foundry.pdf[Cloud Foundry Cheat Sheet]
