@@ -1,0 +1,39 @@
+= Boeing DevOps Workshop
+
+A collection of workshop presentations and labs exercises for use at Boeing. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a 1-1/2 days.
+
+
+== Software Prerequisities
+
+=== Minimum requirements
+
+-> CF-CLI
+
+-> Java JDK
+
+-> Git
+
+-> Gradle
+
+=== Recommended
+
+-> STS (Spring Source Tool Suite an Eclipse IDE variant)
+
+-> Postman (a REST client)
+
+
+== Clone this repository
+
+[source,bash]
+---------------------------------------------------------------------
+git clone https://github.com/Pivotal-Field-Engineering/devops-workshop-boeing
+---------------------------------------------------------------------
+
+
+== Helpful links
+
+-> https://pcf-start.web.pcfpre-phx.apps.boeing.com/workshop.html[PCF Workshops at Boeing]
+
+-> https://pcf-start.web.pcfpre-phx.apps.boeing.com/secured[Cloud Foundry Account Request]
+
+-> https://pcf-start.wpi.pcfpre-phx.apps.boeing.com/faq.html[Software installation and usage FAQ]
