@@ -60,6 +60,7 @@ You have a few options if you attend an offsite workshop.
 . Execute each of these steps
 +
   brew tap caskroom/cask
+  brew install git
   brew cask install java
   brew install maven
   brew install gradle
