@@ -74,7 +74,7 @@ spring:
 gradle clean bootRun
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080 and verify you now see your new greeting.
+. Browse to http://localhost:8080/hello and verify you now see your new greeting.
 
 . Stop the _cloud-native-spring_ application
 
@@ -146,7 +146,7 @@ gradle clean bootRepackage
 cf push
 ---------------------------------------------------------------------
 
-. Test your application by navigating to the root URL of the application, which will invoke the hello() service.  You should now see a greeting that is read from the Cloud Config Server!
+. Test your application by navigating to the /hello endpoint of the application.  You should now see a greeting that is read from the Cloud Config Server!
 +
 Ohai World!
 +

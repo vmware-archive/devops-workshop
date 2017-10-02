@@ -108,7 +108,7 @@ Now we're ready to run the application
 2015-10-02 13:26:59.267  INFO 44749 --- [lication.main()] io.pivotal.CloudNativeSpringApplication: Started CloudNativeSpringApplication in 2.541 seconds (JVM running for 9.141)
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080
+. Browse to http://localhost:8080/hello
 
 . Stop the _cloud-native-spring_ application. In the terminal window type *Ctrl + C*
 
@@ -139,7 +139,7 @@ applications:
 +
   cf push
 
-. Find the URL created for your app in the health status report. Browse to your app.
+. Find the URL created for your app in the health status report. Browse to your app's /hello endpoint.
 
 *Congratulations!* You’ve just completed your first Spring Boot application.
 
