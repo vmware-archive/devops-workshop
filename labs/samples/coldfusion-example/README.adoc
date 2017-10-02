@@ -80,5 +80,7 @@ You will not be able to leverage all the capabilities of ColdFusion without cuso
 === Helpful links
 
 -> https://forums.adobe.com/thread/2115839[CF2016 - Alias for /cf_scripts/scripts in the Built-In Web Server]
+
 -> http://wwwimages.adobe.com/content/dam/acom/en/products/coldfusion/pdfs/coldfusion-2016-lockdown-guide.pdf[ColdFusion (2016 release) Lockdowmn Guide]
+
 -> https://docs.cloudfoundry.org/buildpacks/custom.html[Creating Custom Buildpacks]
