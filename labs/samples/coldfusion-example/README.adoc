@@ -28,7 +28,7 @@ image::images/packaging-and-deployment.png[]
 
 . Specify an Archive Name and click the Add button
 +
-image::images/archive-name-and-ad.png[]
+image::images/archive-name-and-add.png[]
 
 . Specify `/var/www` for both the Application Directory and the Distribution Directory. Make sure the Archive type is set to WAR.  Uncheck the Include CF Administrator checkbox, then click the Submit button.
 +
