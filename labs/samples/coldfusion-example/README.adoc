@@ -61,7 +61,7 @@ rm -Rf src/main/webapp/CFIDE
 +
 This is the heart of your project.  You can feel free to edit `index.cfm` and add additional file resources to this structure as you see fit.
 +
--> Note: {project-root-directory} is the top-level directory for your Cold Fusion project, e.g., `/Users/waldo/development/projects/cfmagic`.
+-> Note: `{project-root-directory}` is the top-level directory for your Cold Fusion project, e.g., `/Users/waldo/development/projects/cfmagic`.
 
 . Gradle-ize the project.  (Have a look at https://nebula-plugins.github.io[Nebula] for some good ideas).
 
