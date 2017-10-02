@@ -24,6 +24,16 @@ A collection of workshop presentations and labs exercises for use at Boeing. Foc
 
 == Clone this repository
 
+You will need to set a couple of environment variables `HTTP_PROXY` and `HTTPS_PROXY` first!
++
+[source,bash]
+---------------------------------------------------------------------
+set HTTP_PROXY=http://www-proxy.web.boeing.com:31060
+set HTTPS_PROXY=http://www-proxy.web.boeing.com:31060
+---------------------------------------------------------------------
+
+then
+
 [source,bash]
 ---------------------------------------------------------------------
 git clone https://github.com/Pivotal-Field-Engineering/devops-workshop-boeing
