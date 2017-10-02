@@ -75,7 +75,7 @@ unzip -q cfmagic.zip -d ./src/main/webapp
 rm -Rf ./src/main/webapp/CFIDE
 -----------------------------------------------------------------
 
-. Develop! (e.g., author an `index.cfm` file and add other resources underneath the `src/main/webapp` directory)
+. (Optionally) Develop! (e.g., edit the existing `index.cfm` file and/or add other resources underneath the `src/main/webapp` directory)
 
 . Use gradle to package a .war file from source
 +
