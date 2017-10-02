@@ -83,12 +83,12 @@ cf push
 
 == Limitations
 
-You will not be able to leverage all the capabilities of ColdFusion without cusotmizing the standard Java Buildpack.
+You will not be able to leverage all the capabilities of ColdFusion without customizing the standard Java Buildpack.
 
 === Helpful links
 
 -> https://forums.adobe.com/thread/2115839[CF2016 - Alias for /cf_scripts/scripts in the Built-In Web Server]
 
--> http://wwwimages.adobe.com/content/dam/acom/en/products/coldfusion/pdfs/coldfusion-2016-lockdown-guide.pdf[ColdFusion (2016 release) Lockdowmn Guide]
+-> http://wwwimages.adobe.com/content/dam/acom/en/products/coldfusion/pdfs/coldfusion-2016-lockdown-guide.pdf[ColdFusion (2016 release) Lockdown Guide]
 
 -> https://docs.cloudfoundry.org/buildpacks/custom.html[Creating Custom Buildpacks]
