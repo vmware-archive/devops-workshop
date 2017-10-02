@@ -19,12 +19,13 @@ Your workspace is the *my_work* folder. If you get stuck implementing any of the
 
 . If you haven't already, download the latest release of the Cloud Foundry CLI from https://github.com/cloudfoundry/cli/releases for your operating system and install it.
 
-. Set the API target for the CLI (set appropriate end point for your environment):
+. Set the API target for the CLI (set appropriate end point for your environment) and login:
 +
 *PWS*
 +
 ----
 $ cf api https://api.run.pivotal.io --skip-ssl-validation
+$ cf login
 ----
 +
 or
@@ -34,14 +35,8 @@ or
 ----
 $ cf login -a https://api.system.pcfpre-phx.cloud.boeing.com --sso
 ----
-
-. Login to Pivotal Cloud Foundry:
 +
-----
-$ cf login
-----
-+
-Follow the prompts
+Enter your account username and password, then select an org and space.
 
 == Apps Manager UI
 

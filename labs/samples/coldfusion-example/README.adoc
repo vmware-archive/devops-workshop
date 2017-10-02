@@ -19,12 +19,20 @@ docker run -d --name="my-adobe-cold-fusion-2016-instance" -p 80:80 -p 8500:8500 
 -----------------------------------------------------------------
 
 . Login to the Release Administrator http://localhost:8500/CFIDE/administrator[console] via a web browser, credentials are `admin/Adm1n!12`
++
+image::images/admin-login.png[]
 
 . Click on the Packaging and Deployment menu option on the left hand-side, then click on J2EE Archives
++
+image::images/packaging-and-deployment.png[]
 
 . Specify an Archive Name and click the Add button
++
+image::images/archive-name-and-ad.png[]
 
 . Specify `/var/www` for both the Application Directory and the Distribution Directory. Make sure the Archive type is set to WAR.  Uncheck the Include CF Administrator checkbox, then click the Submit button.
++
+image::images/add-options-and-submit.png[]
 
 . Change directories to ~/.cold-fusion/2016 and look for the .war you just created
 

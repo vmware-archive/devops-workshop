@@ -15,15 +15,28 @@ samples
 +
 -> If you want to be able to deploy these samples you must have _Go_, _Node_, _.Net Core_, and _Python_ installed.
 
-== How to target a foundation
+== How to target a foundation and login
 
 . Open a Terminal (e.g., _cmd_ or _bash_ shell)
 
-. Let's target a foundation
+. Target a foundation and login
 +
-  cf login -a api.run.pivotal.io
+*PWS*
 +
-Enter your PWS account username and password, then select an org and space.
+----
+$ cf api https://api.run.pivotal.io --skip-ssl-validation
+$ cf login
+----
++
+or
++
+*Boeing Pre-production*
++
+----
+$ cf login -a https://api.system.pcfpre-phx.cloud.boeing.com --sso
+----
++
+Enter your account username and password, then select an org and space.
 
 == How to deploy an application
 
