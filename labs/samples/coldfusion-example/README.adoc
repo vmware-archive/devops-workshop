@@ -1,6 +1,6 @@
 = Cold Fusion example
 
-This sample application employs http://www.adobe.com/products/coldfusion-standard.html[Cold Fusion], the https://helpx.adobe.com/coldfusion/cfml-reference/coldfusion-tags/tags-m-o/cfmap.html[cfmap] tag and the Google Maps API to embed a 
+This sample application employs http://www.adobe.com/products/coldfusion-standard.html[Cold Fusion] and an assortment of https://helpx.adobe.com/coldfusion/cfml-reference/coldfusion-tags/tag-summary.html[tags] (e.g., cfset, cfloop, and cfhttp).
 
 == Pre-requisites
 
