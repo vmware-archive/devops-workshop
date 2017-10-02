@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+
+
+repositories {
+	mavenCentral()
+    mavenLocal()
+}
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'io.pivotal'
+            from components.java
+        }
+    }
+	repositories {
+        mavenLocal()
+    }
+}
+
+war {
+    baseName 'cfmagic'
+    version '1.0-SNAPSHOT'
+}
