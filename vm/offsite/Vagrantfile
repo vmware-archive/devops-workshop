@@ -8,10 +8,10 @@ $script = <<SCRIPT
 
   # Install Gradle
   wget https://services.gradle.org/distributions/gradle-4.1-bin.zip
-  unzip -d /opt gradle-4.1-bin.zip
+  unzip -d /opt gradle-4.2-bin.zip
 
   # Add Gradle and Maven to PATH
-  echo export PATH=/opt/apache-maven-3.5.0/bin:/opt/gradle-4.1/bin:\$PATH >> /home/vagrant/.bashrc
+  echo export PATH=/opt/apache-maven-3.5.0/bin:/opt/gradle-4.2/bin:\$PATH >> /home/vagrant/.bashrc
 
   # Backup original and replace settings.xml
   mv /opt/apache-maven-3.5.0/conf/settings.xml /opt/apache-maven-3.5.0/conf/settings.xml.original
