@@ -1,0 +1,46 @@
+= Workshop Schedule
+
+The following tables are meant to illustrate how the content in this repository is meant to be delivered (and consumed) over a period of one-and-a-half days.
+
+Day 1
+^^^^^^
+.Schedule
+[options="header"]
+|=======================================================
+| Start   | End        | Session
+| 8:00    | 8:30       | Breakfast
+| 8:30    | 9:00       | Agenda + Introductions
+| 9:00    | 10:00      | PCF Value Proposition
+| 10:00   | 10:10      | Break 
+| 10:10   | 11:00      | PCF 101
+| 11:00   | 11:45      | CF Push [hands-on lab]
+| 11:45   | 12:30      | Lunch
+| 12:30   | 1:30       | Cloud Native Concepts
+| 1:30    | 2:30       | Strategies for Breaking Down Monoliths (or Getting to "Cloud Friendly”)
+| 2:30    | 2:40       | Break 
+| 2:40    | 3:30       | Intro to Spring Boot [hands-on lab]
+| 3:30    | 4:15       | Intro to Spring Data [hands-on lab]
+| 4:15    | 5:00       | Production Ready Features (diagnostics, logging and metrics for my app) [hands-on lab]
+| 5:00    | 5:15       | Retrospective
+| --      | 5:15       | Adjourn
+|=======================================================
+
+Day 2
+^^^^^^
+.Schedule
+[options="header"]
+|=======================================================
+| Start   | End        | Session
+| 8:00    | 8:30       | Breakfast
+| 8:30    | 9:00       | Intro to Spring Cloud
+| 9:00    | 9:50       | Application Configuration Management [either a demonstration on PWS or hands-on lab]
+| 9:50    | 10:00      | Break 
+| 10:00   | 10:50      | Service Registry [either a demonstration on PWS or hands-on lab]
+| 10:50   | 11:00      | Break
+| 11:00   | 12:00      | Hystrix instrumentation and the Circuit Breaker Dashboard [either a demonstration on PWS or hands-on lab]
+| 12:00   | 1:00       | Lunch
+| 1:00    | 1:30       | CI/CD Concepts
+| 1:30    | 2:15       | Practical discussion on pipeline automation (exploration and demo of sample implementation on Concourse employing Spring Cloud Pipelines)
+| 2:15    | 2:30       | Retrospective
+| --      | 2:30       | Adjourn
+|=======================================================
