@@ -141,6 +141,10 @@ applications:
 
 . Find the URL created for your app in the health status report. Browse to your app's /hello endpoint.
 
+. Check the log output
++
+  cf logs cloud-native-spring --recent
+
 *Congratulations!* You’ve just completed your first Spring Boot application.
 
 
