@@ -1,0 +1,53 @@
+Stark and Wayne Concourse tutorial
+https://github.com/starkandwayne/concourse-tutorial#concourse-tutorial
+
+Cloud Unfiltered Ep. 20, Josh McKenty
+https://youtu.be/OfwDTYeqHcI
+
+Intro to Pivotal’s Cloud Foundry
+https://www.youtube.com/watch?v=E06Jw0UqU14
+
+PCF Dev: Spring Cloud Services in Your Pocket — Keaty Gross
+https://www.youtube.com/watch?v=CZXpVThmByA
+
+Concourse deploying Pivotal Cloud Foundry
+https://www.youtube.com/watch?v=8-_C_HuKiK0
+
+Java Microservices at Scale on Cloud Foundry, Today and Tomorrow
+https://www.youtube.com/watch?v=9rPjLaOkEUo
+
+Continuous Deployment to the Cloud with Spring Cloud Pipelines by Marcin Grzejszczak
+https://www.youtube.com/watch?v=glhXS34umbw
+
+Consumer Driven Contracts and Your Microservice Architecture by Marcin Grzejszczak and Josh Long
+https://www.youtube.com/watch?v=IiK9A9nQ6NU
+
+Kubo and SCDF
+https://www.youtube.com/watch?v=vNZZ6caWYjY
+
+What’s Your Decomposition Strategy
+https://builttoadapt.io/whats-your-decomposition-strategy-e19b8e72ac8f
+
+Migrating to microservices
+https://www.youtube.com/watch?v=j5RQq7uvIKo
+
+Defining the purpose of each microservice
+https://medium.com/@almirx101/knowing-when-to-put-code-into-your-api-microservice-vs-outside-api-wrapper-microservice-8dcea72528ec
+
+Micro front-ends
+https://medium.com/@tomsoderlund/micro-frontends-a-microservice-approach-to-front-end-web-development-f325ebdadc16
+
+It's a kind of magic: under the covers of Spring Boot
+https://www.youtube.com/watch?v=N39hpGAT43s&t=5s
+
+Tracing Microservices with Zipkin
+https://www.youtube.com/watch?v=tzAyFyB56lQ
+
+Caching Made Bootiful
+https://www.youtube.com/watch?v=DuaX6mZiFKc
+
+The future of event-driven micro services with Spring Cloud Stream
+https://www.youtube.com/watch?v=0C7J7hFv_pk
+
+Spring One Platform Conference
+https://springoneplatform.io
