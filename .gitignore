@@ -24,3 +24,4 @@ src/main/resources/config/
 *.iws
 *.ipr
 *.log
+vm/offsite/data
