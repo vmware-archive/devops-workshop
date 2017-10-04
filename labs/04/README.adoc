@@ -19,7 +19,7 @@ image::images/beyond-compare-lab03-to-lab04-build.gradle.png[]
 
     @RequestMapping("/hello")
     public String hello() {
-        return String.join(greeting, " World!");
+        return String.join(" ", greeting, "World!");
     }
 ---------------------------------------------------------------------
 +
