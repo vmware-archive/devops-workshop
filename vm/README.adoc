@@ -53,6 +53,8 @@ You have a few options if you attend an offsite workshop.
   brew cask install java
   brew install maven
   brew install gradle
+  brew install node
+  brew install yarn
   brew install cloudfoundry/tap/cf-cli
   brew cask install postman
 

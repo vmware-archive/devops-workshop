@@ -56,7 +56,14 @@ Enter your account username and password, then select an org and space.
 . Time to deploy an app. How about Node.js? 
 +
   cd nodejs-sample
-  cf push cf-nodejs -c "node server.js"
+  cf push -c "node server.js"
++
+If you are having trouble resolving artifacts, you are likely running in a https://docs.cloudfoundry.org/buildpacks/node/index.html#yarn_disconnected[disconnected] environment, so follow these steps and try pushing the app again.
++
+  yarn config set yarn-offline-mirror ./npm-packages-offline-cache
+  cp ~/.yarnrc .
+  rm -rf node_modules/ yarn.lock
+  yarn install
   
 . Next, let's try deploying a Python app.
 +

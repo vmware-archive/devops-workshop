@@ -1,5 +1,10 @@
 build
 bin
+.bin
+node_modules
+npm-packages-offline-cache
+.yarnrc
+yarn.lock
 .gradle
 src/main/resources/config/
 .DS_Store
