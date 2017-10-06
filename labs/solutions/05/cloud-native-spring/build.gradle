@@ -4,9 +4,22 @@ buildscript {
 		springDependencyManagementVersion = '1.0.3.RELEASE'
 	}
 	repositories {
-		mavenCentral()
-	}
-	dependencies {
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_MAVEN_RELEASE
+        }
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_GRADLE_PLUGINS
+        }
+    }
+    dependencies {
 		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
@@ -61,10 +74,11 @@ dependencies {
 }
 
 repositories {
-    maven {
-        url "https://repo.spring.io/plugins-release"
+	credentials { 
+        username System.env.ArtifactoryUser
+        password System.env.ArtifactoryKey
     }
-	mavenCentral()
+    url System.env.REPO_MAVEN_RELEASE
 }
 
 jar {
