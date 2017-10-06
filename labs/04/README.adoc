@@ -6,9 +6,119 @@ In this lab we'll utilize Spring Boot and Spring Cloud to configure our applicat
 
 These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.  
 
-. Open your Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes, consult the image below. You will want to include all the red highlighted updates on the right-handside of the image below.
+. Delete your exisiting Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes. Create a new */cloud-native-spring/build.gradle* then cut-and-paste the content below into it and save. 
 +
-image::images/beyond-compare-lab03-to-lab04-build.gradle.png[]
+Adding a dependency management plugin and other miscellaneous configuration.
++
+[source, java]
+---------------------------------------------------------------------
+buildscript {
+	ext {
+		springBootVersion = '1.5.7.RELEASE'
+		springDependencyManagementVersion = '1.0.3.RELEASE'
+	}
+	repositories {
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_MAVEN_RELEASE
+        }
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_GRADLE_PLUGINS
+        }
+    }
+    dependencies {
+		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+    id "com.gorylenko.gradle-git-properties" version "1.4.17"
+}
+
+gitProperties {
+	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormatTimeZone = "UTC"
+    gitRepositoryRoot = new File("${project.rootDir}/../../../..")
+}
+
+import org.apache.tools.ant.filters.*
+
+processResources {
+    filter ReplaceTokens, tokens: [
+		"application.name": project.property("application.name"),
+		"application.description": project.property("application.description"),
+        "application.version": project.property("version")
+    ]
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
+    }
+}
+
+dependencies {
+	compileOnly('org.projectlombok:lombok:1.16.18')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-data-rest')
+	compile('org.springframework.boot:spring-boot-starter-hateoas')
+	compile('org.springframework.data:spring-data-rest-hal-browser')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
+	runtime('com.h2database:h2')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+repositories {
+	credentials { 
+        username System.env.ArtifactoryUser
+        password System.env.ArtifactoryKey
+    }
+    url System.env.REPO_MAVEN_RELEASE
+}
+
+jar {
+    excludes = ['**/application.yml']
+}
+
+task execJar (type: Jar, dependsOn: jar) {
+    classifier = 'exec'
+    from sourceSets.main.output
+}
+
+bootRepackage  {
+    withJarTask = tasks['execJar']
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+			groupId 'io.pivotal'
+            from components.java
+        }
+    }
+	repositories {
+        mavenLocal()
+    }
+}
+---------------------------------------------------------------------
 
 . Add an _@Value_ annotation, private field, and update the existing _@RequestMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
