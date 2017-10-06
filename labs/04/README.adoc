@@ -22,6 +22,15 @@ image::images/beyond-compare-lab03-to-lab04-build.gradle.png[]
         return String.join(" ", greeting, "World!");
     }
 ---------------------------------------------------------------------
+
+. Add a http://static.javadoc.io/org.springframework.cloud/spring-cloud-commons-parent/1.1.9.RELEASE/org/springframework/cloud/context/scope/refresh/RefreshScope.html[@RefreshScope] annotation to the top of the _GreetingController_ class declaration
++
+[source, java]
+---------------------------------------------------------------------
+@RefreshScope
+@RestController
+public class GreetingController {
+---------------------------------------------------------------------
 +
 Completed:
 +
@@ -32,7 +41,9 @@ package io.pivotal.controller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.scope.refresh.RefreshScope;
 
+@RefreshScope
 @RestController
 public class GreetingController {
 
@@ -92,7 +103,7 @@ image::images/config-scs1.jpg[]
 +
 image::images/config-scs2.jpg[]
 
-. We now need to update the service instance with our GIT repository information.  Using the cloudfoundry CLI execute the following update service command:
+. We now need to update the service instance with our GIT repository information.  Using the Cloud Foundry CLI execute the following update service command:
 +
 [source,bash]
 ---------------------------------------------------------------------
