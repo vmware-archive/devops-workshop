@@ -138,6 +138,14 @@ applications:
 . Push application into Cloud Foundry
 +
   cf push
++
+-> To specify an alternate buildpack, you could update the above to be e.g.,
++
+  cf push -f manifest.yml -b java_buildpack_offline
++ 
+Assuming the offline buildpack was installed and available for use with your targeted foundation.  You can check for which buildpacks are available by executing
++
+  cf buildpacks
 
 . Find the URL created for your app in the health status report. Browse to your app's /hello endpoint.
 
@@ -146,5 +154,3 @@ applications:
   cf logs cloud-native-spring --recent
 
 *Congratulations!* You’ve just completed your first Spring Boot application.
-
-
