@@ -112,7 +112,7 @@ Date: Thu, 28 Apr 2016 14:44:06 GMT
 
 . To exit the application, type *Ctrl-C*.
 
-So what have you done? Created four small classes and one build file, resulting in a fully-functional REST microservice. The application's +DataSource+ is created automatically by Spring Boot using the in-memory database because no other +DataSource+ was detected in the project. 
+So what have you done? Created four small classes and one build file, resulting in a fully-functional REST microservice. The application's +DataSource+ is created automatically by Spring Boot using the in-memory database because no other +DataSource+ was detected in the project.
 
 Next we'll import some data.
 
@@ -329,7 +329,7 @@ http://localhost:8080/cities/search/postalCode?q=75202
 http://localhost:8080/cities/search/name?q=Boston
 +
 http://localhost:8080/cities/search/nameContains?q=Fort&size=1
-+ 
++
 -> For further details on what's possible with Spring Data JPA, consult the https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#dependencies.spring-boot[reference documentation]
 
 
@@ -388,3 +388,186 @@ buildpack: java_buildpack
 ---------------------------------------------------------------------
 curl -k https://cloud-native-spring-{random-word}.{domain}.com/cities
 ---------------------------------------------------------------------
+
+== Binding to a MySQL database in Cloud Foundry
+
+. You may have noticed that when using the H2 (in-memory) database that the schema is automatically generated and updated on application start. That's not the case with other SQL databases, such as MySQL, Oracle or PostgreSQL. You will need to instruct the application to automatically generate SQL schema by adding to `src/main/resources/application.yml` file, e.g.
++
+[source,bash]
+---------------------------------------------------------------------
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+---------------------------------------------------------------------
+
+. Repackage the application again
++
+[source,bash]
+---------------------------------------------------------------------
+gradle bootRepackage
+---------------------------------------------------------------------
+
+. Let's create a MySQL database instance. Hopefully, you will have `p-mysql` service available in CF Marketplace.
++
+[source,bash]
+---------------------------------------------------------------------
+cf marketplace -s p-mysql
+---------------------------------------------------------------------
++
+Expected output:
++
+[source,bash]
+---------------------------------------------------------------------
+Getting service plan information for service p-mysql as cphillipson@pivotal.io...
+OK
+
+service plan   description     free or paid
+100mb          100MB default   free
+---------------------------------------------------------------------
+
+. Let's create an instance of `p-mysql` with `100mb` plan, e.g.
++
+[source,bash]
+---------------------------------------------------------------------
+cf create-service p-mysql 100mb mysql-database
+---------------------------------------------------------------------
++
+Expected output:
++
+[source,bash]
+---------------------------------------------------------------------
+Creating service instance mysql-database1 in org zoo-labs / space development as cphillipson@pivotal.io...
+OK
+---------------------------------------------------------------------
+
+. Let's bind the service to the application, e.g.
++
+[source,bash]
+---------------------------------------------------------------------
+cf bind-service cloud-native-spring mysql-database
+---------------------------------------------------------------------
++
+Expected output:
++
+[source,bash]
+---------------------------------------------------------------------
+Binding service mysql-database to app cloud-native-spring in org zoo-labs / space development as cphillipson@pivotal.io...
+OK
+---------------------------------------------------------------------
++
+-> Tip: Use `cf restage cloud-native-spring` to ensure your env variable changes take effect
+
+
+. Let's push the application, since we did not push the updated application yet, e.g.
++
+[source,bash]
+---------------------------------------------------------------------
+cf push
+---------------------------------------------------------------------
+
+. You may wish to observe the logs and notice that the bound MySQL database is picked up by the application, e.g.
++
+[source,bash]
+---------------------------------------------------------------------
+cf logs cloud-native-spring --recent
+---------------------------------------------------------------------
++ 
+Sample output:
++
+[source,bash]
+---------------------------------------------------------------------
+...
+INFO 20 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+INFO 20 --- [           main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+INFO 20 --- [           main] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+INFO 20 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+INFO 20 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+INFO 20 --- [           main] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH000228: Running hbm2ddl schema update
+...
+---------------------------------------------------------------------
+
+. You could also bind to the database directly from the `manifest.yml` file, e.g.
++
+[source,bash]
+---------------------------------------------------------------------
+applications:
+- name: cloud-native-spring
+  random-route: true
+  memory: 1024M
+  instances: 1
+  path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
+  buildpack: java_buildpack
+  timeout: 180 # to give time for the data to import
+  env:
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
+  services:
+    - mysql-database
+---------------------------------------------------------------------
++
+. Attempt to push the app again after making this update
++
+[source,bash]
+---------------------------------------------------------------------
+cf push
+---------------------------------------------------------------------
+
+
+. Also, if you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
++
+[source,bash]
+---------------------------------------------------------------------
+cf mysql mysql-database
+---------------------------------------------------------------------
++
+Sample console:
++
+[source,bash]
+---------------------------------------------------------------------
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 50
+Server version: 5.5.5-10.1.24-MariaDB Source distribution
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show tables;
++---------------------------------------------------+
+| Tables_in_cf_2c143464_fbdd_43df_8379_2bef727f1c99 |
++---------------------------------------------------+
+| city                                              |
++---------------------------------------------------+
+1 row in set (0.03 sec)
+
+mysql> select * from city;
+Empty set (0.03 sec)
+
+---------------------------------------------------------------------
++
+In case you don't have CF `mysql` plugin, you can install the plugin with
++
+[source,bash]
+---------------------------------------------------------------------
+cf install-plugin -r "CF-Community" mysql-plugin
+---------------------------------------------------------------------
++
+-> More details here:
++
+  * https://plugins.cloudfoundry.org/
+  * https://github.com/andreasf/cf-mysql-plugin
++
+
+
+. Notice that the database is not initialized same way it was with H2 (in-memory) database. We need to update `spring.jpa.hibernate.ddl-auto` property to `create` or `create-drop`, since `update` will only update the schema. See more details here
+https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html
+
+. Value tables and data are typically imported and managed by schema evolution tools like https://flywaydb.org[Flyway] or http://www.liquibase.org[Liquibase], but a review of those tools is out of scope for this workshop.
