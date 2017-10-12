@@ -39,6 +39,14 @@ buildscript {
     }
 }
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'org.springframework.boot'
+apply plugin: "io.spring.dependency-management"
+apply plugin: "com.gorylenko.gradle-git-properties"
+
 gitProperties {
 	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
@@ -54,14 +62,6 @@ processResources {
         "application.version": project.property("version")
     ]
 }
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
-apply plugin: 'org.springframework.boot'
-apply plugin: "io.spring.dependency-management"
-apply plugin: "com.gorylenko.gradle-git-properties"
 
 dependencyManagement {
     imports {
