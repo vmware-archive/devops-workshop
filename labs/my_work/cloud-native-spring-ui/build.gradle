@@ -20,13 +20,10 @@ buildscript {
         }
     }
 	dependencies {
+        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
 		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
-}
-
-plugins {
-    id "com.gorylenko.gradle-git-properties" version "1.4.17"
 }
 
 gitProperties {
@@ -51,11 +48,13 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
+apply plugin: "com.gorylenko.gradle-git-properties"
+
 
 dependencyManagement {
     imports {
 		mavenBom "com.vaadin:vaadin-bom:8.1.5"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
     }
 }
@@ -71,12 +70,14 @@ dependencies {
 }
 
 repositories {
-	credentials { 
-        username System.env.ArtifactoryUser
-        password System.env.ArtifactoryKey
+    maven {
+        credentials { 
+            username System.env.ArtifactoryUser
+            password System.env.ArtifactoryKey
+        }
+        url System.env.REPO_MAVEN_RELEASE
+        mavenLocal()
     }
-    url System.env.REPO_MAVEN_RELEASE
-    mavenLocal()
 }
 
 jar {
