@@ -1,4 +1,4 @@
-= Boeing DevOps Workshop
+= DevOps Workshop
 
 A collection of workshop presentations and labs exercises for use at client sites. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a link:SCHEDULE.adoc[1-1/2 day period].
 
