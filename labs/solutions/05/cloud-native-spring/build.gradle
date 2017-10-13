@@ -7,14 +7,18 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
+		classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
 		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
 
-plugins {
-    id "com.gorylenko.gradle-git-properties" version "1.4.17"
-}
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.gorylenko.gradle-git-properties'
 
 gitProperties {
 	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
