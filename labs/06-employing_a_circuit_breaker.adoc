@@ -99,7 +99,7 @@ cf start cloud-native-spring
 
 . Refresh the UI app and you should once again see a table listing the first page of cities.
 +
-image::../lab05/images/ui.jpg[]
+image::images/ui.jpg[]
 
 . Refresh your UI application a few times to force some traffic though the circuit breaker call path.  After doing this you should now see the dashboard populated with metrics about the health of your Hystrix circuit breaker:
 +
