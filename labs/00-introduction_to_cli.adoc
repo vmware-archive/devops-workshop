@@ -29,14 +29,6 @@ $ cf api https://api.run.pivotal.io --skip-ssl-validation
 $ cf login
 ----
 +
-or
-+
-*Boeing Pre-production*
-+
-----
-$ cf login -a https://api.system.pcfpre-phx.cloud.boeing.com --sso
-----
-+
 Enter your account username and password, then select an org and space.
 
 == How to deploy an application
