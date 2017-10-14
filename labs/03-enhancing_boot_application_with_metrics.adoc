@@ -107,7 +107,7 @@ gitProperties {
 +
 -> Note too that we are updating the path to the _.git_ directory.
 +
-The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */info* endpoint:
+The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */info* endpoint.
 
 . Run the _cloud-native-spring_ application:
 +
