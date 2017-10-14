@@ -74,25 +74,21 @@ Spring Boot provides an endpoint (http://localhost:8080/info) that allows the ex
 
 One thing that _actuator_ does well is expose information about the specific build and version control coordinates for a given deployment.
 
-. Edit the following file: */cloud-native-spring/p/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build. You must edit the file and add the dependency within the _buildscript{}_ _dependencies{}_ block. The _gradle-git-properties_ adds Git branch and commit coordinates to the */info* endpoint:
+. Edit the following file: */cloud-native-spring/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build. 
++
+First, you must edit the file and add the plugin dependency within the dependencies{} section of the buildscript{} block.
 +
 [source, groovy]
 ---------------------------------------------------------------------
-...
-    dependencies {
-        // add this line
-        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-        ...
-    }
-}
+classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
 ---------------------------------------------------------------------
 +
--> Note: `...` signifies that there are other lines either above or below the section
+Then, you'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
++
+[source, groovy]
+---------------------------------------------------------------------
+apply plugin: 'com.gorylenko.gradle-git-properties'
 
-. Then below the _buildscript{}_ section add the following section
-+
-[source, groovy]
----------------------------------------------------------------------
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
@@ -100,7 +96,9 @@ gitProperties {
 }
 ---------------------------------------------------------------------
 +
--> Note too that we update the path to the _.git_ directory.
+-> Note too that we are updating the path to the _.git_ directory.
++
+The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */info* endpoint.
 
 . Run the _cloud-native-spring_ application:
 +
