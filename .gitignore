@@ -30,3 +30,5 @@ src/main/resources/config/
 *.ipr
 *.log
 vm/offsite/data
+labs/samples/concourse-sample/data
+labs/samples/concourse-sample/keys
