@@ -45,3 +45,38 @@ services:
       nofile:
         soft: 32000
         hard: 40000
+
+  concourse-web:
+    image: concourse/concourse:3.5.0
+    links:
+      - concourse-db
+      - artifactory
+    command: web
+    ports:
+      - 9080:8080
+    volumes: ["./keys/web:/concourse-keys"]
+    environment:
+      CONCOURSE_BASIC_AUTH_USERNAME: concourse
+      CONCOURSE_BASIC_AUTH_PASSWORD: concourse
+      CONCOURSE_EXTERNAL_URL: "${CONCOURSE_EXTERNAL_URL}"
+      CONCOURSE_POSTGRES_DATA_SOURCE: |-
+        postgres://concourse:concourse@concourse-db:5432/concourse?sslmode=disable
+
+  concourse-worker:
+    image: concourse/concourse:3.5.0
+    privileged: true
+    links:
+      - concourse-web
+      - artifactory
+    command: worker
+    volumes: ["./keys/worker:/concourse-keys"]
+    environment:
+      CONCOURSE_TSA_HOST: concourse-web
+
+  concourse-db:
+    image: postgres:9.6.5
+    environment:
+      POSTGRES_DB: concourse
+      POSTGRES_USER: concourse
+      POSTGRES_PASSWORD: concourse
+      PGDATA: /database
