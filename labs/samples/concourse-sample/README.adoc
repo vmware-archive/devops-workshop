@@ -8,9 +8,13 @@ The content herein is just a condensed version of a https://specify.io/how-tos/c
 == Prerequisites
 
 -> Github account
+
 -> Cloud Foundry account (e.g. Pivotal Web Services (PWS))
+
 -> Concourse.ci server
+
 -> JFrog Artifactory server
+
 -> Docker and Docker Compose
 
 
