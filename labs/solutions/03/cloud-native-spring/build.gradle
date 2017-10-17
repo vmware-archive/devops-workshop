@@ -1,17 +1,27 @@
 buildscript {
-	ext {
-		springBootVersion = '1.5.7.RELEASE'
-	}
-	repositories {
-	    maven {
-	        url "https://plugins.gradle.org/m2/"
-	    }
-		mavenCentral()
-	}
-	dependencies {
-		classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+        springBootVersion = '1.5.7.RELEASE'
+    }
+    repositories {
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_MAVEN_RELEASE
+        }
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_GRADLE_PLUGINS
+        }
+    }
+    dependencies {
+        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -19,7 +29,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'com.gorylenko.gradle-git-properties'
+apply plugin: "com.gorylenko.gradle-git-properties"
 
 gitProperties {
 	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
@@ -38,7 +48,13 @@ processResources {
 }
 
 repositories {
-	mavenCentral()
+	maven {
+        credentials { 
+            username System.env.ArtifactoryUser
+            password System.env.ArtifactoryKey
+        }
+        url System.env.REPO_MAVEN_RELEASE
+    }
 }
 
 dependencies {

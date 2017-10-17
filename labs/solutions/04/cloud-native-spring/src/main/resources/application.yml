@@ -14,6 +14,11 @@ info: # add this section
     description: @application.description@
     version: @application.version@
 
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      
 security:
   basic:
     enabled:  false

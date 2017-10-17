@@ -13,3 +13,8 @@ info: # add this section
     name: @application.name@
     description: @application.description@
     version: @application.version@
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update

@@ -28,6 +28,14 @@ $ cf api https://api.run.pivotal.io --skip-ssl-validation
 $ cf login
 ----
 +
+or
++
+*Boeing Pre-production*
++
+----
+$ cf login -a https://api.system.pcfpre-phx.cloud.boeing.com --sso
+----
++
 Enter your account username and password, then select an org and space.
 
 == Apps Manager UI
@@ -41,9 +49,17 @@ Enter your account username and password, then select an org and space.
 ----
 https://console.run.pivotal.io
 ----
++
+or
++
+*Boeing Pre-production*
++
+----
+https://login.system.pcfpre-phx.cloud.boeing.com/login
+----
 
 . Login to the interface with your email and password
 +
--> The password will be supplied to you by the instructor
+-> Depending on how the workshop is conducted the password will be supplied to you by the instructor or you will use your own (from a pre-assigned Boeing account with WSSO access)
 
 . Click the 'Tools' link, and download the CLI matching your operating system

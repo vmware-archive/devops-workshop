@@ -76,23 +76,14 @@ One thing that _actuator_ does well is expose information about the specific bui
 
 . Edit the following file: */cloud-native-spring/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build. 
 +
-First, you'll need to be able to resolve the plugin so add the following to the _repositories{}_ section of the _buildscript{}_ block.
-+
-[source, groovy]
----------------------------------------------------------------------
-maven {
-    url "https://plugins.gradle.org/m2/"
-}
----------------------------------------------------------------------
-+
-Then, you must edit the file and add the plugin dependency within the _dependencies{}_ section of the _buildscript{}_ block. 
+First, you must edit the file and add the plugin dependency within the dependencies{} section of the buildscript{} block.
 +
 [source, groovy]
 ---------------------------------------------------------------------
 classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
 ---------------------------------------------------------------------
 +
-You'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
+Then, you'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
 +
 [source, groovy]
 ---------------------------------------------------------------------

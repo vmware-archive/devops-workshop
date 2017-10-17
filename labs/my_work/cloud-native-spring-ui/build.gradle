@@ -1,19 +1,29 @@
 buildscript {
-    ext {
-        springBootVersion = '1.5.7.RELEASE'
-        springDependencyManagementVersion = '1.0.3.RELEASE'
-    }
-    repositories {
+	ext {
+		springBootVersion = '1.5.7.RELEASE'
+		springDependencyManagementVersion = '1.0.3.RELEASE'
+	}
+	repositories {
         maven {
-            url "https://plugins.gradle.org/m2/"
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_MAVEN_RELEASE
         }
-        mavenCentral()
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_GRADLE_PLUGINS
+        }
     }
-    dependencies {
+	dependencies {
         classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-        classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
 apply plugin: 'java'
@@ -21,8 +31,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'com.gorylenko.gradle-git-properties'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: "io.spring.dependency-management"
+apply plugin: "com.gorylenko.gradle-git-properties"
 
 gitProperties {
 	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
@@ -43,7 +53,7 @@ processResources {
 dependencyManagement {
     imports {
 		mavenBom "com.vaadin:vaadin-bom:8.1.5"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
     }
 }
@@ -60,10 +70,13 @@ dependencies {
 
 repositories {
     maven {
-        url "https://repo.spring.io/plugins-release"
+        credentials { 
+            username System.env.ArtifactoryUser
+            password System.env.ArtifactoryKey
+        }
+        url System.env.REPO_MAVEN_RELEASE
+        mavenLocal()
     }
-	mavenCentral()
-    mavenLocal()
 }
 
 jar {

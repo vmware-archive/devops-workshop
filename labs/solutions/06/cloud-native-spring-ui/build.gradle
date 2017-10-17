@@ -4,11 +4,21 @@ buildscript {
 		springDependencyManagementVersion = '1.0.3.RELEASE'
 	}
 	repositories {
-	    maven {
-            url "https://plugins.gradle.org/m2/"
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_MAVEN_RELEASE
         }
-		mavenCentral()
-	}
+        maven {
+            credentials { 
+                username System.env.ArtifactoryUser
+                password System.env.ArtifactoryKey
+            }
+            url System.env.REPO_GRADLE_PLUGINS
+        }
+    }
 	dependencies {
         classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
 		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
@@ -21,8 +31,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'com.gorylenko.gradle-git-properties'
-apply plugin: 'io.spring.dependency-management'
+apply plugin: "io.spring.dependency-management"
+apply plugin: "com.gorylenko.gradle-git-properties"
 
 gitProperties {
 	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
@@ -63,11 +73,15 @@ dependencies {
 
 repositories {
     maven {
-        url "https://repo.spring.io/plugins-release"
+        credentials { 
+            username System.env.ArtifactoryUser
+            password System.env.ArtifactoryKey
+        }
+        url System.env.REPO_MAVEN_RELEASE
+        mavenLocal()
     }
-	mavenCentral()
-    mavenLocal()
 }
+
 
 jar {
     excludes = ['**/application.yml']
