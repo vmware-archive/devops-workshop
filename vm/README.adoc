@@ -1,0 +1,53 @@
+= Workshop Tech stack
+
+Certain software must be installed on your laptop or workstation in order to engage in labs exercises.
+
+@see the *offsite* folder! It has all the tools a workshop attendee would need baked into Centos/7 base images in Vagrantfile and Docker formats.
+
+=== Mac OS X
+
+. Download and install https://brew.sh[Homebrew]
+
+. Execute
++
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+. Execute each of these steps
++
+  brew tap caskroom/cask
+  brew install git
+  brew cask install java
+  brew install maven
+  brew install gradle
+  brew install node
+  brew install yarn
+  brew install cloudfoundry/tap/cf-cli
+  brew cask install postman
+
+
+=== Windows 10
+
+. Install https://www.docker.com/docker-windows[Docker for Windows].
+
+. See Docker instructions below.
+
+
+=== Windows 7 
+
+Option 1) Vagrant + Virtualbox:  https://www.sitepoint.com/getting-started-vagrant-windows/ talks about getting both installed on Windows 7 and the additional requirement to install PuTTy to gain ssh access to the VM.
+
+Option 2) Docker:  https://stefanscherer.github.io/yes-you-can-docker-on-windows-7/ articulates (in painful detail) the steps to get Docker running on Windows 7.
+
+Arguably the Docker approach is easier. See Docker instructions below.
+
+
+=== Docker
+
+. To build and run
+
+  cd offsite
+  docker build -t pivotal/workshop-image:1.0 .
+  docker run -i -t pivotal/workshop-image:1.0 /bin/bash
+
+-> Type `exit` at prompt to exit
+

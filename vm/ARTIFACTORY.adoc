@@ -1,0 +1,66 @@
+= Using Artifactory
+
+Follow these steps to employ Artifactory for resolution of dependencies and plugins.
+
+. (Optional) Launch a local instance of Artifactory with the provided `docker-compose-artifactory.yml`.
++
+  cd offsite
+  docker-compose -f docker-compose-artifactory.yml up
++
+Visit http://localhost:8081. Follow the prompts to complete setup. Be sure to provision Maven and Gradle repositories.
++ 
+Use `Ctrl+C` to shutdown when you're done.
+  
+. We will employ the https://www.jfrog.com/confluence/display/RTF/Gradle+Artifactory+Plugin[Gradle Artifactory Plugin].  Scan the labs directory and sub-directories.  Replace occurrences of `mavenCentral()` with `jcenter()` in all `build.gradle` files.
+
+. Add the following dependency to the _dependencies{}_ section of the _buildscript{}_ block within each `build.gradle` file
++
+[source, groovy]
+---------------------------------------------------------------------------
+classpath ("org.jfrog.buildinfo:build-info-extractor-gradle:latest.release")
+---------------------------------------------------------------------------
++
+Then activate the Gradle Artifactory plugin by adding an _apply plugin_ instruction beneath the _buildscript{}_ block
++
+[source, groovy]
+---------------------------------------------------------------------------
+apply plugin: 'com.jfrog.artifactory'
+---------------------------------------------------------------------------
+
+. Add the following section at the end of each `build.gradle` file.
++
+[source, groovy]
+---------------------------------------------------------------------------
+artifactory {
+    contextUrl = System.env.ArtifactoryInstance ?: 'http://localhost:8081/artifactory'
+    publish {
+        repository {
+            repoKey = 'libs-snapshot-local' // The Artifactory repository key to publish to
+            username = System.env.ArtifactoryUser // The publisher user name
+            password = System.env.ArtifactoryKey // The publisher password
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            // This is how we tell the Artifactory Plugin which artifacts should be
+            // published to Artifactory.
+            publications('mavenJava')
+            publishArtifacts = true
+            // Properties to be attached to the published artifacts.
+            properties = ['qa.level': 'basic', 'dev.team' : 'core']
+            // Publish generated POM files to Artifactory (true by default)
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
+}
+---------------------------------------------------------------------------
++
+-> Note the environment variables above. You will need to `export` these:
++
+  ArtifactoryUser
+  ArtifactoryKey
+  ArtifactoryInstance
++
+If you intend to launch a local instance then you do not need to export `ArtifactoryInstance`.

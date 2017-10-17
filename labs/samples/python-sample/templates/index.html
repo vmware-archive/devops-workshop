@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cloud Foundry Variables</title>
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    {% block body %}
+      {%- if cf_variables -%}
+      <div class="page-header">
+        <h1>Environment Variables in Cloud Foundry</h1>
+        <table class="table table-striped">
+        {%- for key,value in cf_variables.items() -%}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{value}}</td>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+
+      {%- else -%}
+       <p>No env value found</p>
+      {% endif %}
+      
+      {%- if http_headers -%}
+      <div class="page-header">
+        <h1>HTTP header for instances</h1>
+        <table class="table table-striped">
+        {%- for key,value in http_headers.items() -%}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{value}}</td>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+
+      {%- else -%}
+       <p>No http header found</p>
+      {% endif %}
+    {% endblock %}
+  </body>
+</html>

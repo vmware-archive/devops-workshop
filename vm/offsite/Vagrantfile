@@ -1,0 +1,34 @@
+$script = <<SCRIPT
+  # Install Git, Java JDK and vim
+  yum -y install git rpm rpm-build vim java-1.8.0-openjdk-devel wget unzip curl
+
+  # Install Maven
+  wget http://www.eu.apache.org/dist/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz
+  tar -xvzf apache-maven-3.5.0-bin.tar.gz -C /opt
+
+  # Install Gradle
+  wget https://services.gradle.org/distributions/gradle-4.1-bin.zip
+  unzip -d /opt gradle-4.2-bin.zip
+
+  # Add Gradle and Maven to PATH
+  echo export PATH=/opt/apache-maven-3.5.0/bin:/opt/gradle-4.2/bin:\$PATH >> /home/vagrant/.bashrc
+
+  # Backup original and replace settings.xml
+  mv /opt/apache-maven-3.5.0/conf/settings.xml /opt/apache-maven-3.5.0/conf/settings.xml.original
+  yes | cp -rf /home/vagrant/.m2/settings.xml /opt/apache-maven-3.5.0/conf/
+
+  # Install Cloud Foundry CLI
+  wget -O /etc/yum.repos.d/cloudfoundry-cli.repo https://packages.cloudfoundry.org/fedora/cloudfoundry-cli.repo
+  yum -y install cf-cli
+SCRIPT
+
+Vagrant.configure("2") do |config|
+    config.vm.box = "centos/7"
+    config.vm.box_version = "1707.01"
+    config.vm.provider :virtualbox do |vb|
+        vb.name = "cf-dev-host"
+    end
+    config.vm.synced_folder "~/.m2/", "/home/vagrant/.m2/"
+    # Invoke install script
+    config.vm.provision "shell", inline: $script
+end

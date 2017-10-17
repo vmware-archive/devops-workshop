@@ -1,0 +1,30 @@
+= DevOps Workshop
+
+A collection of workshop presentations and labs exercises for use at client sites. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a link:SCHEDULE.adoc[1-1/2 day period].
+
+
+== Software Prerequisities
+
+=== Minimum requirements
+
+-> https://docs.cloudfoundry.org/cf-cli/install-go-cli.html[CF-CLI] 6.32 or better
+
+-> http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[Java JDK] 8u144 or better
+
+-> https://git-scm.com/downloads[Git] 2.14.2 or better
+
+-> https://gradle.org/install/[Gradle] 4.1 or better
+
+=== Recommended
+
+-> https://spring.io/tools/sts/all[Spring Source Tool Suite] 3.9.1.RELEASE or better
+
+-> https://www.getpostman.com[Postman] 5.3.0 or better
+
+
+== Clone this repository
+
+[source,bash]
+---------------------------------------------------------------------
+git clone https://github.com/Pivotal-Field-Engineering/devops-workshop-boeing
+---------------------------------------------------------------------

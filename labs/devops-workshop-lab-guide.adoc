@@ -1,0 +1,52 @@
+:title: DevOps Workshop Lab Guide
+:author: Christopher Phillipson
+:email: cphillipson@pivotal.io
+:revnumber: 1.0
+:revdate: {docdate}
+:revyear: 2017
+:subject: DevOps Workshop
+:keywords: DevOps, Spring Boot, Spring Cloud
+
+= DevOps Workshop Lab Guide
+
+toc::[]
+
+:leveloffset: +1
+
+<<<
+
+include::introduction.adoc[]
+
+<<<
+
+include::00-introduction_to_cli.adoc[]
+
+<<<
+
+include::01-building_a_spring_boot_application.adoc[]
+
+<<<
+
+include::02-adding_persistence_to_boot_application.adoc[]
+
+<<<
+
+include::03-enhancing_boot_application_with_metrics.adoc[]
+
+<<<
+
+include::04-adding_spring_cloud_config_to_boot_application.adoc[]
+
+<<<
+
+include::05-adding_service_registration_and_discovery_with_spring_cloud.adoc[]
+
+<<<
+
+include::06-employing_a_circuit_breaker.adoc[]
+
+<<<
+
+:leveloffset: -1
+
+

@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+
+  frog-db:
+    image: postgres:9.6.5
+    container_name: postgresql
+    ports:
+     - 5432:5432
+    environment:
+     - POSTGRES_DB=artifactory
+     # The following must match the DB_USER and DB_PASSWORD values passed to Artifactory
+     - POSTGRES_USER=artifactory
+     - POSTGRES_PASSWORD=artifactory
+    volumes:
+     - ./data/postgresql:/var/lib/postgresql/data
+    restart: always
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+
+  artifactory:
+    image: docker.bintray.io/jfrog/artifactory-oss:5.5.1
+    container_name: artifactory
+    ports:
+     - 8081:8081
+    depends_on:
+     - frog-db
+    links:
+     - frog-db
+    volumes:
+     - ./data/artifactory:/var/opt/jfrog/artifactory
+    environment:
+     - DB_TYPE=postgresql
+     # The following must match the POSTGRES_USER and POSTGRES_PASSWORD values passed to PostgreSQL
+     - DB_USER=artifactory
+     - DB_PASSWORD=artifactory
+     # Add extra Java options by uncommenting the following line
+     #- EXTRA_JAVA_OPTIONS=-Xmx4g
+    restart: always
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+
+  concourse-web:
+    image: concourse/concourse:3.5.0
+    links:
+      - concourse-db
+      - artifactory
+    command: web
+    ports:
+      - 9080:8080
+    volumes: ["./keys/web:/concourse-keys"]
+    environment:
+      CONCOURSE_BASIC_AUTH_USERNAME: concourse
+      CONCOURSE_BASIC_AUTH_PASSWORD: concourse
+      CONCOURSE_EXTERNAL_URL: "${CONCOURSE_EXTERNAL_URL}"
+      CONCOURSE_POSTGRES_DATA_SOURCE: |-
+        postgres://concourse:concourse@concourse-db:5432/concourse?sslmode=disable
+
+  concourse-worker:
+    image: concourse/concourse:3.5.0
+    privileged: true
+    links:
+      - concourse-web
+      - artifactory
+    command: worker
+    volumes: ["./keys/worker:/concourse-keys"]
+    environment:
+      CONCOURSE_TSA_HOST: concourse-web
+
+  concourse-db:
+    image: postgres:9.6.5
+    environment:
+      POSTGRES_DB: concourse
+      POSTGRES_USER: concourse
+      POSTGRES_PASSWORD: concourse
+      PGDATA: /database

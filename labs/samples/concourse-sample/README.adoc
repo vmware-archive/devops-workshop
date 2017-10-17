@@ -1,0 +1,449 @@
+= Getting Started with Concourse
+
+In this lab we will employ a Docker Compose setup to stand-up instances of Concourse and Artifactory. We'll author a simple Hello World pipeline, then progressively author more complex pipelines.
+
+The content herein is just a condensed version of a https://specify.io/how-tos/concourse-ci-continious-integration-and-delivery-of-microservices[tutorial] by Oliver Wolf.
+
+
+== Prerequisites
+
+-> Github account
+
+-> Cloud Foundry account (e.g. Pivotal Web Services (PWS))
+
+-> Concourse.ci server
+
+-> JFrog Artifactory server
+
+-> Docker and Docker Compose
+
+
+== Stand-up infrastructure
+
+Assumes you have Docker Compose and the Fly CLI installed.
+
+. Start Concourse and Artifactory
++
+[source, bash]
+----------------------------------------------------------------------------------------
+./setup_docker_compose.sh
+docker-compose up &
+----------------------------------------------------------------------------------------
+
+. Visit Artifactory at http://127.0.0.1:8081 and complete the setup.  Set the admin password.  Skip configuring a proxy server.  And be sure to create Maven and Gradle repositories.
+
+
+== Part 1: Hello World 
+
+Let's create a very simple pipeline that executes a bash script. The bash script prints hello world to the stdout which we will then see in the browser interface of Concourse.
+
+. Target the Concourse server
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly --target local login --concourse-url http://127.0.0.1:9080
+----------------------------------------------------------------------------------------
++
+-> In order to communicate with the Concourse server via the Fly CLI it's required to let the CLI know where it runs.  Authenticate with the following credentials `concourse/concourse`.
+
+. Upload the "hello-world" pipeline specfication
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local set-pipeline --pipeline hello-world --config ci/hello-world.yml
+----------------------------------------------------------------------------------------
++
+-> Confirm the changes by typing "y" and enter.
+
+. Unpause and start the "hello-world" pipeline
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local unpause-pipeline --pipeline hello-world
+fly -t local trigger-job --job hello-world/hello_world_job --watch
+----------------------------------------------------------------------------------------
++
+-> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://127.0.0.1:9080/teams/main/pipelines/hello-world
+
+Congratulations!!! You've just configured your first Concourse.ci pipeline.
+
+
+== Part 2: Simple Deploy
+
+In 3 steps we will configure a pipeline to fetch code from a Git repository, deploy the application to Cloud Foundry, and trigger new builds automatically by detecting new commits to the repository.
+
+. Upload a new pipeline definition
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local set-pipeline --pipeline simple-deploy --config ci/simple-deploy.yml
+----------------------------------------------------------------------------------------
+
+. Unpause and start the "simple-deploy" pipeline
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local unpause-pipeline --pipeline simple-deploy
+fly -t local trigger-job --job simple-deploy/simple_deploy_job --watch
+----------------------------------------------------------------------------------------
++
+-> Browse to the "simple-deploy" pipeline to view results.  Notice that all we did was to echo the contents of the `app_sources` directory.
+
+. Modify the pipeline definition. Open _ci/simple-deploy.yml_ for editing.  Delete the contents and replace with:
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+resources:
+- name: app_sources
+  type: git
+  source:
+    uri: https://github.com/wolfoo2931/concourse-ci-hello-world.git
+- name: staging_deployment
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: {your_username}
+    password: {your_password}
+    organization: {your_org}
+    space: {your_space}
+    skip_cert_check: false
+
+jobs:
+- name: simple-deploy
+  serial: true
+  plan:
+  - get: app_sources
+    trigger: true
+  - put: staging_deployment
+    params:
+      manifest: app_sources/manifest.yml
+----------------------------------------------------------------------------------------
++
+-> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, _organization_ and _space_ respectively on PWS.
+
+There are still a few refinements that we should make to this pipeline:
+
+* Execute unit tests
+* Externalize credentials
+* Zero downtime deployments
+* Deploy to a Test environment first, then to Production
+* Refactor the pipeline into reusable chunks
+
+We'll address these in subsequent sections.
+
+
+== Part 3: Build the Cloud Foundry UAA module
+
+Here we will learn how to initiate unit tests as part of a build, provision database instances and deploy to multiple environments. We'll employ the https://github.com/cloudfoundry/uaa.git[UAA] module of Cloud Foundry.
+
+. Create a new file in the _ci_ directory
++
+[source, bash]
+----------------------------------------------------------------------------------------
+touch ci/uaa.yml
+----------------------------------------------------------------------------------------
+
+. Open the file for editing and add the following:
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+resources:
+- name: uaa_sources
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry/uaa.git
+    tag_filter: '4.7.*'
+
+jobs:
+- name: build
+  plan:
+  - get: uaa_sources
+    trigger: true
+  - task: build
+    config:
+      platform: linux
+      inputs:
+      - name: uaa_sources
+      outputs:
+      - name: uaa_war
+      image_resource:
+        type: docker-image
+        source: { repository: openjdk:8-jdk-alpine }
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          export TERM=dumb
+          cd uaa_sources
+          #./gradlew test
+          ./gradlew :cloudfoundry-identity-uaa:war
+          mv uaa/build/libs/cloudfoundry-identity-uaa-*.war ../uaa_war
+----------------------------------------------------------------------------------------
++
+-> Note: we're skipping executing unit tests in the interest of time. If you want to enable running them uncomment the line that reads `./gradlew test`.  Of course you should not skip the unit tests for real world projects!
+
+. Upload the pipeline, unpause, and start it
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local set-pipeline --pipeline uaa --config ci/uaa.yml
+fly -t local unpause-pipeline --pipeline uaa
+fly -t local trigger-job --job uaa/uaa_job --watch
+----------------------------------------------------------------------------------------
+
+. Prepare Artifactory to store a .war file
++
+* Click on _Admin_ on the left side
+* Click on _Local_ below the "Repositories" section
+* Click on _New_ in the upper right corner
+* Select package type _Generic_
+* Enter Repository key: _war-files_
+* Click to _Save & Finish_
+
+. Edit _ci/uaa.yml_ and at the top of the file, add the following section:
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+resource_types:
+  type: docker-image
+  source:
+    repository: pivotalservices/artifactory-resource
+----------------------------------------------------------------------------------------
+
+. Add the following section directly underneath the line that starts with `tag_filter: '4.7.*'`. Do not indent.
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+- name: uaa-build
+  type: artifactory
+  source:
+    endpoint: http://127.0.0.1:8081/artifactory
+    repository: "/war-files/uaa"
+    regex: "cloudfoundry-identity-uaa-(?.*).war"
+    username: admin
+    password: {artifactory_password}
+    skip_ssl_verification: true
+----------------------------------------------------------------------------------------
++
+-> You will need to replace `{}` placeholder value above with the administrator password for the Artifctory server.
+
+. At the bottom of the file add the following section (again with no indentation)
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+- put: uaa-build
+    params:
+      file: uaa_war/cloudfoundry-identity-uaa-*.war
+----------------------------------------------------------------------------------------
++
+-> Don't forget to save all changes to the _uaa.yml_ file!
+
+. Reset the pipeline
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local set-pipeline --pipeline uaa --config ci/uaa.yml
+----------------------------------------------------------------------------------------
+
+. Create new spaces
++
+[source, bash]
+----------------------------------------------------------------------------------------
+cf spaces
+cf create-space test
+cf create-space production
+----------------------------------------------------------------------------------------
++
+-> Only create the spaces above if they do not already exist.
+
+. Provision a database instance per space
++
+[source, bash]
+----------------------------------------------------------------------------------------
+cf marketplace
+cf target -s test
+cf create-service elephantsql turtle uaadb
+cf target -s production
+cf create-service elephantsql turtle uaadb
+----------------------------------------------------------------------------------------
+
+. Specify a Concourse job to deploy the UAA to the test environment
++ 
+Open the _ci/uaa.yml_ file for editing.
++
+Directly underneath the line that reads `skip_ssl_verification: true`, add the following section. (Do not indent).
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+- name: test_deployment
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: {your_username}
+    password: {your_password}
+    organization: {your_organization}
+    space: test
+    skip_cert_check: false
+----------------------------------------------------------------------------------------
+-> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, and _organization_ respectively on PWS.
++
+Then, at the bottom of the file add a carriage return and add the following section. (Do not indent).
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+
+- name: deploy-to-test
+  plan:
+  - get: uaa-build
+    passed: ['build']
+    trigger: true
+  - task: add-manifest-to-uaa-build
+    config:
+      platform: linux
+      inputs:
+      - name: uaa-build
+      outputs:
+      - name: uaa-build-with-manifest
+      image_resource:
+        type: docker-image
+        source: { repository: openjdk:8-jdk-alpine }
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cp uaa-build/* uaa-build-with-manifest
+          export WAR_PATH=`cd uaa-build-with-manifest && ls cloudfoundry-identity-uaa-*.war`
+          cat <<EOT >> uaa-build-with-manifest/manifest.yml
+          applications:
+          - name: uaa
+            memory: 512M
+            path: ${WAR_PATH}
+            host: test-uaa
+            services:
+            - uaadb
+            env:
+              JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '[enabled: true]'
+              JBP_CONFIG_TOMCAT: '{tomcat: { version: 7.0.+ }}'
+              SPRING_PROFILES_ACTIVE: postgresql,default
+              UAA_URL: https://test-uaa.cfapps.io
+              LOGIN_URL: https://test-uaa.cfapps.io
+          EOT
+  - put: test_deployment
+    params:
+      manifest: uaa-build-with-manifest/manifest.yml
+----------------------------------------------------------------------------------------
+
+. Repeat steps above in order to faciliate a deployment to production
++
+Open the _ci/uaa.yml_ file for editing.
++
+Directly underneath the line that reads `skip_ssl_verification: true`, add the following section. (Do not indent).
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+- name: production_deployment
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: {your_username}
+    password: {your_password}
+    organization: {your_organization}
+    space: test
+    skip_cert_check: false
+----------------------------------------------------------------------------------------
+-> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, and _organization_ respectively on PWS.
++
+Then, at the bottom of the file add a carriage return and add the following section. (Do not indent).
++
+[source, yaml]
+----------------------------------------------------------------------------------------
+
+- name: deploy-to-production
+  plan:
+  - get: uaa-build
+    passed: ['build']
+    trigger: true
+  - task: add-manifest-to-uaa-build
+    config:
+      platform: linux
+      inputs:
+      - name: uaa-build
+      outputs:
+      - name: uaa-build-with-manifest
+      image_resource:
+        type: docker-image
+        source: { repository: openjdk:8-jdk-alpine }
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cp uaa-build/* uaa-build-with-manifest
+          export WAR_PATH=`cd uaa-build-with-manifest && ls cloudfoundry-identity-uaa-*.war`
+          cat <<EOT >> uaa-build-with-manifest/manifest.yml
+          applications:
+          - name: uaa
+            memory: 512M
+            path: ${WAR_PATH}
+            host: test-uaa
+            services:
+            - uaadb
+            env:
+              JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '[enabled: true]'
+              JBP_CONFIG_TOMCAT: '{tomcat: { version: 7.0.+ }}'
+              SPRING_PROFILES_ACTIVE: postgresql,default
+              UAA_URL: https://prod-uaa.cfapps.io
+              LOGIN_URL: https://prod-uaa.cfapps.io
+          EOT
+  - put: production_deployment
+    params:
+      manifest: uaa-build-with-manifest/manifest.yml
+----------------------------------------------------------------------------------------
+
+. Reset the pipeline once more
++
+[source, bash]
+----------------------------------------------------------------------------------------
+fly -t local set-pipeline --pipeline uaa --config ci/uaa.yml
+----------------------------------------------------------------------------------------
++
+-> Browse to the uaa pipeline and verify 
+
+We still haven't:
+
+* Externalized credentials
+* Implemented zero downtime deployments
+* Refactored the pipeline into reusable chunks
+
+
+== Part 4: Blue-green application deployments
+
+We're going to work with with the `pivotalservices/concourse-pipeline-samples` repository and configure the `blue-green-app-deployment` sample.
+
+. Clone the repository
++
+[source, bash]
+----------------------------------------------------------------------------------------
+cd ..
+git clone https://github.com/pivotalservices/concourse-pipeline-samples.git
+cd concourse-pipeline-samples
+rm -Rf .git
+cd blue-green-app-deployment
+----------------------------------------------------------------------------------------
+
+. Follow the https://github.com/pivotalservices/concourse-pipeline-samples/tree/master/blue-green-app-deployment#pipeline-setup-and-execution[instructions] for blue-green pipeline sample setup and execution
++
+-> Note: you will need to change the IP address and port reference for Concourse  
+
+If you've taken the time to complete the above instructions you will have seen how to externalize sensitive configuration (e.g., credentials) as well as how to compose units work into separate files.
+
+
+== Conclusion
+
+We've seen how to build up pipelines from scratch.  We've gotten familiar with the Fly CLI and Concourse.ci user-interface.  You're encouraged to take a look at the following links at your leisure.
+
+* https://github.com/starkandwayne/concourse-tutorial[Stark-and-Wayne Concourse Tutorial]
+* https://github.com/spring-cloud/spring-cloud-pipelines[Spring Cloud Pipelines] 
+
