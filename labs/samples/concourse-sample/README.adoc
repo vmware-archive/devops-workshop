@@ -37,7 +37,7 @@ fly --target test login --concourse-url http://10.59.227.243:8080/
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t test set-pipeline --pipeline hello-world --config ci/hello-world.yml
+fly -t test set-pipeline --pipeline hello-world_YOUR_INITIALS --config ci/hello-world.yml
 ----------------------------------------------------------------------------------------
 +
 -> Confirm the changes by typing "y" and enter.
@@ -46,11 +46,11 @@ fly -t test set-pipeline --pipeline hello-world --config ci/hello-world.yml
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t test unpause-pipeline --pipeline hello-world
-fly -t test trigger-job --job hello-world/hello_world_job --watch
+fly -t test unpause-pipeline --pipeline hello-world-YOUR_INITIALS
+fly -t test trigger-job --job hello-world-YOUR_INITIALS/hello_world_job --watch
 ----------------------------------------------------------------------------------------
 +
--> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://10.59.227.243:8080/teams/main/pipelines/hello-world
+-> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://10.59.227.243:8080/teams/main/pipelines/hello-world-YOUR_INITIALS
 
 Congratulations!!! You've just configured your first Concourse.ci pipeline.
 
