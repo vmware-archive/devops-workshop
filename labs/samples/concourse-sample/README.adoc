@@ -120,7 +120,7 @@ We'll address these in subsequent sections.
 
 == Part 3: Build the Cloud Foundry UAA module
 
-Here we will learn how to initiate unit tests as part of a build, provision database instances and deploy to multiple environments. We'll employ the https://github.com/cloudfoundry/uaa.git[UAA] module of Cloud Foundry.
+Here we will learn how to initiate unit tests as part of a build, provision database instances and deploy to multiple environments. We'll employ the https://git.web.boeing.com/externalopensource/cloudfoundry/uaa[UAA] module of Cloud Foundry.
 
 . Create a new file in the _ci_ directory
 +
@@ -137,7 +137,7 @@ resources:
 - name: uaa_sources
   type: git
   source:
-    uri: https://github.com/cloudfoundry/uaa.git
+    uri: https://git.web.boeing.com/externalopensource/cloudfoundry/uaa.git
     tag_filter: '4.7.*'
 
 jobs:
