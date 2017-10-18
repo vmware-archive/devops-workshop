@@ -7,50 +7,37 @@ The content herein is just a condensed version of a https://specify.io/how-tos/c
 
 == Prerequisites
 
--> Github account
+-> GitLab Account
 
--> Cloud Foundry account (e.g. Pivotal Web Services (PWS))
+-> PCF Account
 
 -> Concourse.ci server
 
 -> JFrog Artifactory server
 
--> Docker and Docker Compose
-
-
-== Stand-up infrastructure
-
-Assumes you have Docker Compose and the Fly CLI installed.
-
-. Start Concourse and Artifactory
-+
-[source, bash]
-----------------------------------------------------------------------------------------
-./setup_docker_compose.sh
-docker-compose up &
-----------------------------------------------------------------------------------------
-
-. Visit Artifactory at http://127.0.0.1:8081 and complete the setup.  Set the admin password.  Skip configuring a proxy server.  And be sure to create Maven and Gradle repositories.
-
 
 == Part 1: Hello World 
 
-Let's create a very simple pipeline that executes a bash script. The bash script prints hello world to the stdout which we will then see in the browser interface of Concourse.
+Go to http://10.59.227.243:8080/ and download the Fly CLI by clicking the appropriate platform-specific link in the bottom-right corner.
+
+Put `fly` on your PATH.
+
+Now create a very simple pipeline that executes a bash script. The bash script prints hello world to the stdout which we will then see in the browser interface of Concourse.
 
 . Target the Concourse server
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly --target local login --concourse-url http://127.0.0.1:9080
+fly --target test login --concourse-url http://10.59.227.243:8080/
 ----------------------------------------------------------------------------------------
 +
--> In order to communicate with the Concourse server via the Fly CLI it's required to let the CLI know where it runs.  Authenticate with the following credentials `concourse/concourse`.
+-> In order to communicate with the Concourse server via the Fly CLI it's required to let the CLI know where it runs.  Authenticate with the following credentials `admin/concourse`.
 
 . Upload the "hello-world" pipeline specfication
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local set-pipeline --pipeline hello-world --config ci/hello-world.yml
+fly -t test set-pipeline --pipeline hello-world --config ci/hello-world.yml
 ----------------------------------------------------------------------------------------
 +
 -> Confirm the changes by typing "y" and enter.
@@ -59,14 +46,13 @@ fly -t local set-pipeline --pipeline hello-world --config ci/hello-world.yml
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local unpause-pipeline --pipeline hello-world
-fly -t local trigger-job --job hello-world/hello_world_job --watch
+fly -t test unpause-pipeline --pipeline hello-world
+fly -t test trigger-job --job hello-world/hello_world_job --watch
 ----------------------------------------------------------------------------------------
 +
--> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://127.0.0.1:9080/teams/main/pipelines/hello-world
+-> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://10.59.227.243:8080/teams/main/pipelines/hello-world
 
 Congratulations!!! You've just configured your first Concourse.ci pipeline.
-
 
 == Part 2: Simple Deploy
 
@@ -76,15 +62,15 @@ In 3 steps we will configure a pipeline to fetch code from a Git repository, dep
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local set-pipeline --pipeline simple-deploy --config ci/simple-deploy.yml
+fly -t test set-pipeline --pipeline simple-deploy --config ci/simple-deploy.yml
 ----------------------------------------------------------------------------------------
 
 . Unpause and start the "simple-deploy" pipeline
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local unpause-pipeline --pipeline simple-deploy
-fly -t local trigger-job --job simple-deploy/simple_deploy_job --watch
+fly -t test unpause-pipeline --pipeline simple-deploy
+fly -t test trigger-job --job simple-deploy/simple_deploy_job --watch
 ----------------------------------------------------------------------------------------
 +
 -> Browse to the "simple-deploy" pipeline to view results.  Notice that all we did was to echo the contents of the `app_sources` directory.
@@ -187,9 +173,9 @@ jobs:
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local set-pipeline --pipeline uaa --config ci/uaa.yml
-fly -t local unpause-pipeline --pipeline uaa
-fly -t local trigger-job --job uaa/uaa_job --watch
+fly -t test set-pipeline --pipeline uaa --config ci/uaa.yml
+fly -t test unpause-pipeline --pipeline uaa
+fly -t test trigger-job --job uaa/uaa_job --watch
 ----------------------------------------------------------------------------------------
 
 . Prepare Artifactory to store a .war file
@@ -243,7 +229,7 @@ resource_types:
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local set-pipeline --pipeline uaa --config ci/uaa.yml
+fly -t test set-pipeline --pipeline uaa --config ci/uaa.yml
 ----------------------------------------------------------------------------------------
 
 . Create new spaces
@@ -406,7 +392,7 @@ Then, at the bottom of the file add a carriage return and add the following sect
 +
 [source, bash]
 ----------------------------------------------------------------------------------------
-fly -t local set-pipeline --pipeline uaa --config ci/uaa.yml
+fly -t test set-pipeline --pipeline uaa --config ci/uaa.yml
 ----------------------------------------------------------------------------------------
 +
 -> Browse to the uaa pipeline and verify 
