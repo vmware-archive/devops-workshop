@@ -85,15 +85,15 @@ As in Lab 1 we will start with a project that has most of what we need to get go
 
 . Open a Terminal (e.g., _cmd_ or _bash_ shell)
 
-. Change the working directory to be _devops-workshop-boeing/labs/my_work/cloud-native-spring-ui_
+. Change the working directory to be _devops-workshop/labs/my_work/cloud-native-spring-ui_
 +
-  cd /devops-workshop-boeing/labs/my_work/cloud-native-spring-ui
+  cd /devops-workshop/labs/my_work/cloud-native-spring-ui
 
 . Open this project in your editor/IDE of choice.
 +
 *_STS Import Help_*
 +
-Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop-boeing/labs/my_work/cloud-native-spring-ui_) then click the _Open_ button, then click the _Finish_ button.
+Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop/labs/my_work/cloud-native-spring-ui_) then click the _Open_ button, then click the _Finish_ button.
 
 . As before, we need to add _spring-cloud-services-starter-service-registry_ to the classpath.  Add this to your _build.gradle_:
 +

@@ -1,6 +1,6 @@
 = Boeing DevOps Workshop
 
-A collection of workshop presentations and labs exercises for use at Boeing. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a https://github.com/Pivotal-Field-Engineering/devops-workshop-boeing/blob/master/SCHEDULE.adoc[1-1/2 day period].
+A collection of workshop presentations and labs exercises for use at Boeing. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a https://github.com/Pivotal-Field-Engineering/devops-workshop/blob/master/SCHEDULE.adoc[1-1/2 day period].
 
 
 == Software Prerequisities
@@ -36,7 +36,7 @@ then
 
 [source,bash]
 ---------------------------------------------------------------------
-git clone https://github.com/Pivotal-Field-Engineering/devops-workshop-boeing
+git clone https://github.com/Pivotal-Field-Engineering/devops-workshop
 ---------------------------------------------------------------------
 
 
