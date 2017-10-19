@@ -26,5 +26,5 @@ A collection of workshop presentations and labs exercises for use at client site
 
 [source,bash]
 ---------------------------------------------------------------------
-git clone https://github.com/Pivotal-Field-Engineering/devops-workshop-boeing
+git clone https://github.com/Pivotal-Field-Engineering/devops-workshop
 ---------------------------------------------------------------------

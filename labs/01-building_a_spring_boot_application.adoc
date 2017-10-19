@@ -8,15 +8,15 @@ While we could visit https://start.spring.io to create a new Spring Boot project
 
 . Open a Terminal (e.g., _cmd_ or _bash_ shell)
 
-. Change the working directory to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+. Change the working directory to be _devops-workshop/labs/my_work/cloud-native-spring_
 +
-  cd /devops-workshop-boeing/labs/my_work/cloud-native-spring
+  cd /devops-workshop/labs/my_work/cloud-native-spring
 
 . Open this project in your editor/IDE of choice.
 +
 *_STS Import Help_*
 +
-Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop-boeing/labs/my_work/cloud-native-spring_) then click the _Open_ button, then click the _Finish_ button.
+Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop/labs/my_work/cloud-native-spring_) then click the _Open_ button, then click the _Finish_ button.
 
 == Add an Endpoint
 
@@ -73,7 +73,7 @@ public class GreetingController {
 
 == Build the _cloud-native-spring_ application
 
-Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop/labs/my_work/cloud-native-spring_
 
 . Find out what tasks are available to you with
 +
@@ -116,7 +116,7 @@ Now we're ready to run the application
 
 We've built and run the application locally.  Now we'll deploy it to Cloud Foundry.
 
-. Create an application manifest in the root folder _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+. Create an application manifest in the root folder _devops-workshop/labs/my_work/cloud-native-spring_
 +
   touch manifest.yml
 
