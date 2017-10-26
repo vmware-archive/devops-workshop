@@ -1,17 +1,17 @@
 buildscript {
-	ext {
-		springBootVersion = '1.5.7.RELEASE'
+    ext {
+	springBootVersion = '1.5.7.RELEASE'
+    }
+    repositories {
+        maven {
+	    url "https://plugins.gradle.org/m2/"
 	}
-	repositories {
-	    maven {
-	        url "https://plugins.gradle.org/m2/"
-	    }
-		mavenCentral()
-	}
-	dependencies {
-		classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+        mavenCentral()
+    }
+    dependencies {
+	classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+	classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -22,7 +22,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'com.gorylenko.gradle-git-properties'
 
 gitProperties {
-	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
     gitRepositoryRoot = new File("${project.rootDir}/../../../..")
 }
@@ -31,26 +31,26 @@ import org.apache.tools.ant.filters.*
 
 processResources {
     filter ReplaceTokens, tokens: [
-		"application.name": project.property("application.name"),
-		"application.description": project.property("application.description"),
+	"application.name": project.property("application.name"),
+	"application.description": project.property("application.description"),
         "application.version": project.property("version")
     ]
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	compileOnly('org.projectlombok:lombok:1.16.18')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-data-rest')
-	compile('org.springframework.boot:spring-boot-starter-hateoas')
-	compile('org.springframework.data:spring-data-rest-hal-browser')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	runtime('com.h2database:h2')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compileOnly('org.projectlombok:lombok:1.16.18')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-data-rest')
+    compile('org.springframework.boot:spring-boot-starter-hateoas')
+    compile('org.springframework.data:spring-data-rest-hal-browser')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    runtime('com.h2database:h2')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 
@@ -70,11 +70,11 @@ bootRepackage  {
 publishing {
     publications {
         maven(MavenPublication) {
-			groupId 'io.pivotal'
+	    groupId 'io.pivotal'
             from components.java
         }
     }
-	repositories {
+    repositories {
         mavenLocal()
     }
 }
