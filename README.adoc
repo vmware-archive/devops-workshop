@@ -19,11 +19,11 @@ Welcome to the workshop! This is a collection of exercises and accompanying sour
 * STS (Spring Source Tool Suite an Eclipse IDE variant)
 * Postman (a REST client)
 
-To install prerequisite software, run the _DevOpsInstall.ps1_ script from [here](https://git.web.boeing.com/fork-me/devops-setup).
+To install prerequisite software, run the _DevOpsInstall.ps1_ script from https://git.web.boeing.com/fork-me/devops-setup[here].
 
 == Workshop Repository
 
-> Note: [Ensure your SSH keys are setup for used with GitLab](/recipe/dev-setup-open-ssh).
+> Note: https://dev-docs.web.boeing.com/recipe/dev-setup-open-ssh[Ensure your SSH keys are setup for used with GitLab].
 
 Fork then Clone the following repositories for use in the workshop:
 
@@ -53,5 +53,5 @@ Set Envronment Variables:
 
 Instructors should have added all atendees to a workshop-specific org so all attendees have quick access to an environment. If you do not have an account yet, please see the instructor.
 
-Verify that you can access the [PHX PreProd PCF Apps Manager](https://login.system.pcfpre-phx.cloud.boeing.com/login).
+Verify that you can access the https://login.system.pcfpre-phx.cloud.boeing.com/login[PHX PreProd PCF Apps Manager].
 
