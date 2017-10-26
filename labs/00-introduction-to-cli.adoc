@@ -1,6 +1,6 @@
 = Introduction to CF CLI
 
-Change the working directory to be _devops-workshop-boeing/labs/samples_
+Change the working directory to be _devops-workshop/labs/samples_
 
 Note the sub-directories present..
 
@@ -115,7 +115,7 @@ cf push awesome-go-app -m 64M --random-route
 cd.. coldfusion-example
 ----
 +
-Grab this https://storage.googleapis.com/cphillipson-workshops/devops-workshop-boeing/cfmagic.zip[file], unpack into `src/main/webapp` folder with
+Grab this https://storage.googleapis.com/cphillipson-workshops/devops-workshop/cfmagic.zip[file], unpack into `src/main/webapp` folder with
 +
 [source, bash]
 ----
