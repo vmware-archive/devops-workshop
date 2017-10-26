@@ -25,7 +25,7 @@ apply plugin: 'com.gorylenko.gradle-git-properties'
 apply plugin: 'io.spring.dependency-management'
 
 gitProperties {
-	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
     gitRepositoryRoot = new File("${project.rootDir}/../../..")
 }
@@ -34,35 +34,35 @@ import org.apache.tools.ant.filters.*
 
 processResources {
     filter ReplaceTokens, tokens: [
-		"application.name": project.property("application.name"),
-		"application.description": project.property("application.description"),
+	"application.name": project.property("application.name"),
+	"application.description": project.property("application.description"),
         "application.version": project.property("version")
     ]
 }
 
 dependencyManagement {
     imports {
-		mavenBom "com.vaadin:vaadin-bom:8.1.5"
+	mavenBom "com.vaadin:vaadin-bom:8.1.5"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
     }
 }
 
 dependencies {
-	compileOnly('org.projectlombok:lombok:1.16.18')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.cloud:spring-cloud-starter-feign')
-	compile('org.springframework.cloud:spring-cloud-starter-ribbon')
-	compile('com.vaadin:vaadin-spring-boot-starter')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compileOnly('org.projectlombok:lombok:1.16.18')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.cloud:spring-cloud-starter-feign')
+    compile('org.springframework.cloud:spring-cloud-starter-ribbon')
+    compile('com.vaadin:vaadin-spring-boot-starter')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {
     maven {
         url "https://repo.spring.io/plugins-release"
     }
-	mavenCentral()
+    mavenCentral()
     mavenLocal()
 }
 
@@ -86,7 +86,7 @@ publishing {
             from components.java
         }
     }
-	repositories {
+    repositories {
         mavenLocal()
     }
 }
