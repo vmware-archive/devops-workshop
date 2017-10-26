@@ -118,7 +118,7 @@ Next we'll import some data.
 
 == Importing Data
 
-. Add this https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/02/import.sql[import.sql] file found in *devops-workshop/labs/02* to +src/main/resources+. This is a rather large dataset containing all of the postal codes in the United States and its territories. This file will automatically be picked up by http://hibernate.org/orm/what-is-an-orm/[Hibernate] and imported into the in-memory database.
+. Add this link:./import.sql[import.sql] file found in *devops-workshop/labs/* to +src/main/resources+. This is a rather large dataset containing all of the postal codes in the United States and its territories. This file will automatically be picked up by http://hibernate.org/orm/what-is-an-orm/[Hibernate] and imported into the in-memory database.
 
 . Restart the application.
 +

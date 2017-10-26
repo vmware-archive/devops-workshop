@@ -29,7 +29,7 @@ Fork then Clone the following repositories for use in the workshop:
 
 [source,bash]
 ----
-git clone https://github.com/Pivotal-Field-Engineering/devops-workshop
+git clone git@git-ssh.web.boeing.com:fork-me/devops-workshop.git
 ----
 
 === Environment Setup
