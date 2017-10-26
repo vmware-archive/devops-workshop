@@ -24,8 +24,8 @@ samples
 +
 [source, bash]
 ----
-$ cf api https://api.system.pcfpre-phx.cloud.boeing.com
-$ cf login --sso
+cf api https://api.system.pcfpre-phx.cloud.boeing.com
+cf login --sso
 ----
 +
 > Note the foundation URI. This example is using the PHX pre-prod environment.
@@ -126,7 +126,7 @@ Then execute
 +
 [source, bash]
 ----
-gradle war
+./gradlew war
 cf push
 ----
   
@@ -138,7 +138,7 @@ To check what applications have been deployed so far:
 
 [source, bash]
 ----
-$ cf apps
+cf apps
 ----
 
 == How to cleanup after yourself

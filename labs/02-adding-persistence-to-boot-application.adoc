@@ -74,7 +74,7 @@ You’ll need to use your IDE’s features to add the appropriate import stateme
 +
 [source,bash]
 ----
-gradle clean bootRun
+./gradlew clean bootRun
 ----
 
 . Access the application using +curl+ or your web browser using the newly added REST repository endpoint at http://localhost:8080/cities. You'll see that the primary endpoint automatically exposes the ability to page, size, and sort the response JSON.
@@ -124,7 +124,7 @@ Next we'll import some data.
 +
 [source,bash]
 ----
-gradle clean bootRun
+./gradlew clean bootRun
 ----
 
 . Access the application again. Notice the appropriate hypermedia is included for +next+, +previous+, and +self+. You can also select pages and page size by utilizing +?size=n&page=n+ on the URL string. Finally, you can sort the data utilizing +?sort=fieldName+ (replace fieldName with a cities attribute).
@@ -228,7 +228,7 @@ Page<City> findByStateCode(@Param("stateCode") String stateCode, Pageable pageab
 +
 [source,bash]
 ----
-gradle clean bootRun
+./gradlew clean bootRun
 ----
 
 . Access the application again. Notice that hypermedia for a new +search+ endpoint has appeared.
@@ -339,7 +339,7 @@ http://localhost:8080/cities/search/nameContains?q=Fort&size=1
 +
 [source,bash]
 ----
-gradle bootRepackage
+./gradlew bootRepackage
 ----
 
 . You should already have an application manifest, +manifest.yml+, created in Lab 1; this can be reused.  You'll want to add a timeout param so that our service has enough time to initialize with its data loading:
@@ -405,7 +405,7 @@ spring:
 +
 [source,bash]
 ----
-gradle bootRepackage
+./gradlew bootRepackage
 ----
 
 . Let's create a MySQL database instance. Hopefully, you will have `p-mysql` service available in CF Marketplace.

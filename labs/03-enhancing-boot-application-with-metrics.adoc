@@ -29,7 +29,7 @@ management:
 +
 [source,bash]
 ----
-gradle clean bootRun
+./gradlew clean bootRun
 ----
 +
 Try out the following endpoints with https://www.getpostman.com[Postman]. The output is omitted here because it can be quite large:
@@ -102,7 +102,7 @@ The effect of all this configuration is that the _gradle-git-properties_ plugin 
 
 . Run the _cloud-native-spring_ application:
 +
-  gradle clean bootRun
+  ./gradlew clean bootRun
 
 . Browse to http://localhost:8080/info. Git commit information is now included
 +
@@ -163,7 +163,7 @@ processResources {
 +
 [source,bash]
 ----
-gradle clean bootRun
+./gradlew clean bootRun
 ----
 
 . Browse to http://localhost:8080/info. Build information is now included.
@@ -213,7 +213,7 @@ Normally, when Spring Security is not enabled, the /health endpoint will only ex
 +
 [source,bash]
 ----
-gradle bootRun
+./gradlew bootRun
 ----
 
 . Browse to http://localhost:8080/health. Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
@@ -267,7 +267,7 @@ This demo health indicator will randomize the health check.
 +
 [source,bash]
 ----
-$ gradle clean bootRun
+./gradlew clean bootRun
 ----
 
 . Browse to http://localhost:8080/health and verify that the output is similar to the following (and changes randomly!).
@@ -373,8 +373,11 @@ bootRepackage  {
 
 . Push application into Cloud Foundry
 +
-  gradle bootRepackage
-  cf push
+[source, bash]
+----
+./gradlew bootRepackage
+cf push
+----
 
 . Find the URL created for your app in the health status report. Browse to your app.  Also view your application details in the Apps Manager UI:
 +

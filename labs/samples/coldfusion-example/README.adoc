@@ -16,10 +16,10 @@ This sample application employs http://www.adobe.com/products/coldfusion-standar
 . Employ a https://hub.docker.com/r/accent/coldfusion2016/[Docker image] to spin up an instance of Cold Fusion Server 2016
 +
 [source, bash]
------------------------------------------------------------------
+----
 mkdir ~/.cold-fusion/2016
 docker run -d --name="my-adobe-cold-fusion-2016-instance" -p 80:80 -p 8500:8500 -v ~/.cold-fusion/2016:/var/www accent/coldfusion2016
------------------------------------------------------------------
+----
 +
 > Note: `~` represents the current user's home directory.  On *nix operating systems like Mac OS X and Linux, this equates to e.g., `/Users/home/waldo` or `/home/waldo`.  On Windows, this would typically be `C:\Users\waldo`.
 
@@ -44,19 +44,19 @@ image::images/add-options-and-submit.png[]
 . Rename the file to have a `.zip` extension
 +
 [source, bash]
------------------------------------------------------------------
+----
 mv {filename}.war {filename}.zip
------------------------------------------------------------------
+----
 +
 > Note: `{filename}` is the name of the `.war` file
 
 . Unpack the contents of the file and remove the `CFIDE` directory
 +
 [source, bash]
------------------------------------------------------------------
+----
 unzip -q {filename}.zip -d {project-root-directory}/src/main/webapp
 rm -Rf src/main/webapp/CFIDE
------------------------------------------------------------------
+----
 +
 This is the heart of your project.  You can feel free to edit `index.cfm` and add additional file resources to this structure as you see fit.
 +
@@ -69,28 +69,28 @@ This is the heart of your project.  You can feel free to edit `index.cfm` and ad
 . Unzip `cfmagic.zip` into `src/main/webapp` (removing unnecessary `CFIDE` directory)
 +
 [source, bash]
------------------------------------------------------------------
+----
 unzip -q cfmagic.zip -d ./src/main/webapp
 rm -Rf ./src/main/webapp/CFIDE
------------------------------------------------------------------
+----
 
 . (Optionally) Develop! (e.g., edit the existing `index.cfm` file and/or add other resources underneath the `src/main/webapp` directory)
 
 . Use gradle to package a .war file from source
 +
 [source, bash]
------------------------------------------------------------------
-gradle war
------------------------------------------------------------------
+----
+./gradlew war
+----
 
 == How to Deploy
 
 . Deploy the application with
 +
 [source, bash]
------------------------------------------------------------------
+----
 cf push
------------------------------------------------------------------
+----
 
 == Limitations
 

@@ -32,7 +32,7 @@ public class CloudNativeSpringApplication {
 +
 [source,bash]
 ----
-$ cf create-service p-service-registry standard service-registry
+cf create-service p-service-registry standard service-registry
 ----
 
 . After you create the service registry instance navigate to your Cloud Foundry space in the Apps Manager UI and refresh the page.  You should now see the newly create Service Registry intance.  Select the Manage link to view the registry dashboard.  Note that there are not any registered applications at the moment:
@@ -55,14 +55,14 @@ image::images/registry1.jpg[]
 +
 [source,bash]
 ----
-gradle bootRepackage
+./gradlew bootRepackage
 ----
 
 . For the 2nd half of this lab we'll need to have this artifact in our local repository, so install it with the following command:
 +
 [source,bash]
 ----
-gradle publishToMavenLocal
+./gradlew publishToMavenLocal
 ----
 
 . Push application into Cloud Foundry
@@ -203,14 +203,17 @@ spring:
 +
 [source,bash]
 ----
-gradle bootRepackage -x test
+./gradlew bootRepackage -x test
 ----
 +
 > Note that we're skipping tests here (because we now have a dependency on a running instance of _cloud-native-spring_).
 
 . Create an application manifest in the root folder /cloud-native-spring-ui
 +
-$ touch manifest.yml
+[source,bash]
+----
+touch manifest.yml
+----
 
 . Add application metadata
 +

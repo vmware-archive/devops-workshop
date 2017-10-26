@@ -191,7 +191,7 @@ spring:
 +
 [source,bash]
 ----
-gradle clean bootRun
+./gradlew clean bootRun
 ----
 
 . Browse to http://localhost:8080/hello and verify you now see your new greeting.
@@ -256,7 +256,7 @@ applications:
 +
 [source,bash]
 ----
-gradle clean bootRepackage
+./gradlew clean bootRepackage
 ----
 
 . Push application into Cloud Foundry
@@ -272,7 +272,7 @@ Ohai World!
 +
 *What just happened??*
 + 
--> A Spring component within the Spring Cloud Starter Config Client module called a _service connector_ automatically detected that there was a Cloud Config service bound into the application.  The service connector configured the application automatically to connect to the Cloud Config Server and downloaded the configuration and wired it into the application
+A Spring component within the Spring Cloud Starter Config Client module called a _service connector_ automatically detected that there was a Cloud Config service bound into the application.  The service connector configured the application automatically to connect to the Cloud Config Server and downloaded the configuration and wired it into the application
 
 . If you navigate to the Git repo we specified for our configuration, https://github.com/pacphi/config-repo, you'll see a file named _cloud-native-spring.yml_.  This filen ame is the same as our _spring.application.name_ value for our Boot application.  The configuration is read from this file, in our case the following property:
 +

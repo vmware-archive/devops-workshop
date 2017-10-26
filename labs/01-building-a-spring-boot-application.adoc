@@ -88,28 +88,28 @@ Return to the Terminal session you opened previously and make sure your working 
 +
 [source, bash]
 ----
-gradle tasks
+./gradlew tasks
 ----
   
 . First we'll run tests
 +
 [source, bash]
 ----
-gradle test
+./gradlew test
 ----
 
 . Next we'll package the application as a libary artifact (it cannot be run on its own)
 +
 [source, bash]
 ----
-gradle jar
+./gradlew jar
 ----
 
 . Next we'll package the application as an executable artifact (that can be run on its own because it will include all transitive dependencies along with embedding a servlet container)
 +
 [source, bash]
 ----
-gradle bootRepackage
+./gradlew bootRepackage
 ----
 
 == Run the _cloud-native-spring_ application
@@ -120,7 +120,7 @@ Now we're ready to run the application
 +
 [source, bash]
 ----
-gradle bootRun
+./gradlew bootRun
 ----
 
 . You should see the application start up an embedded Apache Tomcat server on port 8080 (review terminal output):
