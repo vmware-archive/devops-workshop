@@ -153,7 +153,7 @@ applications:
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
 ----

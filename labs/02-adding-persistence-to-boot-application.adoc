@@ -353,7 +353,7 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -376,7 +376,7 @@ usage: 1G x 1 instances
 urls: cloud-native-spring-apodemal-hyperboloid.cfapps.io
 last uploaded: Thu Sep 28 23:29:21 UTC 2017
 stack: cflinuxfs2
-buildpack: java_buildpack
+buildpack: java_buildpack_offline
 
      state     since                    cpu      memory         disk         details
 #0   running   2017-09-28 04:30:22 PM   163.7%   395.7M of 1G   159M of 1G
@@ -497,7 +497,7 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
