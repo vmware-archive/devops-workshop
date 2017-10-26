@@ -1,4 +1,3 @@
-
 // presentations
 :pcf-value-proposition: link:./presentations/100-pcf-background/pcf-value-proposition.pptx
 :pcf-101: link:./presentations/100-pcf-background/introduction-to-pcf.pptx
@@ -45,8 +44,8 @@ The following tables are meant to illustrate how the content in this repository 
 | 1:30    | 2:30       | {cloud-friendly}[Strategies for Breaking Down Monoliths (or Getting to "Cloud Friendly”)]
 | 2:30    | 2:40       | Break 
 | 2:40    | 3:30       | {session-2}[Intro to Spring Boot] - {lesson-01}[Lesson 1]
-| 3:30    | 4:15       | {session-3}[Intro to Spring Data] - {lesson-03}[Lesson 2]
-| 4:15    | 5:00       | {session-4}[Production Ready Features] including diagnostics, logging and metrics - [lesson-03]
+| 3:30    | 4:15       | {session-3}[Intro to Spring Data] - {lesson-02}[Lesson 2]
+| 4:15    | 5:00       | {session-4}[Production Ready Features] including diagnostics, logging and metrics - {lesson-03}[lesson-03]
 | 5:00    | 5:15       | Retrospective
 | --      | 5:15       | Adjourn
 |=======================================================
@@ -59,11 +58,11 @@ The following tables are meant to illustrate how the content in this repository 
 | Start   | End        | Session
 | 8:00    | 8:30       | Breakfast
 | 8:30    | 9:00       | {session-5}[Intro to Spring Cloud]
-| 9:00    | 9:50       | {session-6}[Application Configuration Management] - {lesson-4}[Lesson 4]
+| 9:00    | 9:50       | {session-6}[Application Configuration Management] - {lesson-04}[Lesson 4]
 | 9:50    | 10:00      | Break 
-| 10:00   | 10:50      | {session-7}[Service Registry] - {lesson-5}[Lesson 5]
+| 10:00   | 10:50      | {session-7}[Service Registry] - {lesson-05}[Lesson 5]
 | 10:50   | 11:00      | Break
-| 11:00   | 12:00      | {session-8}[Hystrix instrumentation and the Circuit Breaker Dashboard] - {lesson-6}[Lesson 6]
+| 11:00   | 12:00      | {session-8}[Hystrix instrumentation and the Circuit Breaker Dashboard] - {lesson-06}[Lesson 6]
 | 12:00   | 1:00       | Lunch
 | 1:00    | 1:30       | {session-9}[CI/CD Concepts]
 | 1:30    | 2:15       | Practical discussion on pipeline automation (exploration and demo of sample implementation on Concourse employing Spring Cloud Pipelines)
