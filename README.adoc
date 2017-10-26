@@ -2,6 +2,16 @@
 
 A collection of workshop presentations and labs exercises for use at Boeing. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a https://github.com/Pivotal-Field-Engineering/devops-workshop/blob/master/SCHEDULE.adoc[1-1/2 day period].
 
+== Deprecation Notice
+
+(2017-10-25) This repository is deprecated in favor of Boeing hosted Gitlab repositories, here:
+
+-> https://git.web.boeing.com/fork-me/workshop-presentation[Presentations]
+
+-> https://git.web.boeing.com/fork-me/workshop-project[Workshop]
+
+-> https://git.web.boeing.com/fork-me/dev-docs/tree/workshop/content/workshop[Labs]
+
 
 == Software Prerequisities
 
