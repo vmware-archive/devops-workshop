@@ -28,6 +28,10 @@ $ cf api https://api.system.pcfpre-phx.cloud.boeing.com
 $ cf login --sso
 ----
 +
+> Note the foundation URI. This example is using the PHX pre-prod environment.
+>
+> Note: use PowerShell to run `cf login --sso`. Windows Git Bash will not allow you to retrieve the one-time code.
++
 Enter your account username and password, then select an org and space.
 
 == Explore CF CLI
