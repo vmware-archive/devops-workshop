@@ -8,15 +8,24 @@ While we could visit https://start.spring.io to create a new Spring Boot project
 
 . Open a Terminal (e.g., _cmd_ or _bash_ shell)
 
-. Change the working directory to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+. Change the working directory to be _devops-workshop-boeing/labs/workspace/cloud-native-spring_
 +
-  cd /devops-workshop-boeing/labs/my_work/cloud-native-spring
+
+[source, bash]
+----
+cd /devops-workshop-boeing/labs/workspace/cloud-native-spring
+----
 
 . Open this project in your editor/IDE of choice.
 +
-*_STS Import Help_*
-+
-Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop-boeing/labs/my_work/cloud-native-spring_) then click the _Open_ button, then click the _Finish_ button.
+> _STS Import Help_
+>
+> . Select _File > Import…_.
+> . In the susequent dialog choose _Gradle > Existing Gradle Project_
+> . then click the _Next_ button.
+> . In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-worksho/workspace/cloud-native-spring_)
+> . then click the _Open_ button
+> . then click the _Finish_ button.
 
 == Add an Endpoint
 
@@ -29,7 +38,7 @@ Within your editor/IDE complete the following steps:
 . Add an _@RestController_ annotation to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
 +
 [source, java]
----------------------------------------------------------------------
+----
 package io.pivotal.controller;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -38,22 +47,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class GreetingController {
 
 }
----------------------------------------------------------------------
+----
 
 . Add the following request handler to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
 +
 [source,java]
----------------------------------------------------------------------
-@RequestMapping("/")
+----
+@RequestMapping("/hello")
 public String hello() {
     return "Hello World!";
 }
----------------------------------------------------------------------
+----
 +
 Completed:
 +
 [source,java]
----------------------------------------------------------------------
+----
 package io.pivotal.controller;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -68,29 +77,40 @@ public class GreetingController {
     }
     
 }
----------------------------------------------------------------------
+----
 
 
 == Build the _cloud-native-spring_ application
 
-Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop-boeing/labs/workspace/cloud-native-spring_
 
 . Find out what tasks are available to you with
 +
-  gradle tasks
+[source, bash]
+----
+gradle tasks
+----
   
 . First we'll run tests
 +
-  gradle test
+[source, bash]
+----
+gradle test
+----
 
 . Next we'll package the application as a libary artifact (it cannot be run on its own)
 +
-  gradle jar
-  
+[source, bash]
+----
+gradle jar
+----
+
 . Next we'll package the application as an executable artifact (that can be run on its own because it will include all transitive dependencies along with embedding a servlet container)
 +
-  gradle bootRepackage
-
+[source, bash]
+----
+gradle bootRepackage
+----
 
 == Run the _cloud-native-spring_ application
 
@@ -98,15 +118,18 @@ Now we're ready to run the application
 
 . Run the application with
 +
-  gradle bootRun
+[source, bash]
+----
+gradle bootRun
+----
 
 . You should see the application start up an embedded Apache Tomcat server on port 8080 (review terminal output):
 +
 [source,bash]
----------------------------------------------------------------------
+----
 2015-10-02 13:26:59.264  INFO 44749 --- [lication.main()] s.b.c.e.t.TomcatEmbeddedServletContainer: Tomcat started on port(s): 8080 (http)
 2015-10-02 13:26:59.267  INFO 44749 --- [lication.main()] io.pivotal.CloudNativeSpringApplication: Started CloudNativeSpringApplication in 2.541 seconds (JVM running for 9.141)
----------------------------------------------------------------------
+----
 
 . Browse to http://localhost:8080/hello
 
@@ -116,14 +139,14 @@ Now we're ready to run the application
 
 We've built and run the application locally.  Now we'll deploy it to Cloud Foundry.
 
-. Create an application manifest in the root folder _devops-workshop-boeing/labs/my_work/cloud-native-spring_
+. Create an application manifest in the root folder _devops-workshop-boeing/labs/workspace/cloud-native-spring_
 +
   touch manifest.yml
 
 . Add application metadata, using a text editor (of choice)
 +
 [source, bash]
----------------------------------------------------------------------
+----
 ---
 applications:
 - name: cloud-native-spring
@@ -133,24 +156,36 @@ applications:
   buildpack: java_buildpack
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
----------------------------------------------------------------------
+----
 
 . Push application into Cloud Foundry
 +
-  cf push
+[source, bash]
+----
+cf push
+----
 +
--> To specify an alternate buildpack, you could update the above to be e.g.,
-+
-  cf push -f manifest.yml -b java_buildpack_offline
+> To specify an alternate buildpack, you could update the above to be e.g.,
+>
+> [source, bash]
+> ----
+> cf push -f manifest.yml -b java_buildpack_offline
+> ----
 + 
 Assuming the offline buildpack was installed and available for use with your targeted foundation.  You can check for which buildpacks are available by executing
 +
-  cf buildpacks
+[source, bash]
+----
+cf buildpacks
+----
 
 . Find the URL created for your app in the health status report. Browse to your app's /hello endpoint.
 
 . Check the log output
 +
-  cf logs cloud-native-spring --recent
+[source, bash]
+----
+cf logs cloud-native-spring --recent
+----
 
 *Congratulations!* You’ve just completed your first Spring Boot application.

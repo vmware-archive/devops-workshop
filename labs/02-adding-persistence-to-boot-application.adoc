@@ -12,7 +12,7 @@ This application will allow us to create, read update and delete records in an h
 . Create the package `io.pivotal.domain` and in that package create the class `City`. Into that file you can paste the following source code, which represents cities based on postal codes, global coordinates, etc:
 +
 [source, java, numbered]
----------------------------------------------------------------------
+----
 package io.pivotal.domain;
 
 @Data
@@ -45,26 +45,26 @@ public class City implements Serializable {
 
 }
 
----------------------------------------------------------------------
+----
 +
 Notice that we're using http://docs.oracle.com/javaee/6/tutorial/doc/bnbpz.html[JPA] annotations on the class and its fields. We're also employing https://projectlombok.org/features/all[Lombok], so we don't have to write a bunch of boilerplate code (e.g., getter and setter methods).  You'll need to use your IDE's features to add the appropriate import statements.
 +
--> Hint: imports should start with `javax.persistence` and `lombok`
+> Hint: imports should start with `javax.persistence` and `lombok`
 
 . Create the package +io.pivotal.repositories+ and in that package create the interface +CityRepository+. Paste the following code and add appropriate imports:
 +
 [source,java]
----------------------------------------------------------------------
+----
 package io.pivotal.repositories;
 
 @RepositoryRestResource(collectionResourceRel = "cities", path = "cities")
 public interface CityRepository extends PagingAndSortingRepository<City, Long> {
 }
----------------------------------------------------------------------
+----
 +
 You’ll need to use your IDE’s features to add the appropriate import statements.
 +
--> Hint: imports should start with `org.springframework.data.rest.core.annotation` and `org.springframework.data.repository`
+> Hint: imports should start with `org.springframework.data.rest.core.annotation` and `org.springframework.data.repository`
 
 == Run the _cloud-native-spring_ Application
 
@@ -73,14 +73,14 @@ You’ll need to use your IDE’s features to add the appropriate import stateme
 . Run the application
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRun
----------------------------------------------------------------------
+----
 
 . Access the application using +curl+ or your web browser using the newly added REST repository endpoint at http://localhost:8080/cities. You'll see that the primary endpoint automatically exposes the ability to page, size, and sort the response JSON.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 curl -i http://localhost:8080/cities
 
 HTTP/1.1 200 OK
@@ -108,7 +108,7 @@ Date: Thu, 28 Apr 2016 14:44:06 GMT
     "number" : 0
   }
 }
----------------------------------------------------------------------
+----
 
 . To exit the application, type *Ctrl-C*.
 
@@ -123,14 +123,14 @@ Next we'll import some data.
 . Restart the application.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRun
----------------------------------------------------------------------
+----
 
 . Access the application again. Notice the appropriate hypermedia is included for +next+, +previous+, and +self+. You can also select pages and page size by utilizing +?size=n&page=n+ on the URL string. Finally, you can sort the data utilizing +?sort=fieldName+ (replace fieldName with a cities attribute).
 +
 [source,bash]
----------------------------------------------------------------------
+----
 curl -i localhost:8080/cities
 
 HTTP/1.1 200 OK
@@ -188,7 +188,7 @@ Date: Tue, 27 May 2014 19:59:58 GMT
     "number" : 0
   }
 }
----------------------------------------------------------------------
+----
 
 . Try the following URL Paths with +curl+ to see how the application behaves:
 +
@@ -205,7 +205,7 @@ Next we'll add searching capabilities.
 . Let's add some additional finder methods to +CityRepository+:
 +
 [source,java]
----------------------------------------------------------------------
+----
 @RestResource(path = "name", rel = "name")
 Page<City> findByNameIgnoreCase(@Param("q") String name, Pageable pageable);
 
@@ -220,21 +220,21 @@ Page<City> findByPostalCode(@Param("q") String postalCode, Pageable pageable);
 
 @Query(value ="select c from City c where c.stateCode = :stateCode")
 Page<City> findByStateCode(@Param("stateCode") String stateCode, Pageable pageable);
----------------------------------------------------------------------
+----
 +
--> Hint: imports should start with `org.springframework.data.domain`, `org.springframework.data.rest.core.annotation`, `org.springframework.data.repository.query`, and `org.springframework.data.jpa.repository`
+> Hint: imports should start with `org.springframework.data.domain`, `org.springframework.data.rest.core.annotation`, `org.springframework.data.repository.query`, and `org.springframework.data.jpa.repository`
 
 . Run the application
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRun
----------------------------------------------------------------------
+----
 
 . Access the application again. Notice that hypermedia for a new +search+ endpoint has appeared.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 curl -i "localhost:8080/cities"
 
 HTTP/1.1 200 OK
@@ -274,14 +274,14 @@ Date: Tue, 27 May 2014 20:33:52 GMT
         "number": 0
     }
 }
----------------------------------------------------------------------
+----
 
 . Access the new +search+ endpoint:
 +
 http://localhost:8080/cities/search
 +
 [source,bash]
----------------------------------------------------------------------
+----
 curl -i "localhost:8080/cities/search"
 
 HTTP/1.1 200 OK
@@ -318,7 +318,7 @@ Date: Tue, 27 May 2014 20:38:32 GMT
         }
     }
 }
----------------------------------------------------------------------
+----
 +
 Note that we now have new search endpoints for each of the finders that we added.
 
@@ -330,7 +330,7 @@ http://localhost:8080/cities/search/name?q=Boston
 +
 http://localhost:8080/cities/search/nameContains?q=Fort&size=1
 +
--> For further details on what's possible with Spring Data JPA, consult the https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#dependencies.spring-boot[reference documentation]
+> For further details on what's possible with Spring Data JPA, consult the https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#dependencies.spring-boot[reference documentation]
 
 
 == Pushing to Cloud Foundry
@@ -338,14 +338,14 @@ http://localhost:8080/cities/search/nameContains?q=Fort&size=1
 . Build the application
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle bootRepackage
----------------------------------------------------------------------
+----
 
 . You should already have an application manifest, +manifest.yml+, created in Lab 1; this can be reused.  You'll want to add a timeout param so that our service has enough time to initialize with its data loading:
 +
 [source,yml]
----------------------------------------------------------------------
+----
 ---
 applications:
 - name: cloud-native-spring
@@ -357,12 +357,12 @@ applications:
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
----------------------------------------------------------------------
+----
 
 . Push to Cloud Foundry:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf push
 
 ...
@@ -380,103 +380,103 @@ buildpack: java_buildpack
 
      state     since                    cpu      memory         disk         details
 #0   running   2017-09-28 04:30:22 PM   163.7%   395.7M of 1G   159M of 1G
----------------------------------------------------------------------
+----
 
 . Access the application at the random route provided by CF:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 curl -k https://cloud-native-spring-{random-word}.{domain}.com/cities
----------------------------------------------------------------------
+----
 
 == Binding to a MySQL database in Cloud Foundry
 
 . You may have noticed that when using the H2 (in-memory) database that the schema is automatically generated and updated on application start. That's not the case with other SQL databases, such as MySQL, Oracle or PostgreSQL. You will need to instruct the application to automatically generate SQL schema by adding to `src/main/resources/application.yml` file, e.g.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 spring:
   jpa:
     hibernate:
       ddl-auto: update
----------------------------------------------------------------------
+----
 
 . Repackage the application again
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle bootRepackage
----------------------------------------------------------------------
+----
 
 . Let's create a MySQL database instance. Hopefully, you will have `p-mysql` service available in CF Marketplace.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf marketplace -s p-mysql
----------------------------------------------------------------------
+----
 +
 Expected output:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 Getting service plan information for service p-mysql as cphillipson@pivotal.io...
 OK
 
 service plan   description     free or paid
 100mb          100MB default   free
----------------------------------------------------------------------
+----
 
 . Let's create an instance of `p-mysql` with `100mb` plan, e.g.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf create-service p-mysql 100mb mysql-database
----------------------------------------------------------------------
+----
 +
 Expected output:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 Creating service instance mysql-database1 in org zoo-labs / space development as cphillipson@pivotal.io...
 OK
----------------------------------------------------------------------
+----
 
 . Let's bind the service to the application, e.g.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf bind-service cloud-native-spring mysql-database
----------------------------------------------------------------------
+----
 +
 Expected output:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 Binding service mysql-database to app cloud-native-spring in org zoo-labs / space development as cphillipson@pivotal.io...
 OK
----------------------------------------------------------------------
+----
 +
--> Tip: Use `cf restage cloud-native-spring` to ensure your env variable changes take effect
+> Tip: Use `cf restage cloud-native-spring` to ensure your env variable changes take effect
 
 
 . Let's push the application, since we did not push the updated application yet, e.g.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf push
----------------------------------------------------------------------
+----
 
 . You may wish to observe the logs and notice that the bound MySQL database is picked up by the application, e.g.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf logs cloud-native-spring --recent
----------------------------------------------------------------------
+----
 + 
 Sample output:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 ...
 INFO 20 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
 INFO 20 --- [           main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
@@ -485,12 +485,12 @@ INFO 20 --- [           main] o.hibernate.annotations.common.Version   : HCANN00
 INFO 20 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
 INFO 20 --- [           main] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH000228: Running hbm2ddl schema update
 ...
----------------------------------------------------------------------
+----
 
 . You could also bind to the database directly from the `manifest.yml` file, e.g.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 applications:
 - name: cloud-native-spring
   random-route: true
@@ -503,27 +503,27 @@ applications:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
   services:
     - mysql-database
----------------------------------------------------------------------
+----
 +
 . Attempt to push the app again after making this update
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf push
----------------------------------------------------------------------
+----
 
 
 . Also, if you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf mysql mysql-database
----------------------------------------------------------------------
+----
 +
 Sample console:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 mysql: [Warning] Using a password on the command line interface can be insecure.
 Reading table information for completion of table and column names
 You can turn off this feature to get a quicker startup with -A
@@ -551,19 +551,19 @@ mysql> show tables;
 mysql> select * from city;
 Empty set (0.03 sec)
 
----------------------------------------------------------------------
+----
 +
 In case you don't have CF `mysql` plugin, you can install the plugin with
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf install-plugin -r "CF-Community" mysql-plugin
----------------------------------------------------------------------
+----
 +
--> More details here:
-+
-  * https://plugins.cloudfoundry.org/
-  * https://github.com/andreasf/cf-mysql-plugin
+> More details here:
+>
+> * https://plugins.cloudfoundry.org/
+> * https://github.com/andreasf/cf-mysql-plugin
 +
 
 

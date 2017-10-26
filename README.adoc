@@ -28,9 +28,9 @@ To install prerequisite software, run the _DevOpsInstall.ps1_ script from https:
 Fork then Clone the following repositories for use in the workshop:
 
 [source,bash]
----------------------------------------------------------------------
+----
 git clone https://github.com/Pivotal-Field-Engineering/devops-workshop
----------------------------------------------------------------------
+----
 
 === Environment Setup
 

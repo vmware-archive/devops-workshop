@@ -79,7 +79,7 @@ cf push -c "node server.js"
 > [source, bash]
 > ----
 > yarn config set yarn-offline-mirror ./npm-packages-offline-cache
-> cp ~~/.yarnrc .
+> cp ~/.yarnrc .
 > rm -rf node_modules/ yarn.lock
 > yarn install
 > ----
@@ -166,6 +166,5 @@ cf delete cf-nodejs
 
 == Where to go for more help
 
--> https://docs.cloudfoundry.org/cf-cli/getting-started.html[Getting Started with the CF CLI]
-
--> http://www.appservgrid.com/refcards/refcards/dzonerefcards/rc207-010d-cloud-foundry.pdf[Cloud Foundry Cheat Sheet]
+* https://docs.cloudfoundry.org/cf-cli/getting-started.html[Getting Started with the CF CLI]
+* http://www.appservgrid.com/refcards/refcards/dzonerefcards/rc207-010d-cloud-foundry.pdf[Cloud Foundry Cheat Sheet]

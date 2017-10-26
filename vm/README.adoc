@@ -79,5 +79,5 @@ To build and run
   docker build .
   docker run {docker-container-id} -i -t /bin/bash
 
--> ctrl+c to exit
+> ctrl+c to exit
 

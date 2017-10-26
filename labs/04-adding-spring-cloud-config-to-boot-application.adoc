@@ -11,7 +11,7 @@ These features are added by adding _spring-cloud-services-starter-config-client_
 Adding a dependency management plugin and other miscellaneous configuration.
 +
 [source, java]
----------------------------------------------------------------------
+----
 buildscript {
 	ext {
 		springBootVersion = '1.5.7.RELEASE'
@@ -117,12 +117,12 @@ publishing {
         mavenLocal()
     }
 }
----------------------------------------------------------------------
+----
 
 . Add an _@Value_ annotation, private field, and update the existing _@RequestMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
 [source, java]
----------------------------------------------------------------------
+----
     @Value("${greeting:Hola}")
     private String greeting;
 
@@ -130,21 +130,21 @@ publishing {
     public String hello() {
         return String.join(" ", greeting, "World!");
     }
----------------------------------------------------------------------
+----
 
 . Add a http://static.javadoc.io/org.springframework.cloud/spring-cloud-commons-parent/1.1.9.RELEASE/org/springframework/cloud/context/scope/refresh/RefreshScope.html[@RefreshScope] annotation to the top of the _GreetingController_ class declaration
 +
 [source, java]
----------------------------------------------------------------------
+----
 @RefreshScope
 @RestController
 public class GreetingController {
----------------------------------------------------------------------
+----
 +
 Completed:
 +
 [source,java]
----------------------------------------------------------------------
+----
 package io.pivotal.controller;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -165,34 +165,34 @@ public class GreetingController {
     }
     
 }
----------------------------------------------------------------------
+----
 
 . When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following configuration to */cloud-native-spring/src/main/resources/application.yml*:
 +
 [source, yaml]
----------------------------------------------------------------------
+----
 security:
   basic:
     enabled:  false
----------------------------------------------------------------------
+----
 
 . We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
 [source, yaml]
----------------------------------------------------------------------
+----
 spring:
   application:
     name: cloud-native-spring
----------------------------------------------------------------------
+----
 
 == Run the _cloud-native-spring_ Application and verify dynamic config is working
 
 . Run the application
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRun
----------------------------------------------------------------------
+----
 
 . Browse to http://localhost:8080/hello and verify you now see your new greeting.
 
@@ -215,9 +215,9 @@ image::images/config-scs2.jpg[]
 . We now need to update the service instance with our GIT repository information.  Using the Cloud Foundry CLI execute the following update service command:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf update-service config-server -c '{"git": { "uri": "https://github.com/pacphi/config-repo" } }'
----------------------------------------------------------------------
+----
 
 . Refresh you Config Server management page and you will see the following message.  Wait until the screen refreshes and the service is reintialized:
 +
@@ -226,15 +226,15 @@ image::images/config-scs3.jpg[]
 . We will now bind our application to our config-server within our Cloud Foundry deployment manifest.  Add these entries to the bottom of */cloud-native-spring/manifest.yml*
 +
 [source, yml]
----------------------------------------------------------------------
+----
   services:
   - config-server
----------------------------------------------------------------------
+----
 +
 Complete:
 +
 [source, yml]
----------------------------------------------------------------------
+----
 ---
 applications:
 - name: cloud-native-spring
@@ -248,23 +248,23 @@ applications:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
   services:
   - config-server
----------------------------------------------------------------------
+----
 
 == Deploy and test application
 
 . Build the application
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRepackage
----------------------------------------------------------------------
+----
 
 . Push application into Cloud Foundry
 +
 [source,bash]
----------------------------------------------------------------------
+----
 cf push
----------------------------------------------------------------------
+----
 
 . Test your application by navigating to the /hello endpoint of the application.  You should now see a greeting that is read from the Cloud Config Server!
 +
@@ -277,8 +277,8 @@ Ohai World!
 . If you navigate to the Git repo we specified for our configuration, https://github.com/pacphi/config-repo, you'll see a file named _cloud-native-spring.yml_.  This filen ame is the same as our _spring.application.name_ value for our Boot application.  The configuration is read from this file, in our case the following property:
 +
 [source, yaml]
----------------------------------------------------------------------
+----
 greeting: Ohai
----------------------------------------------------------------------
+----
 
 . Next we'll learn how to register our service with a Service Registry and load balance requests using Spring Cloud components.

@@ -7,30 +7,30 @@ Spring Boot includes a number of additional features to help you monitor and man
 . Verify the Spring Boot Actuator dependency the in following file: */cloud-native-spring/build.gradle* You should see the following dependency in the list:
 +
 [source, groovy]
----------------------------------------------------------------------
+----
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     // other dependencies omitted
 }
 
----------------------------------------------------------------------
+----
 +
 By default Spring Boot will use Spring Security to protect these management endpoints (which is a good thing!).  Though you wouldn't want to disable this in production, we'll do so in this sample app to make demonstration a bit easier and simpler.  
 . Add the following properties to *cloud-native-spring/src/main/resources/application.yml*.
 +
 [source, yaml]
----------------------------------------------------------------------
+----
 management:
   security:
     enabled: false
----------------------------------------------------------------------
+----
 
 . Run the updated application
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRun
----------------------------------------------------------------------
+----
 +
 Try out the following endpoints with https://www.getpostman.com[Postman]. The output is omitted here because it can be quite large:
 +
@@ -79,14 +79,14 @@ One thing that _actuator_ does well is expose information about the specific bui
 First, you must edit the file and add the plugin dependency within the dependencies{} section of the buildscript{} block.
 +
 [source, groovy]
----------------------------------------------------------------------
+----
 classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
----------------------------------------------------------------------
+----
 +
 Then, you'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
 +
 [source, groovy]
----------------------------------------------------------------------
+----
 apply plugin: 'com.gorylenko.gradle-git-properties'
 
 gitProperties {
@@ -94,9 +94,9 @@ gitProperties {
     dateFormatTimeZone = "UTC"
     gitRepositoryRoot = new File("${project.rootDir}/../../..")
 }
----------------------------------------------------------------------
+----
 +
--> Note too that we are updating the path to the _.git_ directory.
+> Note: We are updating the path to the _.git_ directory.
 +
 The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */info* endpoint.
 
@@ -107,7 +107,7 @@ The effect of all this configuration is that the _gradle-git-properties_ plugin 
 . Browse to http://localhost:8080/info. Git commit information is now included
 +
 [source,json]
----------------------------------------------------------------------
+----
 {
     "git": {
         "commit": {
@@ -117,7 +117,7 @@ The effect of all this configuration is that the _gradle-git-properties_ plugin 
         "branch": "master"
     }
 }
----------------------------------------------------------------------
+----
 
 . Stop the _cloud-native-spring_ application
 +
@@ -130,23 +130,23 @@ By including the _gradle-git-properties_ plugin, details about git commit inform
 . Add the following properties to *cloud-native-spring/src/main/resources/application.yml*.
 +
 [source, yaml]
----------------------------------------------------------------------
+----
 info: # add this section
   build:
     artifact: @project.artifactId@
     name: @project.name@
     description: @project.description@
     version: @project.version@
----------------------------------------------------------------------
+----
 +
 Note we're defining token delimited value-placeholders for each property.  In order to have these properties replaced, we'll need to add some further instructions to the _build.gradle_ file.
 +
--> if STS https://jira.spring.io/browse/STS-4201[reports a problem] with the application.yml due to @ character, the problem can safely be ignored.
+> if STS https://jira.spring.io/browse/STS-4201[reports a problem] with the application.yml due to @ character, the problem can safely be ignored.
 
 . Add the following directly underneath the _gitProperties{}_ block within *cloud-native-spring/build.gradle*
 +
 [source, groovy]
----------------------------------------------------------------------
+----
 import org.apache.tools.ant.filters.*
 
 processResources {
@@ -156,20 +156,20 @@ processResources {
         "application.version": project.property("version")
     ]
 }
----------------------------------------------------------------------
+----
 
 
 . Build and run the _cloud-native-spring_ application:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle clean bootRun
----------------------------------------------------------------------
+----
 
 . Browse to http://localhost:8080/info. Build information is now included.
 +
 [source,json]
----------------------------------------------------------------------
+----
 {
     "build": {
         "name": "Cloud Native Spring (Back-end)",
@@ -184,7 +184,7 @@ gradle clean bootRun
         "branch": "master"
     }
 }
----------------------------------------------------------------------
+----
 
 . Stop the cloud-native-spring application.
 +
@@ -201,25 +201,25 @@ Spring Boot provides an endpoint http://localhost:8080/health that exposes vario
 Normally, when Spring Security is not enabled, the /health endpoint will only expose an UP or DOWN value.
 
 [source,json]
----------------------------------------------------------------------
+----
 {
   "status": "UP"
 }
----------------------------------------------------------------------
+----
 
 
 
 . Run the cloud-native-spring application:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 gradle bootRun
----------------------------------------------------------------------
+----
 
 . Browse to http://localhost:8080/health. Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
 +
 [source,json]
----------------------------------------------------------------------
+----
 {
   "status": "UP",
   "diskSpace": {
@@ -228,14 +228,14 @@ gradle bootRun
       "threshold": 12345678
   }
 }
----------------------------------------------------------------------
+----
 
 . Stop the cloud-native-spring application.
 
 . Create the class _io.pivotal.FlappingHealthIndicator_ (/cloud-native-spring/src/main/java/io/pivotal/FlappingHealthIndicator.java) and into it paste the following code:
 +
 [source,java]
----------------------------------------------------------------------
+----
 package io.pivotal;
 
 import java.util.Random;
@@ -259,21 +259,21 @@ public class FlappingHealthIndicator implements HealthIndicator {
         }
     }
 }
----------------------------------------------------------------------
+----
 +
 This demo health indicator will randomize the health check.
 
 . Build and run the _cloud-native-spring_ application:
 +
 [source,bash]
----------------------------------------------------------------------
+----
 $ gradle clean bootRun
----------------------------------------------------------------------
+----
 
 . Browse to http://localhost:8080/health and verify that the output is similar to the following (and changes randomly!).
 +
 [source,json]
----------------------------------------------------------------------
+----
 {
   "status": "UP",
   "flapping": {
@@ -287,7 +287,7 @@ $ gradle clean bootRun
       "threshold": 12345678
   }
 }
----------------------------------------------------------------------
+----
 
 == Metrics
 
@@ -296,7 +296,7 @@ Spring Boot provides an endpoint http://localhost:8080/metrics that exposes seve
 . Browse to http://localhost:8080/metrics. Review the metrics exposed.
 +
 [source,json]
----------------------------------------------------------------------
+----
 {
 "mem": 418830,
 "mem.free": 239376,
@@ -330,7 +330,7 @@ Spring Boot provides an endpoint http://localhost:8080/metrics that exposes seve
 "counter.status.200.star-star.favicon.ico": 1,
 "counter.status.200.metrics": 1
 }
----------------------------------------------------------------------
+----
 
 . Stop the cloud-native-spring application.
 
@@ -339,7 +339,7 @@ Spring Boot provides an endpoint http://localhost:8080/metrics that exposes seve
 . When running a Spring Boot application on Pivotal Cloud Foundry with the actuator endpoints enabled, you can visualize actuator management information on the Applications Manager app dashboard.  To enable this there are a few properties we need to add.  Add the following to */cloud-native-spring/src/main/resources/application.yml*:
 +
 [source, yaml]
----------------------------------------------------------------------
+----
 management:
   security:
     enabled: false
@@ -349,12 +349,12 @@ management:
   cloudfoundry:
     enabled: true
     skip-ssl-validation: true
----------------------------------------------------------------------
+----
 
 . Let's review */cloud-native-spring/build.gradle*.  Note these lines:
 +
 [source, groovy]
----------------------------------------------------------------------
+----
 jar {
     excludes = ['**/application.yml']
 }
@@ -367,9 +367,9 @@ task execJar (type: Jar, dependsOn: jar) {
 bootRepackage  {
     withJarTask = tasks['execJar']
 }
----------------------------------------------------------------------
+----
 +
--> Note the _bootRepackage_ plugin repackages the original artifact and creates a separate classified artifact. We wind up with 2 .jar files.
+> Note the _bootRepackage_ plugin repackages the original artifact and creates a separate classified artifact. We wind up with 2 .jar files.
 
 . Push application into Cloud Foundry
 +

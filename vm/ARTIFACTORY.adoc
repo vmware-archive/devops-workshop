@@ -16,21 +16,21 @@ Use `Ctrl+C` to shutdown when you're done.
 . Add the following dependency to the _dependencies{}_ section of the _buildscript{}_ block within each `build.gradle` file
 +
 [source, groovy]
----------------------------------------------------------------------------
+----
 classpath ("org.jfrog.buildinfo:build-info-extractor-gradle:latest.release")
----------------------------------------------------------------------------
+----
 +
 Then activate the Gradle Artifactory plugin by adding an _apply plugin_ instruction beneath the _buildscript{}_ block
 +
 [source, groovy]
----------------------------------------------------------------------------
+----
 apply plugin: 'com.jfrog.artifactory'
----------------------------------------------------------------------------
+----
 
 . Add the following section at the end of each `build.gradle` file.
 +
 [source, groovy]
----------------------------------------------------------------------------
+----
 artifactory {
     contextUrl = System.env.ArtifactoryInstance ?: 'http://localhost:8081/artifactory'
     publish {
@@ -55,12 +55,12 @@ artifactory {
         repoKey = 'jcenter'
     }
 }
----------------------------------------------------------------------------
+----
 +
--> Note the environment variables above. You will need to `export` these:
-+
-  ArtifactoryUser
-  ArtifactoryKey
-  ArtifactoryInstance
+> Note the environment variables above. You will need to `export` these:
+>
+> ArtifactoryUser
+> ArtifactoryKey
+> ArtifactoryInstance
 +
 If you intend to launch a local instance then you do not need to export `ArtifactoryInstance`.

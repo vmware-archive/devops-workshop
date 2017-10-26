@@ -7,13 +7,10 @@ The content herein is just a condensed version of a https://specify.io/how-tos/c
 
 == Prerequisites
 
--> GitLab Account
-
--> PCF Account
-
--> Concourse.ci server
-
--> JFrog Artifactory server
+* GitLab Account
+* PCF Account
+* Concourse.ci server
+* JFrog Artifactory server
 
 
 == Part 1: Hello World 
@@ -27,30 +24,30 @@ Now create a very simple pipeline that executes a bash script. The bash script p
 . Target the Concourse server
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly --target test login --concourse-url http://10.59.227.243:8080/
-----------------------------------------------------------------------------------------
+----
 +
--> In order to communicate with the Concourse server via the Fly CLI it's required to let the CLI know where it runs.  Authenticate with the following credentials `admin/concourse`.
+> In order to communicate with the Concourse server via the Fly CLI it's required to let the CLI know where it runs.  Authenticate with the following credentials `admin/concourse`.
 
 . Upload the "hello-world" pipeline specfication
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test set-pipeline --pipeline hello-world_YOUR_INITIALS --config ci/hello-world.yml
-----------------------------------------------------------------------------------------
+----
 +
--> Confirm the changes by typing "y" and enter.
+Confirm the changes by typing "y" and enter.
 
 . Unpause and start the "hello-world" pipeline
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test unpause-pipeline --pipeline hello-world-YOUR_INITIALS
 fly -t test trigger-job --job hello-world-YOUR_INITIALS/hello_world_job --watch
-----------------------------------------------------------------------------------------
+----
 +
--> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://10.59.227.243:8080/teams/main/pipelines/hello-world-YOUR_INITIALS
+> Note: to interact with the Concourse server user-interface browse to the "hello-world" pipeline you created by visiting http://10.59.227.243:8080/teams/main/pipelines/hello-world-YOUR_INITIALS
 
 Congratulations!!! You've just configured your first Concourse.ci pipeline.
 
@@ -61,24 +58,24 @@ In 3 steps we will configure a pipeline to fetch code from a Git repository, dep
 . Upload a new pipeline definition
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test set-pipeline --pipeline simple-deploy --config ci/simple-deploy.yml
-----------------------------------------------------------------------------------------
+----
 
 . Unpause and start the "simple-deploy" pipeline
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test unpause-pipeline --pipeline simple-deploy
 fly -t test trigger-job --job simple-deploy/simple_deploy_job --watch
-----------------------------------------------------------------------------------------
+----
 +
--> Browse to the "simple-deploy" pipeline to view results.  Notice that all we did was to echo the contents of the `app_sources` directory.
+Browse to the "simple-deploy" pipeline to view results.  Notice that all we did was to echo the contents of the `app_sources` directory.
 
 . Modify the pipeline definition. Open _ci/simple-deploy.yml_ for editing.  Delete the contents and replace with:
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 resources:
 - name: app_sources
   type: git
@@ -103,9 +100,9 @@ jobs:
   - put: staging_deployment
     params:
       manifest: app_sources/manifest.yml
-----------------------------------------------------------------------------------------
+----
 +
--> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, _organization_ and _space_ respectively on PWS.
+> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, _organization_ and _space_ respectively on PWS.
 
 There are still a few refinements that we should make to this pipeline:
 
@@ -125,14 +122,14 @@ Here we will learn how to initiate unit tests as part of a build, provision data
 . Create a new file in the _ci_ directory
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 touch ci/uaa.yml
-----------------------------------------------------------------------------------------
+----
 
 . Open the file for editing and add the following:
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 resources:
 - name: uaa_sources
   type: git
@@ -165,18 +162,18 @@ jobs:
           #./gradlew test
           ./gradlew :cloudfoundry-identity-uaa:war
           mv uaa/build/libs/cloudfoundry-identity-uaa-*.war ../uaa_war
-----------------------------------------------------------------------------------------
+----
 +
--> Note: we're skipping executing unit tests in the interest of time. If you want to enable running them uncomment the line that reads `./gradlew test`.  Of course you should not skip the unit tests for real world projects!
+> Note: we're skipping executing unit tests in the interest of time. If you want to enable running them uncomment the line that reads `./gradlew test`.  Of course you should not skip the unit tests for real world projects!
 
 . Upload the pipeline, unpause, and start it
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test set-pipeline --pipeline uaa --config ci/uaa.yml
 fly -t test unpause-pipeline --pipeline uaa
 fly -t test trigger-job --job uaa/uaa_job --watch
-----------------------------------------------------------------------------------------
+----
 
 . Prepare Artifactory to store a .war file
 +
@@ -190,17 +187,17 @@ fly -t test trigger-job --job uaa/uaa_job --watch
 . Edit _ci/uaa.yml_ and at the top of the file, add the following section:
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 resource_types:
   type: docker-image
   source:
     repository: pivotalservices/artifactory-resource
-----------------------------------------------------------------------------------------
+----
 
 . Add the following section directly underneath the line that starts with `tag_filter: '4.7.*'`. Do not indent.
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 - name: uaa-build
   type: artifactory
   source:
@@ -210,49 +207,49 @@ resource_types:
     username: admin
     password: {artifactory_password}
     skip_ssl_verification: true
-----------------------------------------------------------------------------------------
+----
 +
--> You will need to replace `{}` placeholder value above with the administrator password for the Artifctory server.
+> You will need to replace `{}` placeholder value above with the administrator password for the Artifctory server.
 
 . At the bottom of the file add the following section (again with no indentation)
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 - put: uaa-build
     params:
       file: uaa_war/cloudfoundry-identity-uaa-*.war
-----------------------------------------------------------------------------------------
+----
 +
--> Don't forget to save all changes to the _uaa.yml_ file!
+> Don't forget to save all changes to the _uaa.yml_ file!
 
 . Reset the pipeline
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test set-pipeline --pipeline uaa --config ci/uaa.yml
-----------------------------------------------------------------------------------------
+----
 
 . Create new spaces
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 cf spaces
 cf create-space test
 cf create-space production
-----------------------------------------------------------------------------------------
+----
 +
--> Only create the spaces above if they do not already exist.
+> Only create the spaces above if they do not already exist.
 
 . Provision a database instance per space
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 cf marketplace
 cf target -s test
 cf create-service elephantsql turtle uaadb
 cf target -s production
 cf create-service elephantsql turtle uaadb
-----------------------------------------------------------------------------------------
+----
 
 . Specify a Concourse job to deploy the UAA to the test environment
 + 
@@ -261,7 +258,7 @@ Open the _ci/uaa.yml_ file for editing.
 Directly underneath the line that reads `skip_ssl_verification: true`, add the following section. (Do not indent).
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 - name: test_deployment
   type: cf
   source:
@@ -271,13 +268,13 @@ Directly underneath the line that reads `skip_ssl_verification: true`, add the f
     organization: {your_organization}
     space: test
     skip_cert_check: false
-----------------------------------------------------------------------------------------
--> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, and _organization_ respectively on PWS.
+----
+> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, and _organization_ respectively on PWS.
 +
 Then, at the bottom of the file add a carriage return and add the following section. (Do not indent).
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 
 - name: deploy-to-test
   plan:
@@ -319,7 +316,7 @@ Then, at the bottom of the file add a carriage return and add the following sect
   - put: test_deployment
     params:
       manifest: uaa-build-with-manifest/manifest.yml
-----------------------------------------------------------------------------------------
+----
 
 . Repeat steps above in order to faciliate a deployment to production
 +
@@ -328,7 +325,7 @@ Open the _ci/uaa.yml_ file for editing.
 Directly underneath the line that reads `skip_ssl_verification: true`, add the following section. (Do not indent).
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 - name: production_deployment
   type: cf
   source:
@@ -338,13 +335,13 @@ Directly underneath the line that reads `skip_ssl_verification: true`, add the f
     organization: {your_organization}
     space: test
     skip_cert_check: false
-----------------------------------------------------------------------------------------
--> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, and _organization_ respectively on PWS.
+----
+> Note: You will need to replace all the `{}` enclosed value placeholders above with your own _username_, _password_, and _organization_ respectively on PWS.
 +
 Then, at the bottom of the file add a carriage return and add the following section. (Do not indent).
 +
 [source, yaml]
-----------------------------------------------------------------------------------------
+----
 
 - name: deploy-to-production
   plan:
@@ -386,16 +383,16 @@ Then, at the bottom of the file add a carriage return and add the following sect
   - put: production_deployment
     params:
       manifest: uaa-build-with-manifest/manifest.yml
-----------------------------------------------------------------------------------------
+----
 
 . Reset the pipeline once more
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 fly -t test set-pipeline --pipeline uaa --config ci/uaa.yml
-----------------------------------------------------------------------------------------
+----
 +
--> Browse to the uaa pipeline and verify 
+Browse to the uaa pipeline and verify 
 
 We still haven't:
 
@@ -411,17 +408,17 @@ We're going to work with with the `pivotalservices/concourse-pipeline-samples` r
 . Clone the repository
 +
 [source, bash]
-----------------------------------------------------------------------------------------
+----
 cd ..
 git clone https://github.com/pivotalservices/concourse-pipeline-samples.git
 cd concourse-pipeline-samples
 rm -Rf .git
 cd blue-green-app-deployment
-----------------------------------------------------------------------------------------
+----
 
 . Follow the https://github.com/pivotalservices/concourse-pipeline-samples/tree/master/blue-green-app-deployment#pipeline-setup-and-execution[instructions] for blue-green pipeline sample setup and execution
 +
--> Note: you will need to change the IP address and port reference for Concourse  
+> Note: you will need to change the IP address and port reference for Concourse  
 
 If you've taken the time to complete the above instructions you will have seen how to externalize sensitive configuration (e.g., credentials) as well as how to compose units work into separate files.
 
