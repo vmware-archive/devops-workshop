@@ -1,17 +1,43 @@
+
+// presentations
+:pcf-value-proposition: link:./presentations/100-pcf-background/pcf-value-proposition.pptx
+:pcf-101: ./presentations/100-pcf-background/introduction-to-pcf.pptx
+:cf-push: ./presentations/100-pcf-background/pcf-architecture.pptx
+:cloud-native-design: ./presentations/101-cloud-native-concepts/session-1-cloud-native-design.pptx
+:cloud-friencly: # 
+:session-2: ./presentations/102-intro-to-spring-boot/session-2-intro-boot.pptx
+:session-3: ./presentations/102-intro-to-spring-boot/session-3-polyglot-persist.pptx
+:session-4: ./presentations/102-intro-to-spring-boot/session-4-advanced-boot.pptx
+:session-5: ./presentations/103-intro-to-spring-cloud-services/session-5-intro-spring-cloud.pptx
+:session-6: ./presentations/103-intro-to-spring-cloud-services/session-6-spring-cloud-config.pptx
+:session-7: ./presentations/103-intro-to-spring-cloud-services/session-7-discovery-and-load-balance.pptx
+:session-8: ./presentations/103-intro-to-spring-cloud-services/session-8-circuit-breaker.pptx
+:session-9: ./presentations/104-intro-to-ci-cd/session-9-intro-ci-cd.pptx
+
+// labs
+:lesson-00: ./labs/00-introduction-to-cli
+:lesson-01: ./labs/01-building-a-spring-boot-application
+:lesson-02: ./labs/02-adding-persistence-to-boot-application
+:lesson-03: ./labs/03-enhancing-boot-application-with-metrics
+:lesson-04: ./labs/04-adding-spring-cloud-config-to-boot-application
+:lesson-05: ./labs/05-adding-service-registration-and-discovery-with-spring-cloud
+:lesson-06: ./labs/06-employing-a-circuit-breaker
+
+
 = Workshop Schedule
 
 The following tables are meant to illustrate how the content in this repository is meant to be delivered (and consumed) over a period of one-and-a-half days.
 
-Day 1
-^^^^^^
+== Day 1
+
 .Schedule
 [options="header"]
 |=======================================================
 | Start   | End        | Session
 | 8:00    | 8:30       | Breakfast
 | 8:30    | 9:00       | Agenda + Introductions
-| 9:00    | 10:00      | PCF Value Proposition
-| 10:00   | 10:10      | Break 
+| 9:00    | 10:00      | {pcf-value-proposition}[PCF Value Proposition]
+| 10:00   | 10:10      | Break
 | 10:10   | 11:00      | PCF 101
 | 11:00   | 11:45      | CF Push [hands-on lab]
 | 11:45   | 12:30      | Lunch
@@ -25,8 +51,8 @@ Day 1
 | --      | 5:15       | Adjourn
 |=======================================================
 
-Day 2
-^^^^^^
+== Day 2
+
 .Schedule
 [options="header"]
 |=======================================================
@@ -44,3 +70,4 @@ Day 2
 | 2:15    | 2:30       | Retrospective
 | --      | 2:30       | Adjourn
 |=======================================================
+
