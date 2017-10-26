@@ -54,6 +54,7 @@ dependencies {
 	compile('org.springframework.data:spring-data-rest-hal-browser')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
+	compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
 	runtime('com.h2database:h2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
