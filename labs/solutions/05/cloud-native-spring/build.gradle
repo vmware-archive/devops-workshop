@@ -1,7 +1,7 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.7.RELEASE'
-		springDependencyManagementVersion = '1.0.3.RELEASE'
+	    springBootVersion = '1.5.7.RELEASE'
+	    springDependencyManagementVersion = '1.0.3.RELEASE'
 	}
 	repositories {
         maven {
@@ -20,10 +20,10 @@ buildscript {
         }
     }
     dependencies {
-		classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+	classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+	classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -35,7 +35,7 @@ apply plugin: "io.spring.dependency-management"
 apply plugin: "com.gorylenko.gradle-git-properties"
 
 gitProperties {
-	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
     gitRepositoryRoot = new File("${project.rootDir}/../../../..")
 }
@@ -44,8 +44,8 @@ import org.apache.tools.ant.filters.*
 
 processResources {
     filter ReplaceTokens, tokens: [
-		"application.name": project.property("application.name"),
-		"application.description": project.property("application.description"),
+        "application.name": project.property("application.name"),
+	"application.description": project.property("application.description"),
         "application.version": project.property("version")
     ]
 }
@@ -97,11 +97,11 @@ bootRepackage  {
 publishing {
     publications {
         maven(MavenPublication) {
-			groupId 'io.pivotal'
+	    groupId 'io.pivotal'
             from components.java
         }
     }
-	repositories {
+    repositories {
         mavenLocal()
     }
 }

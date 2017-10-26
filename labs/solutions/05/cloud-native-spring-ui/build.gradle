@@ -1,28 +1,28 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.7.RELEASE'
-		springDependencyManagementVersion = '1.0.3.RELEASE'
+	    springBootVersion = '1.5.7.RELEASE'
+	    springDependencyManagementVersion = '1.0.3.RELEASE'
 	}
 	repositories {
-        maven {
-            credentials { 
-                username System.env.ArtifactoryUser
-                password System.env.ArtifactoryKey
+            maven {
+                credentials { 
+                    username System.env.ArtifactoryUser
+                    password System.env.ArtifactoryKey
+                }
+                url System.env.REPO_MAVEN_RELEASE
             }
-            url System.env.REPO_MAVEN_RELEASE
-        }
-        maven {
-            credentials { 
-                username System.env.ArtifactoryUser
-                password System.env.ArtifactoryKey
+            maven {
+                credentials { 
+                    username System.env.ArtifactoryUser
+                    password System.env.ArtifactoryKey
+                }
+                url System.env.REPO_GRADLE_PLUGINS
             }
-            url System.env.REPO_GRADLE_PLUGINS
         }
-    }
 	dependencies {
-        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+            classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+	    classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
 
@@ -35,7 +35,7 @@ apply plugin: "io.spring.dependency-management"
 apply plugin: "com.gorylenko.gradle-git-properties"
 
 gitProperties {
-	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
     gitRepositoryRoot = new File("${project.rootDir}/../../../..")
 }
@@ -44,15 +44,15 @@ import org.apache.tools.ant.filters.*
 
 processResources {
     filter ReplaceTokens, tokens: [
-		"application.name": project.property("application.name"),
-		"application.description": project.property("application.description"),
+	"application.name": project.property("application.name"),
+	"application.description": project.property("application.description"),
         "application.version": project.property("version")
     ]
 }
 
 dependencyManagement {
     imports {
-		mavenBom "com.vaadin:vaadin-bom:8.1.5"
+	mavenBom "com.vaadin:vaadin-bom:8.1.5"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
     }
@@ -60,14 +60,14 @@ dependencyManagement {
 
 dependencies {
     compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
-	compileOnly('org.projectlombok:lombok:1.16.18')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.cloud:spring-cloud-starter-feign')
-	compile('org.springframework.cloud:spring-cloud-starter-ribbon')
-	compile('com.vaadin:vaadin-spring-boot-starter')
+    compileOnly('org.projectlombok:lombok:1.16.18')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.cloud:spring-cloud-starter-feign')
+    compile('org.springframework.cloud:spring-cloud-starter-ribbon')
+    compile('com.vaadin:vaadin-spring-boot-starter')
     compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {
@@ -101,7 +101,7 @@ publishing {
             from components.java
         }
     }
-	repositories {
+    repositories {
         mavenLocal()
     }
 }
