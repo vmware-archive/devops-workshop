@@ -1,4 +1,3 @@
-
 :schedule: link:./SCHEDULE.adoc
 
 = Boeing DevOps Workshop
@@ -11,6 +10,13 @@ Welcome to the workshop! This is a collection of exercises and accompanying sour
 
 == Prerequisities
 
+=== Knowledge
+
+* Basic understanding of Git
+* Basic understanding of Fava.
+* Familiarity with CLI (Bash, CMD, PowerShell, etc.)
+
+
 === Software
 
 * Git
@@ -22,6 +28,8 @@ Welcome to the workshop! This is a collection of exercises and accompanying sour
 To install prerequisite software, run the _DevOpsInstall.ps1_ script from https://git.web.boeing.com/fork-me/devops-setup[here].
 
 == Workshop Repository
+
+> If you dont yet have an account on https://git.web.boeing.com[Boeing GitLab] – just sign in with wsso.
 
 > Note: https://dev-docs.web.boeing.com/recipe/dev-setup-open-ssh[Ensure your SSH keys are setup for used with GitLab].
 
