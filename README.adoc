@@ -12,8 +12,9 @@ Welcome to the workshop! This is a collection of exercises and accompanying sour
 
 === Knowledge
 
-* Basic understanding of Git
-* Basic understanding of Fava.
+* Basic understanding of https://git-scm.com/[Git]
+* Basic understanding of http://www.oracle.com/events/global/en/java-outreach/resources/java-a-beginners-guide-1720064.pdf[Java].
+* Basic understanding of https://gradle.org/[Gradle Build Tool].
 * Familiarity with CLI (Bash, CMD, PowerShell, etc.)
 
 
