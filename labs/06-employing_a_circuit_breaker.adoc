@@ -6,7 +6,7 @@ In this lab we'll utilize Spring Boot and Spring Cloud to make our UI Applicatio
 
 . These features are added by adding _spring-cloud-services-starter-circuit-breaker_ to the classpath.  Open your Gradle build file, found here: */cloud-native-spring-ui/build.gradle*.  Add the following Spring Cloud Services dependency:
 +
-[source, groovy]
+[source,groovy]
 ---------------------------------------------------------------------
 dependencies {
 	// add this dependency
@@ -16,7 +16,7 @@ dependencies {
 
 . The first thing we need to add to our application is an _@EnableCircuitBreaker_ annotation to the Spring Boot application.  Add this annotation below the other ones on the _CloudNativeSpringUiApplication_ declaration in the class _io.pivotal.CloudNativeSpringUiApplication_ (/cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java):
 +
-[source, java]
+[source,java]
 ---------------------------------------------------------------------
 @SpringBootApplication
 @EnableFeignClients
@@ -25,28 +25,44 @@ dependencies {
 public class CloudNativeSpringUiApplication {
 ---------------------------------------------------------------------
 
-. When we introduced an _@FeignClient_ into our application we were only required to provide an interface.  We'll provide a dummy class that implements that interface for our fallback.  We'll also reference that class as a fallback in our _@FeignClient_ annotation.  First, create this class in the _io.pivotal_ package:
+. When we introduced an _@FeignClient_ into our application we were only required to provide an interface.  We'll implement a factory that creates a fallback implementation (that way we get a handle on any exception so we can log out what caused the fallback to occur).  We'll also reference that class as a fallback in our _@FeignClient_ annotation.  First, create this class in the _io.pivotal_ package:
 +
-[source, java]
+[source,java]
 ---------------------------------------------------------------------
+@Slf4j
 @Component
-public class CityClientFallback implements CityClient {
-	@Override
-	public Resources<City> getCities() {
-		//We'll just return an empty response
-		return new Resources<City>(Collections.emptyList());
-	}
+class CityClientFallbackFactory implements FallbackFactory<CityClient> {
+
+    @Override
+    public CityClient create(final Throwable t) {
+        return new CityClient() {
+            @Override
+            public Resources<City> getCities() {
+                log.info("Fallback triggered by {} due to {}", t.getClass().getName(), t.getMessage());
+                return new Resources<City>(Collections.emptyList());
+            }
+        };
+    }
 }
 ---------------------------------------------------------------------
-
-. Also modify the _@FeignClient_ annotation to reference this class as the fallback in case of failure:
 +
-[source, java]
+Hint: imports should start with `java.util`, `io.pivotal`, `feign.hystrix`, `lombok.extern.slf4j`, `org.springframework.stereotype`, and `org.springframework.hateoas`.
+
+. Also modify the _@FeignClient_ annotation to reference this factory implementation in case of failure:
++
+[source,java]
 ---------------------------------------------------------------------
-@FeignClient(name = "https://cloud-native-spring", fallback = CityClientFallback.class)
+@FeignClient(name = "https://cloud-native-spring", fallbackFactory = CityClientFallbackFactory.class)
 public interface CityClient {
 ---------------------------------------------------------------------
-
+. Finally, enable Hystrix instrumentation on the Feign client by adding the following key-value to `application.yml` 
++
+[source,yml]
+---------------------------------------------------------------------
+feign:
+  hystrix:
+    enabled: true
+---------------------------------------------------------------------
 
 == Create the Circuit Breaker Dashboard
 
@@ -63,7 +79,7 @@ image::images/dash.jpg[]
 
 . We will now bind our application to our _circuit-breaker-dashboard_ within our Cloud Foundry deployment manifest.  Add this additional reference to a service at the bottom of */cloud-native-spring-ui/manifest.yml* in the services list:
 +
-[source, yml]
+[source,yml]
 ---------------------------------------------------------------------
   services:
   - service-registry

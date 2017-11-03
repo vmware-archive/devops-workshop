@@ -393,7 +393,7 @@ curl -k https://cloud-native-spring-{random-word}.{domain}.com/cities
 
 . You may have noticed that when using the H2 (in-memory) database that the schema is automatically generated and updated on application start. That's not the case with other SQL databases, such as MySQL, Oracle or PostgreSQL. You will need to instruct the application to automatically generate SQL schema by adding to `src/main/resources/application.yml` file, e.g.
 +
-[source,bash]
+[source,yml]
 ---------------------------------------------------------------------
 spring:
   jpa:
@@ -489,7 +489,7 @@ INFO 20 --- [           main] org.hibernate.tool.hbm2ddl.SchemaUpdate  : HHH0002
 
 . You could also bind to the database directly from the `manifest.yml` file, e.g.
 +
-[source,bash]
+[source,yml]
 ---------------------------------------------------------------------
 applications:
 - name: cloud-native-spring

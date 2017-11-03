@@ -6,7 +6,7 @@ In this lab we'll utilize Spring Boot and Spring Cloud to configure our applicat
 
 . These features are added by adding _spring-cloud-services-starter-service-registry_ to the classpath. Open your Gradle build file, found here: */cloud-native-spring/build.gradle*. Add the following spring cloud services dependency:
 +
-[source, groovy]
+[source,groovy]
 ---------------------------------------------------------------------
 dependencies {
 	// add this dependency
@@ -18,7 +18,7 @@ dependencies {
 
 . Thanks to Spring Cloud instructing your application to register with Eureka is as simple as adding a single annotation to your app! Add an _@EnableDiscoveryClient_ annotation to the class _io.pivotal.CloudNativeSpringApplication_ (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeApplication.java):
 +
-[source, java]
+[source,java]
 ---------------------------------------------------------------------
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -41,7 +41,7 @@ image::images/registry1.jpg[]
 
 . We will now bind our application to our service-registry within our Cloud Foundry deployment manifest.  Add an additional reference to the service at the bottom of */cloud-native-spring/manifest.yml* in the services list:
 +
-[source, yml]
+[source,yml]
 ---------------------------------------------------------------------
   services:
   - config-server
@@ -97,7 +97,7 @@ Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gra
 
 . As before, we need to add _spring-cloud-services-starter-service-registry_ to the classpath.  Add this to your _build.gradle_:
 +
-[source, groovy]
+[source,groovy]
 ---------------------------------------------------------------------
 dependencies {
 	// add this dependency
@@ -108,7 +108,7 @@ dependencies {
 +
 We'll also be using the Domain object from our main Boot application.  Add that as a dependency too:
 +
-[source, groovy]
+[source,groovy]
 ---------------------------------------------------------------------
 dependencies {
   // add this dependency
@@ -190,7 +190,7 @@ public class AppUi extends UI {
 ---------------------------------------------------------------------
 . We'll also want to give our UI App a name so that it can register properly with Eureka and potentially use cloud config in the future.  Add the following configuration to */cloud-native-spring-ui/src/main/resources/bootstrap.yml*:
 +
-[source, yaml]
+[source,yml]
 ---------------------------------------------------------------------
 spring:
   application:

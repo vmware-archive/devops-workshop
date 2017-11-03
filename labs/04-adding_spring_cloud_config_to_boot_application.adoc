@@ -10,7 +10,7 @@ These features are added by adding _spring-cloud-services-starter-config-client_
 +
 Adding a dependency management plugin and other miscellaneous configuration.
 +
-[source, java]
+[source,groovy]
 ---------------------------------------------------------------------
 buildscript {
 	ext {
@@ -105,7 +105,7 @@ publishing {
 
 . Add an _@Value_ annotation, private field, and update the existing _@RequestMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
-[source, java]
+[source,java]
 ---------------------------------------------------------------------
     @Value("${greeting:Hola}")
     private String greeting;
@@ -118,7 +118,7 @@ publishing {
 
 . Add a http://static.javadoc.io/org.springframework.cloud/spring-cloud-commons-parent/1.1.9.RELEASE/org/springframework/cloud/context/scope/refresh/RefreshScope.html[@RefreshScope] annotation to the top of the _GreetingController_ class declaration
 +
-[source, java]
+[source,java]
 ---------------------------------------------------------------------
 @RefreshScope
 @RestController
@@ -153,7 +153,7 @@ public class GreetingController {
 
 . When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following configuration to */cloud-native-spring/src/main/resources/application.yml*:
 +
-[source, yaml]
+[source,yml]
 ---------------------------------------------------------------------
 security:
   basic:
@@ -162,7 +162,7 @@ security:
 
 . We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
-[source, yaml]
+[source,yml]
 ---------------------------------------------------------------------
 spring:
   application:
@@ -196,11 +196,26 @@ image::images/config-scs1.jpg[]
 +
 image::images/config-scs2.jpg[]
 
-. We now need to update the service instance with our GIT repository information.  Using the Cloud Foundry CLI execute the following update service command:
+. We now need to update the service instance with our GIT repository information.
++ 
+Create a file named `config-server.json` and update its contents to be
++
+[source,json]
+---------------------------------------------------------------------
+{
+  "git": { 
+    "uri": "https://github.com/pacphi/config-repo"
+  }
+}
+---------------------------------------------------------------------
++
+Note: If you choose to replace the value of `"uri"` above with another Git repository that you have commit privileges to, you should make a copy of the `cloud-native-spring.yml` file. Then, as you update configuration in that file, you can test a POST request to the `cloud-native-spring` application's `/refresh` end-point to see the new configuration take effect without restarting the application! 
++
+Using the Cloud Foundry CLI execute the following update service command:
 +
 [source,bash]
 ---------------------------------------------------------------------
-cf update-service config-server -c '{"git": { "uri": "https://github.com/pacphi/config-repo" } }'
+cf update-service config-server -c config-server.json
 ---------------------------------------------------------------------
 
 . Refresh you Config Server management page and you will see the following message.  Wait until the screen refreshes and the service is reintialized:
@@ -209,7 +224,7 @@ image::images/config-scs3.jpg[]
 
 . We will now bind our application to our config-server within our Cloud Foundry deployment manifest.  Add these entries to the bottom of */cloud-native-spring/manifest.yml*
 +
-[source, yml]
+[source,yml]
 ---------------------------------------------------------------------
   services:
   - config-server
@@ -217,7 +232,7 @@ image::images/config-scs3.jpg[]
 +
 Complete:
 +
-[source, yml]
+[source,yml]
 ---------------------------------------------------------------------
 ---
 applications:
@@ -258,9 +273,9 @@ Ohai World!
 + 
 -> A Spring component within the Spring Cloud Starter Config Client module called a _service connector_ automatically detected that there was a Cloud Config service bound into the application.  The service connector configured the application automatically to connect to the Cloud Config Server and downloaded the configuration and wired it into the application
 
-. If you navigate to the Git repo we specified for our configuration, https://github.com/pacphi/config-repo, you'll see a file named _cloud-native-spring.yml_.  This filen ame is the same as our _spring.application.name_ value for our Boot application.  The configuration is read from this file, in our case the following property:
+. If you navigate to the Git repo we specified for our configuration, https://github.com/pacphi/config-repo, you'll see a file named _cloud-native-spring.yml_.  This filename is the same as our _spring.application.name_ value for our Boot application.  The configuration is read from this file, in our case the following property:
 +
-[source, yaml]
+[source,yml]
 ---------------------------------------------------------------------
 greeting: Ohai
 ---------------------------------------------------------------------

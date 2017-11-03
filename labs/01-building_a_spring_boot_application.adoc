@@ -28,7 +28,7 @@ Within your editor/IDE complete the following steps:
 
 . Add an _@RestController_ annotation to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
 +
-[source, java]
+[source,java]
 ---------------------------------------------------------------------
 package io.pivotal.controller;
 
@@ -122,7 +122,7 @@ We've built and run the application locally.  Now we'll deploy it to Cloud Found
 
 . Add application metadata, using a text editor (of choice)
 +
-[source, bash]
+[source,bash]
 ---------------------------------------------------------------------
 ---
 applications:
