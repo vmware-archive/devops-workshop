@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.7.RELEASE'
+        springBootVersion = '1.5.8.RELEASE'
         springDependencyManagementVersion = '1.0.3.RELEASE'
     }
     repositories {
@@ -36,13 +36,13 @@ processResources {
     filter ReplaceTokens, tokens: [
 	"application.name": project.property("application.name"),
 	"application.description": project.property("application.description"),
-        "application.version": project.property("version")
+    "application.version": project.property("version")
     ]
 }
 
 dependencyManagement {
     imports {
-	mavenBom "com.vaadin:vaadin-bom:8.1.5"
+	    mavenBom "com.vaadin:vaadin-bom:8.1.5"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
     }
