@@ -1,59 +1,66 @@
+:schedule: link:./SCHEDULE.adoc
+
 = Boeing DevOps Workshop
 
-A collection of workshop presentations and labs exercises for use at Boeing. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a https://github.com/Pivotal-Field-Engineering/devops-workshop/blob/master/SCHEDULE.adoc[1-1/2 day period].
 
-== Deprecation Notice
+== Overview
 
-(2017-10-25) This repository is deprecated in favor of Boeing hosted Gitlab repositories, here:
-
--> https://git.web.boeing.com/fork-me/workshop-presentation[Presentations]
-
--> https://git.web.boeing.com/fork-me/workshop-project[Workshop]
-
--> https://git.web.boeing.com/fork-me/dev-docs/tree/workshop/content/workshop[Labs]
+Welcome to the workshop! This is a collection of exercises and accompanying source code. Emphasis is on Pivotal Cloud Foundry; cloud native concepts; microservice design; Spring Boot; Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. It is typically conducted over a 2-3 day period. The {schedule}[Workshop Schedule] contains the timeline for the workshop and links to all presentations and labs.
 
 
-== Software Prerequisities
+== Prerequisities
 
-=== Minimum requirements
+=== Knowledge
 
--> CF-CLI
-
--> Java JDK
-
--> Git
-
--> Gradle
-
-=== Recommended
-
--> STS (Spring Source Tool Suite an Eclipse IDE variant)
-
--> Postman (a REST client)
+* Basic understanding of https://git-scm.com/[Git]
+* Basic understanding of http://www.oracle.com/events/global/en/java-outreach/resources/java-a-beginners-guide-1720064.pdf[Java].
+* Basic understanding of https://gradle.org/[Gradle Build Tool].
+* Familiarity with CLI (Bash, CMD, PowerShell, etc.)
 
 
-== Clone this repository
+=== Software
 
-You will need to set a couple of environment variables `HTTP_PROXY` and `HTTPS_PROXY` first!
+* Git
+* Java JDK 1.8u*
+* CF CLI
+* STS (Spring Source Tool Suite an Eclipse IDE variant)
+* Postman (a REST client)
+
+To install prerequisite software, run the _DevOpsInstall.ps1_ script from https://git.web.boeing.com/fork-me/devops-setup[here].
+
+== Workshop Repository
+
+> If you dont yet have an account on https://git.web.boeing.com[Boeing GitLab] – just sign in with wsso.
+
+> Note: https://dev-docs.web.boeing.com/recipe/dev-setup-open-ssh[Ensure your SSH keys are setup for used with GitLab].
+
+Fork then Clone the following repositories for use in the workshop:
 
 [source,bash]
----------------------------------------------------------------------
-set HTTP_PROXY=http://www-proxy.web.boeing.com:31060
-set HTTPS_PROXY=http://www-proxy.web.boeing.com:31060
----------------------------------------------------------------------
+----
+git clone git@git-ssh.web.boeing.com:fork-me/devops-workshop.git
+----
 
-then
+=== Environment Setup
 
-[source,bash]
----------------------------------------------------------------------
-git clone https://github.com/Pivotal-Field-Engineering/devops-workshop
----------------------------------------------------------------------
+Ensure that you have your environment configured correctly and can successfully build the projects. 
 
+This workshop contains a number of labs meant to be worked through in numerical order - as each exercise builds upon the last. The only exception to this sequence is _lesson-00_. _lesson-00_ references sample applications in the _samples_ directory.  These applications can be pushed to Cloud Foundry at any time.
 
-== Helpful links
+Your workspace is the _labs/workspace_ directory. If you get stuck implementing any of the labs, _solutions_ are available for your perusal.
 
--> https://pcf-start.web.pcfpre-phx.apps.boeing.com/workshop.html[PCF Workshops at Boeing]
+Projects in this repository expect the following environment configuration
 
--> https://pcf-start.web.pcfpre-phx.apps.boeing.com/secured[Cloud Foundry Account Request]
+Set Envronment Variables:
 
--> https://pcf-start.wpi.pcfpre-phx.apps.boeing.com/faq.html[Software installation and usage FAQ]
+* REPO_MAVEN_RELEASE=https://sres.web.boeing.com/artifactory/Maven-Releases
+* REPO_GRADLE_PLUGINS=https://sres.web.boeing.com/artifactory/list/gradle-plugins-remot
+* ArtifactoryUser={ YOUR_BEMSID }
+* ArtifactoryKey={ YOUR_SRES_ARTIFACTORY_KEY }
+
+=== PCF Environment Access
+
+Instructors should have added all atendees to a workshop-specific org so all attendees have quick access to an environment. If you do not have an account yet, please see the instructor.
+
+Verify that you can access the https://login.system.pcfpre-phx.cloud.boeing.com/login[PHX PreProd PCF Apps Manager].
+

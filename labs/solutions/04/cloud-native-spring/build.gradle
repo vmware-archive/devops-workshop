@@ -70,7 +70,7 @@ dependencies {
 }
 
 repositories {
-	maven {
+    maven {
         credentials { 
             username System.env.ArtifactoryUser
             password System.env.ArtifactoryKey
@@ -99,7 +99,7 @@ publishing {
             from components.java
         }
     }
-	repositories {
+    repositories {
         mavenLocal()
     }
 }

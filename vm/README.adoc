@@ -4,15 +4,7 @@ Certain software must be installed on your laptop or workstation in order to eng
 
 == Onsite 
 
-=== Installation Approaches
-
 Boeing has strict policy guidelines regarding how software is installed on Boeing equipment.
-
-==== Native
-
-To simplify an attended installation, you may wish to employ the following Powershell https://git.web.boeing.com/fork-me/devops-setup/blob/master/full-kit/Full-Kit-Install.ps1[script].  Note that this script is currently in beta testing.  Use with caution.
-
-==== Virtual Machine
 
 In order to expedite the software installation process for *onsite workshops*, any participant who has a _Windows 10_ host operating system may wish to install a virtual machine that contains all the software pre-installed and configured required for this workshop.
 
@@ -87,5 +79,5 @@ To build and run
   docker build .
   docker run {docker-container-id} -i -t /bin/bash
 
--> ctrl+c to exit
+> ctrl+c to exit
 

@@ -1,0 +1,170 @@
+= Introduction to CF CLI
+
+Change the working directory to be _devops-workshop/labs/samples_
+
+Note the sub-directories present..
+
+[source, bash]
+----
+samples
+├── coldfusion-example
+├── dotnet-core-sample
+├── go-sample
+├── nodejs-sample
+├── python-sample
+----
+
+> If you want to be able to deploy these samples you must have _Go_, _Node_, _.Net Core_, and _Python_ installed.
+
+== How to target a foundation and login
+
+. Open a Terminal (e.g., _cmd_ or _bash_ shell)
+
+. Target a foundation and login
++
+[source, bash]
+----
+cf api https://api.system.pcfpre-phx.cloud.boeing.com
+cf login --sso
+----
++
+> Note the foundation URI. This example is using the PHX pre-prod environment.
+>
+> Note: use PowerShell to run `cf login --sso`. Windows Git Bash will not allow you to retrieve the one-time code.
++
+Enter your account username and password, then select an org and space.
+
+== Explore CF CLI
+
+. Let's take a look at the CF CLI options
++
+[source, bash]
+----
+cf --help
+----
+
+. Let's see what buildpacks are available to us
++
+[source, bash]
+----
+cf buildpacks
+----
+
+. Peruse the services you can provision and bind your applications to
++
+[source, bash]
+----
+cf marketplace
+----
+
+== How to deploy an application
+
+Time to deploy an app.
+
+> To distinguish amongst others' applications in the workshop, modify the hostname for your application by altering the each of the `cf push` commands by adding `--hostname {YOUR_INITIALS}-{APP_NAME}`
+>
+> Example: `cf push --hostname dai-go-sample`
+
+
+. How about Node.js? 
++
+[source, bash]
+----
+cd nodejs-sample
+cf push -c "node server.js"
+----
++
+> If you are having trouble resolving artifacts, you are likely running in a https://docs.cloudfoundry.org/buildpacks/node/index.html#yarn_disconnected[disconnected] environment, so follow these steps and try pushing the app again.
+> 
+> [source, bash]
+> ----
+> yarn config set yarn-offline-mirror ./npm-packages-offline-cache
+> cp ~/.yarnrc .
+> rm -rf node_modules/ yarn.lock
+> yarn install
+> ----
+  
+. Next, let's try deploying a Python app.
++
+[source, bash]
+----
+cd ../python-sample
+cf push my_pyapp
+----
+  
+. Rinse and repeat for .Net Core
++
+[source, bash]
+----
+cd ../dotnet-core-sample
+cf push
+----
+
+. ...and Go apps
++
+[source, bash]
+----
+cd ../go-sample
+cf push awesome-go-app -m 64M --random-route
+----
+
+. And for our final trick, how about deploying a Cold Fusion app?
++
+[source, bash]
+----
+cd.. coldfusion-example
+----
++
+Grab this https://storage.googleapis.com/cphillipson-workshops/devops-workshop/cfmagic.zip[file], unpack into `src/main/webapp` folder with
++
+[source, bash]
+----
+unzip -q cfmagic.zip ./src/main/webapp
+----
++
+Then execute
++
+[source, bash]
+----
+./gradlew war
+cf push
+----
+  
+== Explore CF CLI Apps
+
+Take some time to visit each of the applications you've just deployed.
+
+To check what applications have been deployed so far:
+
+[source, bash]
+----
+cf apps
+----
+
+== How to cleanup after yourself
+
+. Let's stop an app, then check that it has indeed been stopped
++
+[source, bash]
+----
+cf stop cf-nodejs
+cf apps
+----
+  
+
+. Finally, let's delete an app
++
+[source, bash]
+----
+cf delete cf-nodejs
+----
++  
+. Repeat `cf delete` for each app you deployed.
+. Delete your unused routes too.
++
+> Can you figure this one out?
+
+== Where to go for more help
+
+* https://docs.cloudfoundry.org/cf-cli/getting-started.html[Getting Started with the CF CLI]
+* http://www.appservgrid.com/refcards/refcards/dzonerefcards/rc207-010d-cloud-foundry.pdf[Cloud Foundry Cheat Sheet]
