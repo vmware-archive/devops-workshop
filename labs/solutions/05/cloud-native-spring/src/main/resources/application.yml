@@ -17,7 +17,7 @@ info: # add this section
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
       
 security:
   basic:
