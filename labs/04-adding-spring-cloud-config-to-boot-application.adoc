@@ -216,7 +216,7 @@ image::images/config-scs2.jpg[]
 +
 [source,bash]
 ----
-cf update-service config-server -c '{"git": { "uri": "https://github.com/pacphi/config-repo" } }'
+cf update-service config-server -c '{"git": { "uri": "https://git.web.boeing.com/fork-me/devops-workshop-configrepo" } }'
 ----
 
 . Refresh you Config Server management page and you will see the following message.  Wait until the screen refreshes and the service is reintialized:
