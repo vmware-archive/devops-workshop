@@ -1,0 +1,10 @@
+pages:
+  stage: deploy
+  script:
+  - mkdir public
+  - cp PreReq-Install.ps1 public/InstallPreReqs
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

@@ -26,7 +26,14 @@ Welcome to the workshop! This is a collection of exercises and accompanying sour
 * STS (Spring Source Tool Suite an Eclipse IDE variant)
 * Postman (a REST client)
 
-To install prerequisite software, follow the instructions https://git.web.boeing.com/fork-me/devops-setup/blob/master/full-kit/README.md[here]. The essentials kit contains everything you need for this workshop in a fast, easy-to-execute package.
+To install prerequisite software:
+Press <kbd>WindowsKey</kbd> + <kbd>R</kbd> and paste the following
+----
+powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('http://fork-me.pages.boeing.com/devops-workshop-java/InstallPreReqs'))"
+----
+Or start Powershell as admin and execute the `PreReq-Install.ps1` script at the root of the project.
+
+To install more SRES/OSS software easily and quickly, use https://git.web.boeing.com/fork-me/devops-setup/blob/master/full-kit/README.md[devops-setup]
 
 == Workshop Repository
 
