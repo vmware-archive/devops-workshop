@@ -11,7 +11,7 @@ $PACKAGE_LIST = @{
 function main {
     Write-Warning "This script assumes you have set up gradle and ~\.gradle\gradle.properties. Refer to this documentation: `n${GRADLE_SETUP_DOC}`n"
     Write-Output "Welcome to the DevOps-Java Workshop!"
-    Write-Output "This script will install all required prerequisite software for the workshop."
+    Write-Output "This script will install all required prerequisite software for the workshop"
     Write-Output "The following packages will be installed:"
     foreach ($PACKAGE_NAME in $PACKAGE_LIST.Keys) {Write-Output "`t- ${PACKAGE_NAME}"}
     Read-Host -Prompt "Press any key to continue or CTRL+C to abort"
