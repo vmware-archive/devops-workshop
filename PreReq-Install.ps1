@@ -7,6 +7,8 @@ $PACKAGE_LIST = @{
     "Cloud Foundry CLI" = "http://fork-me.pages.boeing.com/devops-setup/InstallCFCLI"
     "Postman" = "http://fork-me.pages.boeing.com/devops-setup/InstallPostman"
 }
+$SRES_USER_SCRIPT="http://fork-me.pages.boeing.com/devops-setup/LocateSRESUser"
+$SRES_KEY_SCRIPT="http://fork-me.pages.boeing.com/devops-setup/LocateSRESKey"
 
 function main {
     Write-Warning "This script assumes you have set up gradle and ~\.gradle\gradle.properties. Refer to this documentation: `n${GRADLE_SETUP_DOC}`n"
@@ -20,6 +22,14 @@ function main {
          $SCRIPT = $PACKAGE_LIST.Item($PACKAGE)
 		 powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${SCRIPT}'))"
      }
+
+# Setup MAVEN User Env Vars for Gradle
+$SRES_USER=$(powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${SRES_USER_SCRIPT}'))")
+$SRES_PASS=$(powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${SRES_KEY_SCRIPT}'))")
+
+[Environment]::SetEnvironmentVariable("MAVEN_USERNAME", $SRES_USER, "User")
+[Environment]::SetEnvironmentVariable("MAVEN_PASSWORD", $SRES_PASS, "User")
+    
 }
 
 main
