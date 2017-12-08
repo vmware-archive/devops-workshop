@@ -5,7 +5,7 @@ $PACKAGE_LIST = @{
     "Git" = "http://gitlab.pages.boeing.com/git-at-boeing/w.ps1"
     "Spring Tool Suite" = "http://fork-me.pages.boeing.com/devops-setup/InstallSTS"
     "Cloud Foundry CLI" = "http://fork-me.pages.boeing.com/devops-setup/InstallCFCLI"
-    "Postman" = "http://fork-me.pages.boeing.com/devops-setup/Postman/InstallPostman"
+    "Postman" = "http://fork-me.pages.boeing.com/devops-setup/InstallPostman"
 }
 
 function main {
