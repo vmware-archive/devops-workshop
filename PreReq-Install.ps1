@@ -18,7 +18,7 @@ function main {
 
      foreach ($PACKAGE in $PACKAGE_LIST.Keys) {
          $SCRIPT = $PACKAGE_LIST.Item($PACKAGE)
-		 Invoke-Command -ScriptBlock ([scriptblock]::Create((new-object net.webclient).DownloadString('${SCRIPT}')))
+		 powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${SCRIPT}'))"
      }
 }
 
