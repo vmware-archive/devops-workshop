@@ -1,5 +1,5 @@
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$GRADLE_SETUP_DOC="https://dev-docs.web.pcf-phx.apps.boeing.com/recipe/dev-setup-gradle/"
+$GRADLE_SETUP_DOC="https://dev-docs.web.pcf-phx.apps.boeing.com/recipe/quick-setup-gradle/"
 $PACKAGE_LIST = @{
     "Java Development Kit" = "http://fork-me.pages.boeing.com/devops-setup/InstallJDK"
     "Git" = "http://gitlab.pages.boeing.com/git-at-boeing/w.ps1"
