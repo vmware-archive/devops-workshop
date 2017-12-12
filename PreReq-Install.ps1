@@ -19,8 +19,10 @@ function main {
     Read-Host -Prompt "Press any key to continue or CTRL+C to abort"
 
     #First, setup Gradle Properties
+    Write-Output "Setting up gradle.properties..."
     powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${GRADLEW_SETUP_SCRIPT}'))"
 
+    Write-Output "Installing packages..."
      foreach ($PACKAGE in $PACKAGE_LIST.Keys) {
          $SCRIPT = $PACKAGE_LIST.Item($PACKAGE)
 		 powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${SCRIPT}'))"
