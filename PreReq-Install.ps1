@@ -9,14 +9,17 @@ $PACKAGE_LIST = @{
 }
 $SRES_USER_SCRIPT="http://fork-me.pages.boeing.com/devops-setup/LocateSRESUser"
 $SRES_KEY_SCRIPT="http://fork-me.pages.boeing.com/devops-setup/LocateSRESKey"
+$GRADLEW_SETUP_SCRIPT="http://fork-me.pages.boeing.com/devops-setup/GradleWSetup"
 
 function main {
-    Write-Warning "This script assumes you have set up gradle and ~\.gradle\gradle.properties. Refer to this documentation: `n${GRADLE_SETUP_DOC}`n"
     Write-Output "Welcome to the DevOps-Java Workshop!"
     Write-Output "This script will install all required prerequisite software for the workshop"
     Write-Output "The following packages will be installed:"
     foreach ($PACKAGE_NAME in $PACKAGE_LIST.Keys) {Write-Output "`t- ${PACKAGE_NAME}"}
     Read-Host -Prompt "Press any key to continue or CTRL+C to abort"
+
+    #First, setup Gradle Properties
+    powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('${GRADLEW_SETUP_SCRIPT}'))"
 
      foreach ($PACKAGE in $PACKAGE_LIST.Keys) {
          $SCRIPT = $PACKAGE_LIST.Item($PACKAGE)
