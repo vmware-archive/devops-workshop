@@ -61,9 +61,9 @@ Projects in this repository expect the following environment configuration
 Set Envronment Variables:
 
 * REPO_MAVEN_RELEASE=https://sres.web.boeing.com/artifactory/Maven-Releases
-* REPO_GRADLE_PLUGINS=https://sres.web.boeing.com/artifactory/list/gradle-plugins-remote
-* ArtifactoryUser={ YOUR_BEMSID }
-* ArtifactoryKey={ YOUR_SRES_ARTIFACTORY_KEY }
+* REPO_GRADLE_PLUGINS=https://sres.web.boeing.com/artifactory/gradle-plugins-remote
+* MAVEN_USERNAME={ YOUR_BEMSID }
+* MAVEN_PASSWORD={ YOUR_SRES_ARTIFACTORY_KEY }
 
 === PCF Environment Access
 

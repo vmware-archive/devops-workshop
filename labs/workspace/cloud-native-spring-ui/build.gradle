@@ -6,15 +6,15 @@ buildscript {
 	repositories {
         maven {
             credentials { 
-                username System.env.ArtifactoryUser
-                password System.env.ArtifactoryKey
+                username System.env.MAVEN_USERNAME
+                password System.env.MAVEN_PASSWORD
             }
             url System.env.REPO_MAVEN_RELEASE
         }
         maven {
             credentials { 
-                username System.env.ArtifactoryUser
-                password System.env.ArtifactoryKey
+                username System.env.MAVEN_USERNAME
+                password System.env.MAVEN_PASSWORD
             }
             url System.env.REPO_GRADLE_PLUGINS
         }
@@ -71,8 +71,8 @@ dependencies {
 repositories {
     maven {
         credentials { 
-            username System.env.ArtifactoryUser
-            password System.env.ArtifactoryKey
+            username System.env.MAVEN_USERNAME
+            password System.env.MAVEN_PASSWORD
         }
         url System.env.REPO_MAVEN_RELEASE
         mavenLocal()

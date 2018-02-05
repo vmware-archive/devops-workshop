@@ -8,8 +8,8 @@ apply plugin: 'maven-publish'
 repositories {
     maven {
         credentials { 
-            username System.env.ArtifactoryUser
-            password System.env.ArtifactoryKey
+            username System.env.MAVEN_USERNAME
+            password System.env.MAVEN_PASSWORD
         }
         url System.env.REPO_MAVEN_RELEASE
         mavenLocal()
