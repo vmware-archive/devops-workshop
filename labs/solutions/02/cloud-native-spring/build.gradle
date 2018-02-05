@@ -1,24 +1,24 @@
 buildscript {
-    ext {
-        springBootVersion = '1.5.7.RELEASE'
+	ext {
+		springBootVersion = '1.5.7.RELEASE'
 		sresCredentials = { 
 			username System.env.MAVEN_USERNAME
 			password System.env.MAVEN_PASSWORD
 		}
-    }
-    repositories {
-        maven {
-            credentials sresCredentials
-            url System.env.REPO_MAVEN_RELEASE
-        }
-        maven {
-            credentials sresCredentials
-            url System.env.REPO_GRADLE_PLUGINS
-        }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+	}
+	repositories {
+		maven {
+			credentials sresCredentials
+			url System.env.REPO_MAVEN_RELEASE
+		}
+		maven {
+			credentials sresCredentials
+			url System.env.REPO_GRADLE_PLUGINS
+		}
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
 apply plugin: 'java'
@@ -29,10 +29,10 @@ apply plugin: 'org.springframework.boot'
 
 
 repositories {
-    maven {
-        credentials sresCredentials
-        url System.env.REPO_MAVEN_RELEASE
-    }
+	maven {
+		credentials sresCredentials
+		url System.env.REPO_MAVEN_RELEASE
+	}
 }
 
 
@@ -50,26 +50,26 @@ dependencies {
 
 
 jar {
-    excludes = ['**/application.yml']
+	excludes = ['**/application.yml']
 }
 
 task execJar (type: Jar, dependsOn: jar) {
-    classifier = 'exec'
-    from sourceSets.main.output
+	classifier = 'exec'
+	from sourceSets.main.output
 }
 
 bootRepackage  {
-    withJarTask = tasks['execJar']
+	withJarTask = tasks['execJar']
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
+	publications {
+		maven(MavenPublication) {
 			groupId 'io.pivotal'
-            from components.java
-        }
-    }
+			from components.java
+		}
+	}
 	repositories {
-        mavenLocal()
-    }
+		mavenLocal()
+	}
 }

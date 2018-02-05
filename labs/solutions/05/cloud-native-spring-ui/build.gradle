@@ -1,26 +1,26 @@
 buildscript {
 	ext {
-	    springBootVersion = '1.5.7.RELEASE'
-	    springDependencyManagementVersion = '1.0.3.RELEASE'
+		springBootVersion = '1.5.7.RELEASE'
+		springDependencyManagementVersion = '1.0.3.RELEASE'
 		sresCredentials = { 
 			username System.env.MAVEN_USERNAME
 			password System.env.MAVEN_PASSWORD
 		}
 	}
 	repositories {
-            maven {
-                credentials sresCredentials
-                url System.env.REPO_MAVEN_RELEASE
-            }
-            maven {
-                credentials sresCredentials
-                url System.env.REPO_GRADLE_PLUGINS
-            }
-        }
+			maven {
+				credentials sresCredentials
+				url System.env.REPO_MAVEN_RELEASE
+			}
+			maven {
+				credentials sresCredentials
+				url System.env.REPO_GRADLE_PLUGINS
+			}
+		}
 	dependencies {
-            classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-	    classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
-	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+			classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
 
@@ -33,70 +33,70 @@ apply plugin: "io.spring.dependency-management"
 apply plugin: "com.gorylenko.gradle-git-properties"
 
 gitProperties {
-    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
-    dateFormatTimeZone = "UTC"
-    gitRepositoryRoot = new File("${project.rootDir}/../../../..")
+	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+	dateFormatTimeZone = "UTC"
+	gitRepositoryRoot = new File("${project.rootDir}/../../../..")
 }
 
 import org.apache.tools.ant.filters.*
 
 processResources {
-    filter ReplaceTokens, tokens: [
+	filter ReplaceTokens, tokens: [
 	"application.name": project.property("application.name"),
 	"application.description": project.property("application.description"),
-        "application.version": project.property("version")
-    ]
+		"application.version": project.property("version")
+	]
 }
 
 dependencyManagement {
-    imports {
+	imports {
 	mavenBom "com.vaadin:vaadin-bom:8.1.5"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
-    }
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
+		mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
+	}
 }
 
 dependencies {
-    compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
-    compileOnly('org.projectlombok:lombok:1.16.18')
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.cloud:spring-cloud-starter-feign')
-    compile('org.springframework.cloud:spring-cloud-starter-ribbon')
-    compile('com.vaadin:vaadin-spring-boot-starter')
-    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
+	compileOnly('org.projectlombok:lombok:1.16.18')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud:spring-cloud-starter-feign')
+	compile('org.springframework.cloud:spring-cloud-starter-ribbon')
+	compile('com.vaadin:vaadin-spring-boot-starter')
+	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {
-    maven {
-        credentials sresCredentials
-        url System.env.REPO_MAVEN_RELEASE
-        mavenLocal()
-    }
+	maven {
+		credentials sresCredentials
+		url System.env.REPO_MAVEN_RELEASE
+		mavenLocal()
+	}
 }
 
 jar {
-    excludes = ['**/application.yml']
+	excludes = ['**/application.yml']
 }
 
 task execJar (type: Jar, dependsOn: jar) {
-    classifier = 'exec'
-    from sourceSets.main.output
+	classifier = 'exec'
+	from sourceSets.main.output
 }
 
 bootRepackage  {
-    withJarTask = tasks['execJar']
+	withJarTask = tasks['execJar']
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'io.pivotal'
-            from components.java
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
+	publications {
+		maven(MavenPublication) {
+			groupId 'io.pivotal'
+			from components.java
+		}
+	}
+	repositories {
+		mavenLocal()
+	}
 }

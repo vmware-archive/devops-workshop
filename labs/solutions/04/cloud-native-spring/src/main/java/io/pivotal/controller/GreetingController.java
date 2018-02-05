@@ -9,12 +9,12 @@ import org.springframework.cloud.context.scope.refresh.RefreshScope;
 @RestController
 public class GreetingController {
 
-    @Value("${greeting:Hola}")
-    private String greeting;
+	@Value("${greeting:Hola}")
+	private String greeting;
 
-    @RequestMapping("/hello")
-    public String hello() {
-        return String.join(" ", greeting, "World!");
-    }
-    
+	@RequestMapping("/hello")
+	public String hello() {
+		return String.join(" ", greeting, "World!");
+	}
+	
 }

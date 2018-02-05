@@ -6,30 +6,30 @@ apply plugin: 'maven-publish'
 
 
 repositories {
-    maven {
-        credentials { 
-            username System.env.MAVEN_USERNAME
-            password System.env.MAVEN_PASSWORD
-        }
-        url System.env.REPO_MAVEN_RELEASE
-        mavenLocal()
-    }
+	maven {
+		credentials { 
+			username System.env.MAVEN_USERNAME
+			password System.env.MAVEN_PASSWORD
+		}
+		url System.env.REPO_MAVEN_RELEASE
+		mavenLocal()
+	}
 }
 
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'io.pivotal'
-            from components.java
-        }
-    }
+	publications {
+		maven(MavenPublication) {
+			groupId 'io.pivotal'
+			from components.java
+		}
+	}
 	repositories {
-        mavenLocal()
-    }
+		mavenLocal()
+	}
 }
 
 war {
-    baseName 'cfmagic'
-    version '1.0-SNAPSHOT'
+	baseName 'cfmagic'
+	version '1.0-SNAPSHOT'
 }

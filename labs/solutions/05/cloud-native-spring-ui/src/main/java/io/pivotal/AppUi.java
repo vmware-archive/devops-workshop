@@ -16,22 +16,22 @@ import java.util.Collection;
 @Theme("valo")
 public class AppUi extends UI {
 
-    private final CityClient client;
-    private final Grid<City> grid;
+	private final CityClient client;
+	private final Grid<City> grid;
 
-    @Autowired
-    public AppUi(CityClient client) {
-        this.client = client;
-        this.grid = new Grid<>(City.class);
-    }
+	@Autowired
+	public AppUi(CityClient client) {
+		this.client = client;
+		this.grid = new Grid<>(City.class);
+	}
 
-    @Override
-    protected void init(VaadinRequest request) {
-        setContent(grid);
-        grid.setWidth(100, Unit.PERCENTAGE);
-        grid.setHeight(100, Unit.PERCENTAGE);
-        Collection<City> collection = new ArrayList<>();
-        client.getCities().forEach(collection::add);
-        grid.setItems(collection);
-    }
+	@Override
+	protected void init(VaadinRequest request) {
+		setContent(grid);
+		grid.setWidth(100, Unit.PERCENTAGE);
+		grid.setHeight(100, Unit.PERCENTAGE);
+		Collection<City> collection = new ArrayList<>();
+		client.getCities().forEach(collection::add);
+		grid.setItems(collection);
+	}
 }
