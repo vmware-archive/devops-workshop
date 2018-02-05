@@ -15,7 +15,7 @@ toc::[]
 
 <<<
 
-include::../README.adoc[]
+include::introduction.adoc[]
 
 <<<
 

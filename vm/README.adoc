@@ -2,41 +2,7 @@
 
 Certain software must be installed on your laptop or workstation in order to engage in labs exercises.
 
-== Onsite 
-
-Boeing has strict policy guidelines regarding how software is installed on Boeing equipment.
-
-In order to expedite the software installation process for *onsite workshops*, any participant who has a _Windows 10_ host operating system may wish to install a virtual machine that contains all the software pre-installed and configured required for this workshop.
-
-=== https://publishing.web.boeing.com/sites/SWEKB/_layouts/OneNote.aspx?id=/sites/SWEKB/Documents/ONE-DevVM&wd=target%28Virtual%20Machines.one%7c15E45B35-ACDA-42EF-A9B0-9EA301D420C4/Appliance%20Use%7c779D4AD5-1162-4E47-B634-0CB639F0F3DD/%29[Appliance Use]
-
-=== https://publishing.web.boeing.com/sites/SWEKB/_layouts/OneNote.aspx?id=/sites/SWEKB/Documents/ONE-DevVM&wd=target%28Virtual%20Machines.one%7c15E45B35-ACDA-42EF-A9B0-9EA301D420C4/Dev%20Appliance%20Config%7c5E795D87-6707-448B-BE96-C4E42D5809BF/%29[Dev Appliance Config]
-
-=== What's Included?
-
-==== VM Configuration
-  * Base Win10
-  * Software Express Icon
-  * VirtualBox Guest Additions
-  * Firefox
-  * Created LocalAdmin Account for Appliances.
-
-==== Dev Tools Installed
-  * Notepad++
-  * JDK 1.8.0_131
-  * Git for Windows 2.12.2.2
-  * Gradle 4.1
-  * Maven 3.5.0
-  * cf-cli_6.29.1
-  * Eclipse Oxygen Java x64
-  * Spring Tool Suite 3.8.3
-  * Postman 5.1.3
-  * UserConfig.ps1
-
-
-== Offsite
-
-You have a few options if you attend an offsite workshop.
+@see the *offsite* folder! It has all the tools a workshop attendee would need baked into Centos/7 base images in Vagrantfile and Docker formats.
 
 === Mac OS X
 
@@ -58,26 +24,30 @@ You have a few options if you attend an offsite workshop.
   brew install cloudfoundry/tap/cf-cli
   brew cask install postman
 
+
+=== Windows 10
+
+. Install https://www.docker.com/docker-windows[Docker for Windows].
+
+. See Docker instructions below.
+
+
 === Windows 7 
 
-@see the *offsite* folder! It has all the tools a workshop attendee would need baked into Centos/7 base images in Vagrantfile and Docker formats.
+Option 1) Vagrant + Virtualbox:  https://www.sitepoint.com/getting-started-vagrant-windows/ talks about getting both installed on Windows 7 and the additional requirement to install PuTTy to gain ssh access to the VM.
 
-==== Vagrant + Virtualbox
+Option 2) Docker:  https://stefanscherer.github.io/yes-you-can-docker-on-windows-7/ articulates (in painful detail) the steps to get Docker running on Windows 7.
 
-This article:  https://www.sitepoint.com/getting-started-vagrant-windows/ talks about getting both installed on Windows 7 and the additional requirement to install PuTTy to gain ssh access to the VM.
+Arguably the Docker approach is easier. See Docker instructions below.
 
-==== Docker
 
-This article:  https://stefanscherer.github.io/yes-you-can-docker-on-windows-7/ articulates (in painful detail) the steps to get Docker running on Windows 7.
+=== Docker
 
-==== Which approach should I use?
+. To build and run
 
-Arguably the Docker approach is easier.
+  cd offsite
+  docker build -t pivotal/workshop-image:1.0 .
+  docker run -i -t pivotal/workshop-image:1.0 /bin/bash
 
-To build and run
-
-  docker build .
-  docker run {docker-container-id} -i -t /bin/bash
-
-> ctrl+c to exit
+-> Type `exit` at prompt to exit
 

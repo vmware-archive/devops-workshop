@@ -1,7 +1,11 @@
+
 :schedule: link:./SCHEDULE.adoc
 
 = Boeing DevOps Workshop
 
+= DevOps Workshop
+
+A collection of workshop presentations and labs exercises for use at client sites. Focus on Pivotal Cloud Foundry, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a link:SCHEDULE.adoc[1-1/2 day period].
 
 == Overview
 
@@ -20,11 +24,11 @@ Welcome to the workshop! This is a collection of exercises and accompanying sour
 
 === Software
 
-* Git
-* Java JDK 1.8u*
-* CF CLI
-* STS (Spring Source Tool Suite an Eclipse IDE variant)
-* Postman (a REST client)
+* Git 2.14.2 or later
+* Java JDK 8u144 or later
+* CF CLI 6.32 or later
+* STS (Spring Source Tool Suite an Eclipse IDE variant) 3.9.1.RELEASE or later
+* Postman (a REST client) 5.3.0 or later
 
 To install prerequisite software:
 Press <kbd>WindowsKey</kbd> + <kbd>R</kbd> and paste the following
@@ -32,6 +36,7 @@ Press <kbd>WindowsKey</kbd> + <kbd>R</kbd> and paste the following
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('http://fork-me.pages.boeing.com/devops-workshop-java/InstallPreReqs'))"
 ----
 Or start Powershell as admin and execute the `PreReq-Install.ps1` script at the root of the project.
+
 
 To install more SRES/OSS software easily and quickly, use https://git.web.boeing.com/fork-me/devops-setup/blob/master/full-kit/README.md[devops-setup]
 
@@ -41,11 +46,11 @@ To install more SRES/OSS software easily and quickly, use https://git.web.boeing
 
 > Note: https://dev-docs.web.boeing.com/recipe/dev-setup-open-ssh[Ensure your SSH keys are setup for used with GitLab].
 
-Fork then Clone the following repositories for use in the workshop:
+Clone the following repositories for use in the workshop:
 
 [source,bash]
 ----
-git clone git@git-ssh.web.boeing.com:fork-me/devops-workshop.git
+git clone git@git-ssh.web.boeing.com:fork-me/devops-workshop-java.git -b boeing
 ----
 
 === Environment Setup
@@ -70,4 +75,3 @@ Set Envronment Variables:
 Instructors should have added all atendees to a workshop-specific org so all attendees have quick access to an environment. If you do not have an account yet, please see the instructor.
 
 Verify that you can access the https://login.system.pcfpre-phx.cloud.boeing.com/login[PHX PreProd PCF Apps Manager].
-
