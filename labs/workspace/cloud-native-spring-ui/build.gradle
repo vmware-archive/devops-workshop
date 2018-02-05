@@ -2,20 +2,18 @@ buildscript {
 	ext {
 		springBootVersion = '1.5.7.RELEASE'
 		springDependencyManagementVersion = '1.0.3.RELEASE'
+		sresCredentials = { 
+			username System.env.MAVEN_USERNAME
+			password System.env.MAVEN_PASSWORD
+		}
 	}
 	repositories {
         maven {
-            credentials { 
-                username System.env.MAVEN_USERNAME
-                password System.env.MAVEN_PASSWORD
-            }
+            credentials sresCredentials
             url System.env.REPO_MAVEN_RELEASE
         }
         maven {
-            credentials { 
-                username System.env.MAVEN_USERNAME
-                password System.env.MAVEN_PASSWORD
-            }
+            credentials sresCredentials
             url System.env.REPO_GRADLE_PLUGINS
         }
     }
@@ -70,10 +68,7 @@ dependencies {
 
 repositories {
     maven {
-        credentials { 
-            username System.env.MAVEN_USERNAME
-            password System.env.MAVEN_PASSWORD
-        }
+        credentials sresCredentials
         url System.env.REPO_MAVEN_RELEASE
         mavenLocal()
     }

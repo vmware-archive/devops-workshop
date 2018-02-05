@@ -1,20 +1,18 @@
 buildscript {
     ext {
         springBootVersion = '1.5.7.RELEASE'
+		sresCredentials = { 
+			username System.env.MAVEN_USERNAME
+			password System.env.MAVEN_PASSWORD
+		}
     }
     repositories {
         maven {
-            credentials { 
-                username System.env.MAVEN_USERNAME
-                password System.env.MAVEN_PASSWORD
-            }
+            credentials sresCredentials
             url System.env.REPO_MAVEN_RELEASE
         }
         maven {
-            credentials { 
-                username System.env.MAVEN_USERNAME
-                password System.env.MAVEN_PASSWORD
-            }
+            credentials sresCredentials
             url System.env.REPO_GRADLE_PLUGINS
         }
     }
@@ -32,10 +30,7 @@ apply plugin: 'org.springframework.boot'
 
 repositories {
     maven {
-        credentials { 
-            username System.env.MAVEN_USERNAME
-            password System.env.MAVEN_PASSWORD
-        }
+        credentials sresCredentials
         url System.env.REPO_MAVEN_RELEASE
     }
 }
