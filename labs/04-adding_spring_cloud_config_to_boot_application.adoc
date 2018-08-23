@@ -153,6 +153,25 @@ public class GreetingController {
 }
 ---------------------------------------------------------------------
 
+. When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following to conditionally disable security (to ease local workstation deployment) */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java* right underneath the +public static void main+ method
++
+[source,java]
+---------------------------------------------------------------------
+    @Profile("!cloud")
+	@Configuration
+	static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+
+    	@Override
+    	public void configure(WebSecurity web) throws Exception {
+        	web
+           		.ignoring()
+               	.antMatchers("/**");
+    	}
+	}
+---------------------------------------------------------------------
++
+Examine this https://docs.spring.io/spring-boot/docs/2.0.4.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details.
+
 . We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
 [source,yml]
@@ -162,6 +181,16 @@ spring:
     name: cloud-native-spring
 ---------------------------------------------------------------------
 
+== Run the _cloud-native-spring_ Application and verify dynamic config is working
+ . Run the application
++
+[source,bash]
+---------------------------------------------------------------------
+gradle clean bootRun
+---------------------------------------------------------------------
+ . Browse to http://localhost:8080/hello and verify you now see your new greeting.
+ . Stop the _cloud-native-spring_ application
+ 
 == Create Spring Cloud Config Server instance
 
 . Now that our application is ready to read its config from a Cloud Config server, we need to deploy one!  This can be done through Cloud Foundry using the services Marketplace.  Browse to the Marketplace in Pivotal Cloud Foundry Apps Manager, navigate to the Space you have been using to push your app, and select Config Server:
