@@ -13,18 +13,19 @@ Adding a dependency management plugin and other miscellaneous configuration.
 [source,groovy]
 ---------------------------------------------------------------------
 buildscript {
-	ext {
-		springBootVersion = '1.5.7.RELEASE'
-		springDependencyManagementVersion = '1.0.3.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-		classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+	   springBootVersion = '2.0.4.RELEASE'
+    }
+    repositories {
+        maven {
+	        url "https://plugins.gradle.org/m2/"
+	    }
+        mavenCentral()
+    }
+    dependencies {
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.1")
+	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -33,71 +34,72 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'com.gorylenko.gradle-git-properties'
+apply plugin: 'io.spring.dependency-management'
 
 gitProperties {
-	dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
-    gitRepositoryRoot = new File("${project.rootDir}/../../..")
+    dotGitDirectory = "${project.rootDir}/../../../.."
 }
 
 import org.apache.tools.ant.filters.*
 
 processResources {
     filter ReplaceTokens, tokens: [
-		"application.name": project.property("application.name"),
-		"application.description": project.property("application.description"),
+	    "application.name": project.property("application.name"),
+	    "application.description": project.property("application.description"),
         "application.version": project.property("version")
     ]
 }
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.1.RELEASE"
     }
 }
 
 dependencies {
-	compileOnly('org.projectlombok:lombok:1.16.18')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-data-rest')
-	compile('org.springframework.boot:spring-boot-starter-hateoas')
-	compile('org.springframework.data:spring-data-rest-hal-browser')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
-	runtime('com.h2database:h2')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    compileOnly('org.projectlombok:lombok:1.18.2')
+    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-data-rest')
+    compile('org.springframework.boot:spring-boot-starter-hateoas')
+    compile('org.springframework.data:spring-data-rest-hal-browser')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
+    compile('org.flywaydb:flyway-core:5.1.4')
+    compile('com.zaxxer:HikariCP:3.2.0')
+    runtime('com.h2database:h2')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {
     maven {
         url "https://repo.spring.io/plugins-release"
     }
-	mavenCentral()
+    mavenCentral()
 }
 
 jar {
+    enabled = true
     excludes = ['**/application.yml']
 }
 
-task execJar (type: Jar, dependsOn: jar) {
+bootJar {
+    enabled = true
     classifier = 'exec'
-    from sourceSets.main.output
-}
-
-bootRepackage  {
-    withJarTask = tasks['execJar']
 }
 
 publishing {
     publications {
         maven(MavenPublication) {
-			groupId 'io.pivotal'
+	    groupId 'io.pivotal'
             from components.java
         }
     }
-	repositories {
+    repositories {
         mavenLocal()
     }
 }
@@ -151,15 +153,6 @@ public class GreetingController {
 }
 ---------------------------------------------------------------------
 
-. When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following configuration to */cloud-native-spring/src/main/resources/application.yml*:
-+
-[source,yml]
----------------------------------------------------------------------
-security:
-  basic:
-    enabled:  false
----------------------------------------------------------------------
-
 . We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
 [source,yml]
@@ -168,19 +161,6 @@ spring:
   application:
     name: cloud-native-spring
 ---------------------------------------------------------------------
-
-== Run the _cloud-native-spring_ Application and verify dynamic config is working
-
-. Run the application
-+
-[source,bash]
----------------------------------------------------------------------
-gradle clean bootRun
----------------------------------------------------------------------
-
-. Browse to http://localhost:8080/hello and verify you now see your new greeting.
-
-. Stop the _cloud-native-spring_ application
 
 == Create Spring Cloud Config Server instance
 
@@ -241,7 +221,7 @@ applications:
   memory: 1024M
   instances: 1
   path: ./target/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   timeout: 180
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -255,7 +235,7 @@ applications:
 +
 [source,bash]
 ---------------------------------------------------------------------
-gradle clean bootRepackage
+gradle clean build
 ---------------------------------------------------------------------
 
 . Push application into Cloud Foundry

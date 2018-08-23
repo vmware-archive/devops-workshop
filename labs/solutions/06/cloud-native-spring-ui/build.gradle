@@ -1,7 +1,7 @@
 buildscript {
     ext {
-	springBootVersion = '1.5.8.RELEASE'
-	springDependencyManagementVersion = '1.0.3.RELEASE'
+	springBootVersion = '1.5.9.RELEASE'
+	springDependencyManagementVersion = '1.0.4.RELEASE'
     }
     repositories {
 	maven {
@@ -43,7 +43,7 @@ processResources {
 dependencyManagement {
     imports {
 	mavenBom "com.vaadin:vaadin-bom:8.1.5"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR5"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
     }
 }

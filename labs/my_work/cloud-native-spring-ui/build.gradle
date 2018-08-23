@@ -1,7 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.8.RELEASE'
-        springDependencyManagementVersion = '1.0.3.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
     }
     repositories {
         maven {
@@ -10,8 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-        classpath("io.spring.gradle:dependency-management-plugin:${springDependencyManagementVersion}")
+        classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.1")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -27,7 +25,7 @@ apply plugin: 'io.spring.dependency-management'
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
-    gitRepositoryRoot = new File("${project.rootDir}/../../..")
+    dotGitDirectory = "${project.rootDir}/../../.."
 }
 
 import org.apache.tools.ant.filters.*
@@ -42,18 +40,19 @@ processResources {
 
 dependencyManagement {
     imports {
-	    mavenBom "com.vaadin:vaadin-bom:8.1.5"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
+	    mavenBom "com.vaadin:vaadin-bom:10.0.4"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.1.RELEASE"
     }
 }
 
 dependencies {
-    compileOnly('org.projectlombok:lombok:1.16.18')
+    compileOnly('org.projectlombok:lombok:1.18.2')
+    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.cloud:spring-cloud-starter-feign')
-    compile('org.springframework.cloud:spring-cloud-starter-ribbon')
+    compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
     compile('com.vaadin:vaadin-spring-boot-starter')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
@@ -67,16 +66,12 @@ repositories {
 }
 
 jar {
-    excludes = ['**/application.yml']
+    enabled = false
 }
 
-task execJar (type: Jar, dependsOn: jar) {
+bootJar {
+    enabled = true
     classifier = 'exec'
-    from sourceSets.main.output
-}
-
-bootRepackage  {
-    withJarTask = tasks['execJar']
 }
 
 publishing {

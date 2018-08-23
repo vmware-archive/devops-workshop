@@ -1,17 +1,16 @@
 buildscript {
     ext {
-	springBootVersion = '1.5.8.RELEASE'
-	springDependencyManagementVersion = '1.0.3.RELEASE'
+	   springBootVersion = '2.0.4.RELEASE'
     }
     repositories {
-	maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-	mavenCentral()
+        maven {
+	        url "https://plugins.gradle.org/m2/"
+	    }
+        mavenCentral()
     }
     dependencies {
-	classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
-	classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.1")
+	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
@@ -21,32 +20,34 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'com.gorylenko.gradle-git-properties'
+apply plugin: 'io.spring.dependency-management'
 
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
-    gitRepositoryRoot = new File("${project.rootDir}/../../../..")
+    dotGitDirectory = "${project.rootDir}/../../../.."
 }
 
 import org.apache.tools.ant.filters.*
 
 processResources {
     filter ReplaceTokens, tokens: [
-	"application.name": project.property("application.name"),
-	"application.description": project.property("application.description"),
+	    "application.name": project.property("application.name"),
+	    "application.description": project.property("application.description"),
         "application.version": project.property("version")
     ]
 }
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.SR4"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:1.5.0.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.1.RELEASE"
     }
 }
 
 dependencies {
-    compileOnly('org.projectlombok:lombok:1.16.18')
+    compileOnly('org.projectlombok:lombok:1.18.2')
+    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-data-rest')
@@ -54,6 +55,8 @@ dependencies {
     compile('org.springframework.data:spring-data-rest-hal-browser')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
+    compile('org.flywaydb:flyway-core:5.1.4')
+    compile('com.zaxxer:HikariCP:3.2.0')
     runtime('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
@@ -66,16 +69,13 @@ repositories {
 }
 
 jar {
+    enabled = true
     excludes = ['**/application.yml']
 }
 
-task execJar (type: Jar, dependsOn: jar) {
+bootJar {
+    enabled = true
     classifier = 'exec'
-    from sourceSets.main.output
-}
-
-bootRepackage  {
-    withJarTask = tasks['execJar']
 }
 
 publishing {

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	   springBootVersion = '1.5.8.RELEASE'
+	   springBootVersion = '2.0.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -15,7 +15,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
-
+apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenCentral()
@@ -23,7 +23,8 @@ repositories {
 
 
 dependencies {
-    compileOnly('org.projectlombok:lombok:1.16.18')
+    compileOnly('org.projectlombok:lombok:1.18.2')
+    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
     compile('org.springframework.boot:spring-boot-starter-data-rest')
@@ -36,16 +37,13 @@ dependencies {
 
 
 jar {
+    enabled = true
     excludes = ['**/application.yml']
 }
 
-task execJar (type: Jar, dependsOn: jar) {
+bootJar {
+    enabled = true
     classifier = 'exec'
-    from sourceSets.main.output
-}
-
-bootRepackage  {
-    withJarTask = tasks['execJar']
 }
 
 publishing {
