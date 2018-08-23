@@ -182,15 +182,18 @@ spring:
 ---------------------------------------------------------------------
 
 == Run the _cloud-native-spring_ Application and verify dynamic config is working
- . Run the application
+
+. Run the application
 +
 [source,bash]
 ---------------------------------------------------------------------
 gradle clean bootRun
 ---------------------------------------------------------------------
- . Browse to http://localhost:8080/hello and verify you now see your new greeting.
- . Stop the _cloud-native-spring_ application
- 
+
+. Browse to http://localhost:8080/hello and verify you now see your new greeting.
+
+. Stop the _cloud-native-spring_ application
+
 == Create Spring Cloud Config Server instance
 
 . Now that our application is ready to read its config from a Cloud Config server, we need to deploy one!  This can be done through Cloud Foundry using the services Marketplace.  Browse to the Marketplace in Pivotal Cloud Foundry Apps Manager, navigate to the Space you have been using to push your app, and select Config Server:

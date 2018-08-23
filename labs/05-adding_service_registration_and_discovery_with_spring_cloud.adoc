@@ -55,7 +55,7 @@ image::images/registry1.jpg[]
 +
 [source,bash]
 ---------------------------------------------------------------------
-gradle bootRepackage
+gradle build
 ---------------------------------------------------------------------
 
 . For the 2nd half of this lab we'll need to have this artifact in our local repository, so install it with the following command:
@@ -203,7 +203,7 @@ spring:
 +
 [source,bash]
 ---------------------------------------------------------------------
-gradle bootRepackage -x test
+gradle build -x test
 ---------------------------------------------------------------------
 +
 -> Note that we're skipping tests here (because we now have a dependency on a running instance of _cloud-native-spring_).
@@ -223,7 +223,7 @@ applications:
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
