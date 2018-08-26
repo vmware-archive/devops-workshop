@@ -20,7 +20,7 @@ script:
 - "cd ../cloud-native-spring-ui"
 - "./gradlew clean build -x test"
 - "cd ../../06/cloud-native-spring-ui"
-- ".gradlew clean build -x test"
+- "./gradlew clean build -x test"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
