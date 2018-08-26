@@ -8,8 +8,8 @@ script:
 - "./labs/solutions/03/cloud-native-spring/gradlew clean build"
 - "./labs/solutions/04/cloud-native-spring/gradlew clean build"
 - "./labs/solutions/05/cloud-native-spring/gradlew clean build"
-- "./labs/solutions/05/cloud-native-spring-ui/gradlew clean build"
-- "./labs/solutions/06/cloud-native-spring-ui/gradlew clean build"
+- "./labs/solutions/05/cloud-native-spring-ui/gradlew clean build -x test"
+- "./labs/solutions/06/cloud-native-spring-ui/gradlew clean build -x test"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
