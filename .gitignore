@@ -1,6 +1,7 @@
-build
+build/
 bin
 .bin
+*.class
 node_modules
 npm-packages-offline-cache
 .yarnrc
