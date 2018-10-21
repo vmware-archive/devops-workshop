@@ -536,8 +536,13 @@ applications:
 cf push
 ---------------------------------------------------------------------
 
+You have a couple of options to connect to your database
 
-. Also, if you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
+* https://github.com/pivotal-cf/PivotalMySQLWeb[Pivotal MySQL*Web], which a nice administrative UI 
+* https://github.com/andreasf/cf-mysql-plugin[cf-mysql-plugin], which is more commandline oriented
+
+
+. When you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
 +
 [source,bash]
 ---------------------------------------------------------------------
@@ -576,16 +581,4 @@ mysql> select * from city;
 Empty set (0.03 sec)
 
 ---------------------------------------------------------------------
-+
-In case you don't have CF `mysql` plugin, you can install the plugin with
-+
-[source,bash]
----------------------------------------------------------------------
-cf install-plugin -r "CF-Community" mysql-plugin
----------------------------------------------------------------------
-+
--> More details here:
-+
-  * https://plugins.cloudfoundry.org/
-  * https://github.com/andreasf/cf-mysql-plugin
-+
+
