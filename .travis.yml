@@ -1,6 +1,9 @@
 language: java
 jdk:
 - oraclejdk8
+- oraclejdk11
+- openjdk8
+- openjdk11
 script:
 - "cd labs/my_work/cloud-native-spring"
 - "./gradlew clean build"
