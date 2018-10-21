@@ -13,7 +13,7 @@ src/main/resources/config/
 .externalToolBuilders/
 *.launch
 *.pydevproject
-.vscode
+.vscode/
 .cproject
 .classpath
 .factorypath

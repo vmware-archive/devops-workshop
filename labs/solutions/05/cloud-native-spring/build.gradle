@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	   springBootVersion = '2.0.4.RELEASE'
+	   springBootVersion = '2.0.6.RELEASE'
     }
     repositories {
         maven {
@@ -9,7 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.1")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -46,6 +46,7 @@ dependencyManagement {
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
     compileOnly('org.projectlombok:lombok:1.18.2')
     compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
@@ -56,7 +57,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
     compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
-    compile('org.flywaydb:flyway-core:5.1.4')
+    compile('org.flywaydb:flyway-core:5.2.0')
     compile('com.zaxxer:HikariCP:3.2.0')
     runtime('com.h2database:h2')
     testCompile('org.springframework.boot:spring-boot-starter-test')
@@ -77,6 +78,17 @@ jar {
 bootJar {
     enabled = true
     classifier = 'exec'
+}
+
+bootRun {
+    // support passing -Dsystem.property=value to bootRun task
+    systemProperties = System.properties
+}
+
+tasks.withType(Test) {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+    }
 }
 
 publishing {

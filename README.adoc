@@ -9,19 +9,19 @@ A collection of workshop presentations and labs exercises for use at client site
 
 === Minimum requirements
 
--> https://docs.cloudfoundry.org/cf-cli/install-go-cli.html[CF-CLI] 6.38 or better
+-> https://docs.cloudfoundry.org/cf-cli/install-go-cli.html[CF-CLI] 6.40 or better
 
--> http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html[Java JDK] 8u181 or better
+-> JDK https://jdk.java.net/8/[8] or https://jdk.java.net/11/[11]
 
 -> https://git-scm.com/downloads[Git] 2.18 or better
 
--> https://gradle.org/install/[Gradle] 4.8.1 or better
+-> https://gradle.org/install/[Gradle] 4.10.2 or better
 
 === Recommended
 
--> https://spring.io/tools/sts/all[Spring Source Tool Suite] 3.9.5.RELEASE or better
+-> https://spring.io/tools[Spring Tools] 4
 
--> https://www.getpostman.com[Postman] 6.2.3 or better
+-> https://www.getpostman.com[Postman] 6.4.2 or better
 
 
 == Clone this repository

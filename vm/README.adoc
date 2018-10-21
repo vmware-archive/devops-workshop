@@ -20,7 +20,7 @@ Certain software must be installed on your laptop or workstation in order to eng
   brew install maven
   curl -s "https://get.sdkman.io" | bash
   source "$HOME/.sdkman/bin/sdkman-init.sh"
-  sdk install gradle 4.8.1
+  sdk install gradle 4.10.2
   brew install node
   brew install yarn
   brew install cloudfoundry/tap/cf-cli

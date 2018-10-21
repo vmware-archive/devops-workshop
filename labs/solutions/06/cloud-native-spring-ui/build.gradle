@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	    springBootVersion = '2.0.4.RELEASE'
+	    springBootVersion = '2.0.6.RELEASE'
     }
     repositories {
 	maven {
@@ -9,7 +9,7 @@ buildscript {
 	mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.1")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -40,13 +40,14 @@ processResources {
 
 dependencyManagement {
     imports {
-    	mavenBom "com.vaadin:vaadin-bom:8.5.1"
+    	mavenBom "com.vaadin:vaadin-bom:8.5.2"
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.1.RELEASE"
     }
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
     compileOnly('org.projectlombok:lombok:1.18.2')
     compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
@@ -75,6 +76,17 @@ jar {
 bootJar {
     enabled = true
     classifier = 'exec'
+}
+
+bootRun {
+    // support passing -Dsystem.property=value to bootRun task
+    systemProperties = System.properties
+}
+
+tasks.withType(Test) {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+    }
 }
 
 publishing {

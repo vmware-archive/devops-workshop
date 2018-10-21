@@ -95,7 +95,7 @@ Then, you must edit the file and add the plugin dependency within the _dependenc
 +
 [source,groovy]
 ---------------------------------------------------------------------
-classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.1")
+classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
 ---------------------------------------------------------------------
 +
 You'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.

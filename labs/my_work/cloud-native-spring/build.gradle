@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	   springBootVersion = '2.0.4.RELEASE'
+	   springBootVersion = '2.0.6.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -23,6 +23,7 @@ repositories {
 
 
 dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
     compileOnly('org.projectlombok:lombok:1.18.2')
     compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
@@ -44,6 +45,17 @@ jar {
 bootJar {
     enabled = true
     classifier = 'exec'
+}
+
+bootRun {
+    // support passing -Dsystem.property=value to bootRun task
+    systemProperties = System.properties
+}
+
+tasks.withType(Test) {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+    }
 }
 
 publishing {

@@ -72,7 +72,7 @@ You’ll need to use your IDE’s features to add the appropriate import stateme
 +
 [source,bash]
 ---------------------------------------------------------------------
-compile('org.flywaydb:flyway-core:5.1.4')
+compile('org.flywaydb:flyway-core:5.2.0')
 compile('com.zaxxer:HikariCP:3.2.0')
 ---------------------------------------------------------------------
 
