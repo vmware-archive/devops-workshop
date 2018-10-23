@@ -3,7 +3,7 @@ version: '3'
 services:
 
   frog-db:
-    image: postgres:9.6.5
+    image: postgres:10.5-alpine
     container_name: postgresql
     ports:
      - 5432:5432
@@ -22,7 +22,7 @@ services:
         hard: 40000
 
   artifactory:
-    image: docker.bintray.io/jfrog/artifactory-oss:5.5.1
+    image: docker.bintray.io/jfrog/artifactory-oss:6.2.0
     container_name: artifactory
     ports:
      - 8081:8081

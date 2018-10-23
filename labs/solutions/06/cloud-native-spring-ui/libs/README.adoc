@@ -1,0 +1,7 @@
+== javassist stopped working in JDK11 b6
+
+https://github.com/jboss-javassist/javassist/issues/194#issuecomment-429785108
+
+Download file from https://github.com/jboss-javassist/javassist/releases/download/rel_3_24_0_rc/javassist.jar
+
+Add fileTree dependency to build.gradle https://medium.com/@petehouston/compile-local-jar-files-with-gradle-a078e5c7a520

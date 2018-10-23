@@ -1,6 +1,7 @@
-build
+build/
 bin
 .bin
+*.class
 node_modules
 npm-packages-offline-cache
 .yarnrc
@@ -12,7 +13,7 @@ src/main/resources/config/
 .externalToolBuilders/
 *.launch
 *.pydevproject
-.vscode
+.vscode/
 .cproject
 .classpath
 .factorypath
@@ -20,6 +21,7 @@ src/main/resources/config/
 .target
 .settings
 .springBeans
+.sts4-cache/
 .recommenders/
 .idea
 *.iml

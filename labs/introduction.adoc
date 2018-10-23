@@ -11,9 +11,11 @@ Your workspace is the *my_work* folder. If you get stuck implementing any of the
 
 == PCF Environment Access
 
+This workshop assumes participants will be interacting with PCF One.  Depending on the client and environment, ask the instuctor for an alternate CF API endpoint and/or url for the Apps Manager UI.
+
 === Account set up
 
-. If you do not have an account yet, please see the instructor
+. If you do not have an account yet, please ask the instructor for one.
 
 === Target the Environment
 
@@ -21,10 +23,8 @@ Your workspace is the *my_work* folder. If you get stuck implementing any of the
 
 . Set the API target for the CLI (set appropriate end point for your environment) and login:
 +
-*PWS*
-+
 ----
-$ cf api https://api.run.pivotal.io --skip-ssl-validation
+$ cf api https://api.run.pcfone.io
 $ cf login
 ----
 +
@@ -36,10 +36,8 @@ Enter your account username and password, then select an org and space.
 
 . Navigate in a web browser to (depending on environment):
 +
-*PWS*
-+
 ----
-https://console.run.pivotal.io
+https://apps.run.pcfone.io
 ----
 
 . Login to the interface with your email and password

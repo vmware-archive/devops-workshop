@@ -92,7 +92,7 @@ image::images/dash.jpg[]
 +
 [source,bash]
 ---------------------------------------------------------------------
-gradle bootRepackage -x test
+gradle build -x test
 ---------------------------------------------------------------------
 
 . Push application into Cloud Foundry

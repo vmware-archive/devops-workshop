@@ -15,14 +15,16 @@ dependencies {
 
 ---------------------------------------------------------------------
 +
-By default Spring Boot will use Spring Security to protect these management endpoints (which is a good thing!).  Though you wouldn't want to disable this in production, we'll do so in this sample app to make demonstration a bit easier and simpler.  
+By default Spring Boot does not expose these management endpoints (which is a good thing!).  Though you wouldn't want to expose all of them in production, we'll do so in this sample app to make demonstration a bit easier and simpler.  
 . Add the following properties to *cloud-native-spring/src/main/resources/application.yml*.
 +
 [source,yml]
 ---------------------------------------------------------------------
 management:
-  security:
-    enabled: false
+  endpoints:
+    web:
+      exposure: 
+        include: "*"
 ---------------------------------------------------------------------
 
 . Run the updated application
@@ -34,43 +36,47 @@ gradle clean bootRun
 +
 Try out the following endpoints with https://www.getpostman.com[Postman]. The output is omitted here because it can be quite large:
 +
-http://localhost:8080/health
+http://localhost:8080/actuator/health
 +
 -> Displays Application and Datasource health information.  This can be customized based on application functionality, which we'll do later.
 +
-http://localhost:8080/beans
+http://localhost:8080/actuator/beans
 +
 -> Dumps all of the beans in the Spring context.
 +
-http://localhost:8080/autoconfig
+http://localhost:8080/actuator/autoconfig
 +
 -> Dumps all of the auto-configuration performed as part of application bootstrapping.
 +
-http://localhost:8080/configprops
+http://localhost:8080/actuator/configprops
 +
 -> Displays a collated list of all @ConfigurationProperties.
 +
-http://localhost:8080/env
+http://localhost:8080/actuator/env
 +
 -> Dumps the application’s shell environment as well as all Java system properties.
 +
-http://localhost:8080/mappings
+http://localhost:8080/actuator/mappings
 +
 -> Dumps all URI request mappings and the controller methods to which they are mapped.
 +
-http://localhost:8080/dump
+http://localhost:8080/actuator/threaddump
 +
 -> Performs a thread dump.
 +
-http://localhost:8080/trace
+http://localhost:8080/actuator/httptrace
 +
 -> Displays trace information (by default the last few HTTP requests).
++
+http://localhost:8080/actuator/flyway
++
+-> Shows any Flyway database migrations that have been applied.
 
 . Stop the _cloud-native-spring_ application.
 
 == Include Version Control Info
 
-Spring Boot provides an endpoint (http://localhost:8080/info) that allows the exposure of arbitrary metadata. By default, it is empty.
+Spring Boot provides an endpoint (http://localhost:8080/actuator/info) that allows the exposure of arbitrary metadata. By default, it is empty.
 
 One thing that _actuator_ does well is expose information about the specific build and version control coordinates for a given deployment.
 
@@ -89,7 +95,7 @@ Then, you must edit the file and add the plugin dependency within the _dependenc
 +
 [source,groovy]
 ---------------------------------------------------------------------
-classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.4.17")
+classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
 ---------------------------------------------------------------------
 +
 You'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
@@ -101,19 +107,19 @@ apply plugin: 'com.gorylenko.gradle-git-properties'
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
-    gitRepositoryRoot = new File("${project.rootDir}/../../..")
+    dotGitDirectory = "${project.rootDir}/../../.."
 }
 ---------------------------------------------------------------------
 +
 -> Note too that we are updating the path to the _.git_ directory.
 +
-The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */info* endpoint.
+The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */actuator/info* endpoint.
 
 . Run the _cloud-native-spring_ application:
 +
   gradle clean bootRun
 
-. Browse to http://localhost:8080/info. Git commit information is now included
+. Browse to http://localhost:8080/actuator/info. Git commit information is now included
 +
 [source,json]
 ---------------------------------------------------------------------
@@ -132,7 +138,7 @@ The effect of all this configuration is that the _gradle-git-properties_ plugin 
 +
 *What Just Happened?*
 +
-By including the _gradle-git-properties_ plugin, details about git commit information will be included in the */info* endpoint. Git information is captured in a _git.properties_ file that is generated with the build. Review the following file: */cloud-native-spring/build/resources/main/git.properties*
+By including the _gradle-git-properties_ plugin, details about git commit information will be included in the */actuator/info* endpoint. Git information is captured in a _git.properties_ file that is generated with the build. Review the following file: */cloud-native-spring/build/resources/main/git.properties*
 
 == Include Build Info
 
@@ -175,7 +181,7 @@ processResources {
 gradle clean bootRun
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080/info. Build information is now included.
+. Browse to http://localhost:8080/actuator/info. Build information is now included.
 +
 [source,json]
 ---------------------------------------------------------------------
@@ -199,15 +205,15 @@ gradle clean bootRun
 +
 *What Just Happened?*
 +
-We have mapped Gradle properties into the /info endpoint.
+We have mapped Gradle properties into the /actuator/info endpoint.
 +
-Read more about exposing data in the /info endpoint link:http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready[here]
+Read more about exposing data in the /actuator/info endpoint link:https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready[here]
 
 == Health Indicators
 
-Spring Boot provides an endpoint http://localhost:8080/health that exposes various health indicators that describe the health of the given application.
+Spring Boot provides an endpoint http://localhost:8080/actuator/health that exposes various health indicators that describe the health of the given application.
 
-Normally, when Spring Security is not enabled, the /health endpoint will only expose an UP or DOWN value.
+Normally, the /actuator/health endpoint will only expose an UP or DOWN value.
 
 [source,json]
 ---------------------------------------------------------------------
@@ -215,8 +221,15 @@ Normally, when Spring Security is not enabled, the /health endpoint will only ex
   "status": "UP"
 }
 ---------------------------------------------------------------------
-
-
++
+We want to expose more detail about the health and well-being of the application, so we're going to need a bit more configuration to _cloud-native-spring/src/main/resources/application.yml_, underneath the _management_ prefix, add
++
+[source,yml]
+---------------------------------------------------------------------
+  endpoint:
+    health:
+      show-details: always
+---------------------------------------------------------------------
 
 . Run the cloud-native-spring application:
 +
@@ -225,17 +238,29 @@ Normally, when Spring Security is not enabled, the /health endpoint will only ex
 gradle bootRun
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080/health. Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
+. Browse to http://localhost:8080/actuator/health. Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
 +
 [source,json]
 ---------------------------------------------------------------------
 {
-  "status": "UP",
-  "diskSpace": {
-      "status": "UP",
-      "free": 42345678945,
-      "threshold": 12345678
-  }
+    "status": "UP",
+    "details": {
+        "diskSpace": {
+            "status": "UP",
+            "details": {
+                "total": 499963170816,
+                "free": 375287070720,
+                "threshold": 10485760
+            }
+        },
+        "db": {
+            "status": "UP",
+            "details": {
+                "database": "H2",
+                "hello": 1
+            }
+        }
+    }
 }
 ---------------------------------------------------------------------
 
@@ -279,65 +304,108 @@ This demo health indicator will randomize the health check.
 $ gradle clean bootRun
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080/health and verify that the output is similar to the following (and changes randomly!).
+. Browse to http://localhost:8080/actuator/health and verify that the output is similar to the following (and changes randomly!).
 +
 [source,json]
 ---------------------------------------------------------------------
 {
-  "status": "UP",
-  "flapping": {
-      "status": "UP",
-      "flapper": "ok",
-      "random": 42
-  },
-  "diskSpace": {
-      "status": "UP",
-      "free": 42345678945,
-      "threshold": 12345678
-  }
+    "status": "UP",
+    "details": {
+        "flapping": {
+            "status": "UP",
+            "details": {
+                "flapper": "ok",
+                "random": 63
+            }
+        },
+        "diskSpace": {
+            "status": "UP",
+            "details": {
+                "total": 499963170816,
+                "free": 375287070720,
+                "threshold": 10485760
+            }
+        },
+        "db": {
+            "status": "UP",
+            "details": {
+                "database": "H2",
+                "hello": 1
+            }
+        }
+    }
 }
 ---------------------------------------------------------------------
 
 == Metrics
 
-Spring Boot provides an endpoint http://localhost:8080/metrics that exposes several automatically collected metrics for your application. It also allows for the creation of custom metrics.
+Spring Boot provides an endpoint http://localhost:8080/actuator/metrics that exposes several automatically collected metrics for your application. It also allows for the creation of custom metrics.
 
-. Browse to http://localhost:8080/metrics. Review the metrics exposed.
+. Browse to http://localhost:8080/actuator/metrics. Review the metrics exposed.
 +
 [source,json]
 ---------------------------------------------------------------------
 {
-    "mem": 418830,
-    "mem.free": 239376,
-    "processors": 8,
-    "instance.uptime": 59563,
-    "uptime": 69462,
-    "systemload.average": 1.5703125,
-    "heap.committed": 341504,
-    "heap.init": 262144,
-    "heap.used": 102127,
-    "heap": 3728384,
-    "nonheap.committed": 79696,
-    "nonheap.init": 2496,
-    "nonheap.used": 77326,
-    "nonheap": 0,
-    "threads.peak": 14,
-    "threads.daemon": 11,
-    "threads.totalStarted": 17,
-    "threads": 13,
-    "classes": 9825,
-    "classes.loaded": 9825,
-    "classes.unloaded": 0,
-    "gc.ps_scavenge.count": 9,
-    "gc.ps_scavenge.time": 80,
-    "gc.ps_marksweep.count": 2,
-    "gc.ps_marksweep.time": 157,
-    "httpsessions.max": -1,
-    "httpsessions.active": 0,
-    "gauge.response.metrics": 75,
-    "gauge.response.star-star.favicon.ico": 9,
-    "counter.status.200.star-star.favicon.ico": 1,
-    "counter.status.200.metrics": 1
+    "names": [
+        "jvm.memory.max",
+        "http.server.requests",
+        "jdbc.connections.active",
+        "process.files.max",
+        "jvm.gc.memory.promoted",
+        "tomcat.cache.hit",
+        "system.load.average.1m",
+        "tomcat.cache.access",
+        "jvm.memory.used",
+        "jvm.gc.max.data.size",
+        "jdbc.connections.max",
+        "jdbc.connections.min",
+        "jvm.gc.pause",
+        "jvm.memory.committed",
+        "system.cpu.count",
+        "logback.events",
+        "tomcat.global.sent",
+        "jvm.buffer.memory.used",
+        "tomcat.sessions.created",
+        "jvm.threads.daemon",
+        "system.cpu.usage",
+        "jvm.gc.memory.allocated",
+        "tomcat.global.request.max",
+        "hikaricp.connections.idle",
+        "hikaricp.connections.pending",
+        "tomcat.global.request",
+        "tomcat.sessions.expired",
+        "hikaricp.connections",
+        "jvm.threads.live",
+        "jvm.threads.peak",
+        "tomcat.global.received",
+        "hikaricp.connections.active",
+        "hikaricp.connections.creation",
+        "process.uptime",
+        "tomcat.sessions.rejected",
+        "process.cpu.usage",
+        "tomcat.threads.config.max",
+        "jvm.classes.loaded",
+        "hikaricp.connections.max",
+        "hikaricp.connections.min",
+        "jvm.classes.unloaded",
+        "tomcat.global.error",
+        "tomcat.sessions.active.current",
+        "tomcat.sessions.alive.max",
+        "jvm.gc.live.data.size",
+        "tomcat.servlet.request.max",
+        "hikaricp.connections.usage",
+        "tomcat.threads.current",
+        "tomcat.servlet.request",
+        "hikaricp.connections.timeout",
+        "process.files.open",
+        "jvm.buffer.count",
+        "jvm.buffer.total.capacity",
+        "tomcat.sessions.active.max",
+        "hikaricp.connections.acquire",
+        "tomcat.threads.busy",
+        "process.start.time",
+        "tomcat.servlet.error"
+    ]
 }
 ---------------------------------------------------------------------
 
@@ -349,12 +417,11 @@ Spring Boot provides an endpoint http://localhost:8080/metrics that exposes seve
 +
 [source, yaml]
 ---------------------------------------------------------------------
+---
+spring:
+  profiles: cloud
+
 management:
-  security:
-    enabled: false
-  info:
-    git:
-      mode: full
   cloudfoundry:
     enabled: true
     skip-ssl-validation: true
@@ -365,24 +432,21 @@ management:
 [source, groovy]
 ---------------------------------------------------------------------
 jar {
+    enabled = true
     excludes = ['**/application.yml']
 }
 
-task execJar (type: Jar, dependsOn: jar) {
+bootJar {
+    enabled = true
     classifier = 'exec'
-    from sourceSets.main.output
-}
-
-bootRepackage  {
-    withJarTask = tasks['execJar']
 }
 ---------------------------------------------------------------------
 +
--> Note the _bootRepackage_ plugin repackages the original artifact and creates a separate classified artifact. We wind up with 2 .jar files.
+-> Note the _bootJar_ plugin repackages the original artifact and creates a separate classified artifact. We wind up with 2 .jar files.
 
 . Push application into Cloud Foundry
 +
-  gradle bootRepackage
+  gradle build
   cf push
 
 . Find the URL created for your app in the health status report. Browse to your app.  Also view your application details in the Apps Manager UI:

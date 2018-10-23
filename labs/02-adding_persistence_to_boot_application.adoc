@@ -1,7 +1,7 @@
 :compat-mode:
 = Adding Persistence to Boot Application
 
-In this lab we'll utilize Spring Boot, Spring Data, and Spring Data REST to create a fully-functional hypermedia-driven RESTful web service. We'll then deploy it to Pivotal Cloud Foundry.
+In this lab we'll utilize Spring Boot, Spring Data, and Spring Data REST to create a fully-functional hypermedia-driven RESTful web service.  We'll then deploy it to Pivotal Cloud Foundry.  Along the way we'll take a brief look at https://flywaydb.org[Flyway] which can help us manage updates to database schema and data.
 
 == Create a Hypermedia-Driven RESTful Web Service with Spring Data REST (using JPA)
 
@@ -66,6 +66,45 @@ You’ll need to use your IDE’s features to add the appropriate import stateme
 +
 -> Hint: imports should start with `org.springframework.data.rest.core.annotation` and `org.springframework.data.repository`
 
+== Use Flyway to manage schema 
+
+. Edit _build.gradle_ and add the following dependencies within the _dependencies {}_ block
++
+[source,bash]
+---------------------------------------------------------------------
+compile('org.flywaydb:flyway-core:5.2.0')
+compile('com.zaxxer:HikariCP:3.2.0')
+---------------------------------------------------------------------
+
+. Create a new file named +V1_0__init_database.sql+ underneath _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_, add the following lines and save.
++
+[source,bash]
+---------------------------------------------------------------------
+CREATE TABLE CITY(
+   ID INTEGER PRIMARY KEY AUTO_INCREMENT,
+   NAME VARCHAR(100) NOT NULL,
+   COUNTY VARCHAR(100) NOT NULL,
+   STATE_CODE VARCHAR(10) NOT NULL,
+   POSTAL_CODE VARCHAR(10) NOT NULL,
+   LATITUDE VARCHAR(15) NOT NULL,
+   LONGITUDE VARCHAR(15) NOT NULL
+);
+---------------------------------------------------------------------
++
+Spring Boot comes with out-of-the-box https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html#howto-execute-flyway-database-migrations-on-startup[integration] support for https://flywaydb.org/documentation/plugins/springboot[Flyway].  When we start the application it will execute a versioned https://flywaydb.org/documentation/migrations#sql-based-migrations[SQL migration] that will create a new table in the database.
+
+. Add the following lines to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/application.yml_
++
+[source,bash]
+---------------------------------------------------------------------
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5
+---------------------------------------------------------------------
++ https://github.com/brettwooldridge/HikariCP/blob/dev/README.md[Hikari] is a database connection pool implementation. We are limiting the number of database connections an individual application instance may consume.
+
 == Run the _cloud-native-spring_ Application
 
 . Return to the Terminal session you opened previously
@@ -112,13 +151,13 @@ Date: Thu, 28 Apr 2016 14:44:06 GMT
 
 . To exit the application, type *Ctrl-C*.
 
-So what have you done? Created four small classes and one build file, resulting in a fully-functional REST microservice. The application's +DataSource+ is created automatically by Spring Boot using the in-memory database because no other +DataSource+ was detected in the project.
+So what have you done? Created four small classes, modified a build file, added some configuration and SQL migration scripts, resulting in a fully-functional REST microservice. The application's +DataSource+ is created automatically by Spring Boot using the in-memory database because no other +DataSource+ was detected in the project.
 
 Next we'll import some data.
 
 == Importing Data
 
-. Add this https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to +src/main/resources+. This is a rather large dataset containing all of the postal codes in the United States and its territories. This file will automatically be picked up by http://hibernate.org/orm/what-is-an-orm/[Hibernate] and imported into the in-memory database.
+. Copy the https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_. Rename the file to be +V1_1__seed_data.sql+. (This is a rather large dataset containing all of the postal codes in the United States and its territories). 
 
 . Restart the application.
 +
@@ -339,7 +378,7 @@ http://localhost:8080/cities/search/nameContains?q=Fort&size=1
 +
 [source,bash]
 ---------------------------------------------------------------------
-gradle bootRepackage
+gradle build
 ---------------------------------------------------------------------
 
 . You should already have an application manifest, +manifest.yml+, created in Lab 1; this can be reused.  You'll want to add a timeout param so that our service has enough time to initialize with its data loading:
@@ -353,7 +392,7 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -374,12 +413,12 @@ requested state: started
 instances: 1/1
 usage: 1G x 1 instances
 urls: cloud-native-spring-apodemal-hyperboloid.cfapps.io
-last uploaded: Thu Sep 28 23:29:21 UTC 2017
+last uploaded: Thu Jul 28 23:29:21 UTC 2018
 stack: cflinuxfs2
-buildpack: java_buildpack
+buildpack: java_buildpack_offline
 
      state     since                    cpu      memory         disk         details
-#0   running   2017-09-28 04:30:22 PM   163.7%   395.7M of 1G   159M of 1G
+#0   running   2018-07-28 04:30:22 PM   163.7%   395.7M of 1G   159M of 1G
 ---------------------------------------------------------------------
 
 . Access the application at the random route provided by CF:
@@ -388,25 +427,10 @@ buildpack: java_buildpack
 ---------------------------------------------------------------------
 curl -k https://cloud-native-spring-{random-word}.{domain}.com/cities
 ---------------------------------------------------------------------
++
++{random-word}+ might be something like +loquacious-eagle+ and +{domain}+ might be +cfapps.io+ if you happened to target Pivotal Web Services
 
 == Binding to a MySQL database in Cloud Foundry
-
-. You may have noticed that when using the H2 (in-memory) database that the schema is automatically generated and updated on application start. That's not the case with other SQL databases, such as MySQL, Oracle or PostgreSQL. You will need to instruct the application to automatically generate SQL schema by adding to `src/main/resources/application.yml` file, e.g.
-+
-[source,yml]
----------------------------------------------------------------------
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
----------------------------------------------------------------------
-
-. Repackage the application again
-+
-[source,bash]
----------------------------------------------------------------------
-gradle bootRepackage
----------------------------------------------------------------------
 
 . Let's create a MySQL database instance. Hopefully, you will have `p-mysql` service available in CF Marketplace.
 +
@@ -497,7 +521,7 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack
+  buildpack: java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -512,8 +536,13 @@ applications:
 cf push
 ---------------------------------------------------------------------
 
+You have a couple of options to connect to your database
 
-. Also, if you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
+* https://github.com/pivotal-cf/PivotalMySQLWeb[Pivotal MySQL*Web], which a nice administrative UI 
+* https://github.com/andreasf/cf-mysql-plugin[cf-mysql-plugin], which is more commandline oriented
+
+
+. When you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
 +
 [source,bash]
 ---------------------------------------------------------------------
@@ -552,22 +581,4 @@ mysql> select * from city;
 Empty set (0.03 sec)
 
 ---------------------------------------------------------------------
-+
-In case you don't have CF `mysql` plugin, you can install the plugin with
-+
-[source,bash]
----------------------------------------------------------------------
-cf install-plugin -r "CF-Community" mysql-plugin
----------------------------------------------------------------------
-+
--> More details here:
-+
-  * https://plugins.cloudfoundry.org/
-  * https://github.com/andreasf/cf-mysql-plugin
-+
 
-
-. Notice that the database is not initialized same way it was with H2 (in-memory) database. We need to update `spring.jpa.hibernate.ddl-auto` property to `create` or `create-drop`, since `update` will only update the schema. See more details here
-https://docs.spring.io/spring-boot/docs/current/reference/html/howto-database-initialization.html
-
-. Value tables and data are typically imported and managed by schema evolution tools like https://flywaydb.org[Flyway] or http://www.liquibase.org[Liquibase], but a review of those tools is out of scope for this workshop.

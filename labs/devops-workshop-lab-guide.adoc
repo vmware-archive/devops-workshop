@@ -1,9 +1,9 @@
 :title: DevOps Workshop Lab Guide
 :author: Christopher Phillipson
 :email: cphillipson@pivotal.io
-:revnumber: 1.0
+:revnumber: 2.0
 :revdate: {docdate}
-:revyear: 2017
+:revyear: 2018
 :subject: DevOps Workshop
 :keywords: DevOps, Spring Boot, Spring Cloud
 

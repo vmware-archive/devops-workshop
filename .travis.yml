@@ -1,0 +1,34 @@
+language: java
+jdk:
+- oraclejdk8
+- oraclejdk11
+- openjdk8
+- openjdk11
+script:
+- "cd labs/my_work/cloud-native-spring"
+- "./gradlew clean build"
+- "cd ../cloud-native-spring-ui"
+- "./gradlew clean build"
+- "cd ../../solutions/01/cloud-native-spring"
+- "./gradlew clean build"
+- "cd ../../02/cloud-native-spring"
+- "./gradlew clean build"
+- "cd ../../03/cloud-native-spring"
+- "./gradlew clean build"
+- "cd ../../04/cloud-native-spring"
+- "./gradlew clean build"
+- "cd ../../05/cloud-native-spring"
+- "./gradlew clean build"
+- "./gradlew publishToMavenLocal"
+- "cd ../cloud-native-spring-ui"
+- "./gradlew clean build -x test"
+- "cd ../../06/cloud-native-spring-ui"
+- "./gradlew clean build -x test"
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/" 
+

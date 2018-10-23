@@ -35,7 +35,7 @@ Enter your account username and password, then select an org and space.
 
 . Let's take a look at the CF CLI options
 +
-  cf --help
+  cf help -a
 
 . Let's see what buildpacks are available to us
 +

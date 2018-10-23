@@ -1,15 +1,32 @@
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5
+      
 management:
-  security:
-    enabled: false
+  endpoints:
+    web:
+      exposure: 
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
   info:
     git:
       mode: full
-  cloudfoundry:
-    enabled: true
-    skip-ssl-validation: true
 
 info: # add this section
   build:
     name: @application.name@
     description: @application.description@
     version: @application.version@
+
+---
+spring:
+  profiles: cloud
+
+management:
+  cloudfoundry:
+    enabled: true
+    skip-ssl-validation: true
