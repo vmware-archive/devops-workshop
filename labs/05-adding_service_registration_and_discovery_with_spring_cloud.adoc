@@ -100,8 +100,10 @@ Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gra
 [source,groovy]
 ---------------------------------------------------------------------
 dependencies {
-	// add this dependency
-	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+	 // add these dependencies
+	 compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+   compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+   compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
 }
 
 ---------------------------------------------------------------------
@@ -113,6 +115,42 @@ We'll also be using the Domain object from our main Boot application.  Add that 
 dependencies {
   // add this dependency
   compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
+}
+---------------------------------------------------------------------
++
+If you remember earlier, we disabled security for `cloud-native-spring`, we'll do the same again for `cloud-native-spring-ui`. Open *cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java* for editing and make sure the contents look like so
++
+[source,java]
+---------------------------------------------------------------------
+package io.pivotal;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@EnableDiscoveryClient
+@SpringBootApplication
+public class CloudNativeSpringApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(CloudNativeSpringApplication.class, args);
+	}
+
+	@Configuration
+	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
+
+    	@Override
+    	public void configure(WebSecurity web) throws Exception {
+        	web
+           		.ignoring()
+               		.antMatchers("/**");
+    	}
+	}
+	
 }
 ---------------------------------------------------------------------
 
@@ -140,11 +178,13 @@ We'll also need to add a few annotations to our Spring Boot application:
 +
 [source,java]
 ---------------------------------------------------------------------
-@SpringBootApplication
 @EnableFeignClients
 @EnableDiscoveryClient
+@SpringBootApplication
 public class CloudNativeSpringUiApplication {
 ---------------------------------------------------------------------
++
+Don't forget to add imports!
 
 . Next we'll create a Vaadin UI for rendering our data.  The point of this workshop isn't to go into detail on creating UIs; for now suffice to say that Vaadin is a great tool for quickly creating User Interfaces.  Our UI will consume our Feign client we just created.  Create the class _io.pivotal.AppUi_ (/cloud-native-spring-ui/src/main/java/io/pivotal/AppUi.java) and into it paste the following code:
 +
@@ -223,7 +263,8 @@ applications:
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack_offline
+  buildpacks: 
+  - java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

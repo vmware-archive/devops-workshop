@@ -80,7 +80,7 @@ compile('com.zaxxer:HikariCP:3.2.0')
 +
 [source,bash]
 ---------------------------------------------------------------------
-CREATE TABLE CITY(
+CREATE TABLE city (
    ID INTEGER PRIMARY KEY AUTO_INCREMENT,
    NAME VARCHAR(100) NOT NULL,
    COUNTY VARCHAR(100) NOT NULL,
@@ -120,7 +120,7 @@ gradle clean bootRun
 +
 [source,bash]
 ---------------------------------------------------------------------
-curl -i http://localhost:8080/cities
+http :8080/cities
 
 HTTP/1.1 200 OK
 Server: Apache-Coyote/1.1
@@ -157,7 +157,7 @@ Next we'll import some data.
 
 == Importing Data
 
-. Copy the https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_. Rename the file to be +V1_1__seed_data.sql+. (This is a rather large dataset containing all of the postal codes in the United States and its territories). 
+. Copy the https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_. Rename the file to be +V1_1__seed_data.sql+. (This is a small subset of a larger dataset containing all of the postal codes in the United States and its territories). 
 
 . Restart the application.
 +
@@ -170,7 +170,7 @@ gradle clean bootRun
 +
 [source,bash]
 ---------------------------------------------------------------------
-curl -i localhost:8080/cities
+http :8080/cities
 
 HTTP/1.1 200 OK
 Server: Apache-Coyote/1.1
@@ -274,7 +274,7 @@ gradle clean bootRun
 +
 [source,bash]
 ---------------------------------------------------------------------
-curl -i "localhost:8080/cities"
+http :8080/cities
 
 HTTP/1.1 200 OK
 Server: Apache-Coyote/1.1
@@ -321,7 +321,7 @@ http://localhost:8080/cities/search
 +
 [source,bash]
 ---------------------------------------------------------------------
-curl -i "localhost:8080/cities/search"
+http :8080/cities/search
 
 HTTP/1.1 200 OK
 Server: Apache-Coyote/1.1
@@ -363,11 +363,11 @@ Note that we now have new search endpoints for each of the finders that we added
 
 . Try a few of these endpoints in https://www.getpostman.com[Postman]. Feel free to substitute your own values for the parameters.
 +
-http://localhost:8080/cities/search/postalCode?q=75202
+http://localhost:8080/cities/search/postalCode?q=01229
 +
-http://localhost:8080/cities/search/name?q=Boston
+http://localhost:8080/cities/search/name?q=Springfield
 +
-http://localhost:8080/cities/search/nameContains?q=Fort&size=1
+http://localhost:8080/cities/search/nameContains?q=West&size=1
 +
 -> For further details on what's possible with Spring Data JPA, consult the https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#dependencies.spring-boot[reference documentation]
 
@@ -392,7 +392,8 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack_offline
+  buildpacks: 
+  - java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -425,44 +426,67 @@ buildpack: java_buildpack_offline
 +
 [source,bash]
 ---------------------------------------------------------------------
-curl -k https://cloud-native-spring-{random-word}.{domain}.com/cities
+http GET https://cloud-native-spring-{random-word}.{domain}.com/cities
 ---------------------------------------------------------------------
 +
 +{random-word}+ might be something like +loquacious-eagle+ and +{domain}+ might be +cfapps.io+ if you happened to target Pivotal Web Services
 
+. Let's stop the application momentarily as we prepare to swap out the database provider.
++
+[source,bash]
+---------------------------------------------------------------------
+cf stop cloud-native-spring
+---------------------------------------------------------------------
+
 == Binding to a MySQL database in Cloud Foundry
 
-. Let's create a MySQL database instance. Hopefully, you will have `p-mysql` service available in CF Marketplace.
+. Let's create a MySQL database instance. Hopefully, you will have [p.mysql](https://network.pivotal.io/products/pivotal-mysql) service available in CF Marketplace.
 +
 [source,bash]
 ---------------------------------------------------------------------
-cf marketplace -s p-mysql
+cf marketplace -s p.mysql
 ---------------------------------------------------------------------
 +
 Expected output:
 +
 [source,bash]
 ---------------------------------------------------------------------
-Getting service plan information for service p-mysql as cphillipson@pivotal.io...
+Getting service plan information for service p.mysql as cphillipson@pivotal.io...
 OK
 
-service plan   description     free or paid
-100mb          100MB default   free
+service plan   description                                            free or paid
+db-small       This plan provides a small dedicated MySQL instance.   free
 ---------------------------------------------------------------------
 
-. Let's create an instance of `p-mysql` with `100mb` plan, e.g.
+. Let's create an instance of `p.mysql` with `db-small` plan, e.g.
 +
 [source,bash]
 ---------------------------------------------------------------------
-cf create-service p-mysql 100mb mysql-database
+cf create-service p.mysql db-small mysql-database
 ---------------------------------------------------------------------
 +
 Expected output:
 +
 [source,bash]
 ---------------------------------------------------------------------
-Creating service instance mysql-database1 in org zoo-labs / space development as cphillipson@pivotal.io...
+Creating service instance mysql-database in org zoo-labs / space development as cphillipson@pivotal.io...
 OK
+---------------------------------------------------------------------
++
+So long as the name of the service contains `mysql` the https://dev.mysql.com/downloads/connector/j/[mysql-connector] JDBC driver will https://github.com/cloudfoundry/java-buildpack/blob/master/docs/framework-maria_db_jdbc.md#mariadb-jdbc-framework[automatically be added] as a runtime dependency. 
++
+However, we're going to explicitly define a runtime dependency on the MySQL JDBC driver.  Open `build.gradle` for editing and add the following to the `dependencies` section
++
+[source,json]
+---------------------------------------------------------------------
+runtime('mysql:mysql-connector-java:8.0.13')
+---------------------------------------------------------------------
++ 
+And, of course we must rebuild and repackage the application to have the application recognize the new dependency at runtime
++
+[source,bash]
+---------------------------------------------------------------------
+gradle build
 ---------------------------------------------------------------------
 
 . Let's bind the service to the application, e.g.
@@ -483,11 +507,11 @@ OK
 -> Tip: Use `cf restage cloud-native-spring` to ensure your env variable changes take effect
 
 
-. Let's push the application, since we did not push the updated application yet, e.g.
+. Now let's push the updated application
 +
 [source,bash]
 ---------------------------------------------------------------------
-cf push
+cf push cloud-native-spring
 ---------------------------------------------------------------------
 
 . You may wish to observe the logs and notice that the bound MySQL database is picked up by the application, e.g.
@@ -521,7 +545,8 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack_offline
+  buildpacks: 
+  - java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
@@ -536,49 +561,41 @@ applications:
 cf push
 ---------------------------------------------------------------------
 
-You have a couple of options to connect to your database
+. Let's have a look at how we can interact with the database 
 
-* https://github.com/pivotal-cf/PivotalMySQLWeb[Pivotal MySQL*Web], which a nice administrative UI 
-* https://github.com/andreasf/cf-mysql-plugin[cf-mysql-plugin], which is more commandline oriented
-
-
-. When you connect to the database, you will notice that the application has updated the schema on application start. You should see `city` table in the MySQL database.
+Visit https://github.com/pivotal-cf/PivotalMySQLWeb[Pivotal MySQL*Web] then follow these instructions for building the application.
 +
 [source,bash]
 ---------------------------------------------------------------------
-cf mysql mysql-database
+cd ..
+git clone https://github.com/pivotal-cf/PivotalMySQLWeb.git
+cd PivotalMySQLWeb
+./mvnw -DskipTests=true package
 ---------------------------------------------------------------------
 +
-Sample console:
+Then to prepare the application for deployment we'll create a manifest. Open an editor, create and save a file named `manifest.yml` with these contents:
++
+[source,yml]
+---------------------------------------------------------------------
+applications:
+- name: pivotal-mysqlweb
+  memory: 1024M
+  instances: 1
+  random-route: true
+  path: ./target/PivotalMySQLWeb-1.0.0-SNAPSHOT.jar
+  services:
+    - mysql-database
+  env:
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
+---------------------------------------------------------------------
++
+Of course, you'll want to deploy the application
 +
 [source,bash]
 ---------------------------------------------------------------------
-mysql: [Warning] Using a password on the command line interface can be insecure.
-Reading table information for completion of table and column names
-You can turn off this feature to get a quicker startup with -A
-
-Welcome to the MySQL monitor.  Commands end with ; or \g.
-Your MySQL connection id is 50
-Server version: 5.5.5-10.1.24-MariaDB Source distribution
-
-Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
-
-Oracle is a registered trademark of Oracle Corporation and/or its
-affiliates. Other names may be trademarks of their respective
-owners.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-mysql> show tables;
-+---------------------------------------------------+
-| Tables_in_cf_2c143464_fbdd_43df_8379_2bef727f1c99 |
-+---------------------------------------------------+
-| city                                              |
-+---------------------------------------------------+
-1 row in set (0.03 sec)
-
-mysql> select * from city;
-Empty set (0.03 sec)
-
+cf push
 ---------------------------------------------------------------------
-
++
+And once deployed, you can visit the appliation URL and log in with the default credentials `admin/cfmysqlweb`
++
+Take a few moments to explore the features and see that the administrative and diagnostic functions of Pivotal MySQL*Web provide a rather simple way to interact with and keep your database instance up-to-date via an Internet browser.

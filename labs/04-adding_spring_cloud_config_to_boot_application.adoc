@@ -14,7 +14,7 @@ Adding a dependency management plugin and other miscellaneous configuration.
 ---------------------------------------------------------------------
 buildscript {
     ext {
-	   springBootVersion = '2.0.6.RELEASE'
+	   springBootVersion = '2.1.0.RELEASE'
     }
     repositories {
         maven {
@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -54,7 +54,7 @@ processResources {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.1.RELEASE"
     }
 }
@@ -72,6 +72,7 @@ dependencies {
     compile('org.flywaydb:flyway-core:5.2.0')
     compile('com.zaxxer:HikariCP:3.2.0')
     runtime('com.h2database:h2')
+    runtime('mysql:mysql-connector-java:8.0.13')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
@@ -153,13 +154,12 @@ public class GreetingController {
 }
 ---------------------------------------------------------------------
 
-. When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following to conditionally disable security (to ease local workstation deployment) */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java* right underneath the +public static void main+ method
+. When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following to conditionally disable security (to ease local workstation deployment) */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java* right underneath the +public static void main+ method implementation
 +
 [source,java]
 ---------------------------------------------------------------------
-    @Profile("!cloud")
 	@Configuration
-	static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
 
     	@Override
     	public void configure(WebSecurity web) throws Exception {
@@ -170,7 +170,15 @@ public class GreetingController {
 	}
 ---------------------------------------------------------------------
 +
-Examine this https://docs.spring.io/spring-boot/docs/2.0.6.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details.
+Examine this https://docs.spring.io/spring-boot/docs/2.1.0.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details.
+
+. Another thing we'll have to allow is for bean definitions to be overridden.  Add this line indented exactly two-spaces underneath `spring:` in */cloud-native-spring/src/main/resources/application.yml*
++
+[source,yml]
+---------------------------------------------------------------------
+  main:
+    allow-bean-definition-overriding: true
+---------------------------------------------------------------------
 
 . We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
@@ -253,7 +261,8 @@ applications:
   memory: 1024M
   instances: 1
   path: ./target/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack_offline
+  buildpacks: 
+  - java_buildpack_offline
   timeout: 180
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

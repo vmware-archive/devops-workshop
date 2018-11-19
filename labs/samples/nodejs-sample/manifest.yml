@@ -3,5 +3,6 @@ applications:
 - name: cf-nodejs
   memory: 512M
   instances: 1
-  buildpack: nodejs_buildpack
+  buildpacks: 
+  - nodejs_buildpack
   random-route: true

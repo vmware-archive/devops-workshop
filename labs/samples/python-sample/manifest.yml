@@ -2,5 +2,6 @@
 applications:
 - memory: 128MB
   disk_quota: 256MB
-  buildpack: python_buildpack
+  buildpacks: 
+  - python_buildpack
   random-route: true

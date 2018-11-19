@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	    springBootVersion = '2.0.6.RELEASE'
+	    springBootVersion = '2.1.0.RELEASE'
     }
     repositories {
 	    maven {
@@ -9,7 +9,7 @@ buildscript {
 	    mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -41,7 +41,7 @@ processResources {
 dependencyManagement {
     imports {
     	mavenBom "com.vaadin:vaadin-bom:8.5.2"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.1.RELEASE"
     }
 }
