@@ -6,5 +6,6 @@ applications:
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
   buildpacks: 
   - java_buildpack_offline
+  stack: cflinuxfs3
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

@@ -11,6 +11,4 @@ applications:
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
-  services:
-  - config-server
-  - service-registry
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 11.+ } }'

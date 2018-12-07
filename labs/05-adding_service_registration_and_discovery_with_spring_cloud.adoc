@@ -32,7 +32,7 @@ public class CloudNativeSpringApplication {
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf create-service p-service-registry standard service-registry
+$ cf create-service p-service-registry trial service-registry
 ---------------------------------------------------------------------
 
 . After you create the service registry instance navigate to your Cloud Foundry space in the Apps Manager UI and refresh the page.  You should now see the newly create Service Registry intance.  Select the Manage link to view the registry dashboard.  Note that there are not any registered applications at the moment:
@@ -95,7 +95,7 @@ As in Lab 1 we will start with a project that has most of what we need to get go
 +
 Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop/labs/my_work/cloud-native-spring-ui_) then click the _Open_ button, then click the _Finish_ button.
 
-. As before, we need to add _spring-cloud-services-starter-service-registry_ to the classpath.  Add this to your _build.gradle_:
+. As before, we need to add _spring-cloud-services-starter-service-registry_ and some collaborating dependencies to the classpath.  Add this to your _build.gradle_:
 +
 [source,groovy]
 ---------------------------------------------------------------------
@@ -104,6 +104,7 @@ dependencies {
 	 compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
    compile('org.springframework.cloud:spring-cloud-starter-openfeign')
    compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+   compile('org.hibernate:hibernate-core:5.3.7.Final')
 }
 
 ---------------------------------------------------------------------
@@ -265,6 +266,7 @@ applications:
   path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT-exec.jar
   buildpacks: 
   - java_buildpack_offline
+  stack: cflinuxfs3
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

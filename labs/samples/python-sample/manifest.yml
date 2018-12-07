@@ -4,4 +4,5 @@ applications:
   disk_quota: 256MB
   buildpacks: 
   - python_buildpack
+  stack: cflinuxfs3
   random-route: true

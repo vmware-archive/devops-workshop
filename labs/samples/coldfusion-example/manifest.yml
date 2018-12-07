@@ -7,5 +7,6 @@ applications:
   path: ./build/libs/cfmagic-1.0-SNAPSHOT.war
   buildpacks: 
   - java_buildpack_offline
+  stack: cflinuxfs3
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

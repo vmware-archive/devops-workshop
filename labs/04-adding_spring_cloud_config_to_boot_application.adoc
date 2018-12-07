@@ -14,12 +14,12 @@ Adding a dependency management plugin and other miscellaneous configuration.
 ---------------------------------------------------------------------
 buildscript {
     ext {
-	   springBootVersion = '2.1.0.RELEASE'
+	   springBootVersion = '2.1.1.RELEASE'
     }
     repositories {
-        maven {
-	        url "https://plugins.gradle.org/m2/"
-	    }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.spring.io/snapshot" }
+	    maven { url "https://repo.spring.io/milestone" }
         mavenCentral()
     }
     dependencies {
@@ -54,13 +54,13 @@ processResources {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.2.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.M3"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.3.RELEASE"
     }
 }
 
 dependencies {
-    compileOnly('org.projectlombok:lombok:1.18.2')
+    compileOnly('org.projectlombok:lombok:1.18.4')
     compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -77,9 +77,9 @@ dependencies {
 }
 
 repositories {
-    maven {
-        url "https://repo.spring.io/plugins-release"
-    }
+    maven { url "https://repo.spring.io/plugins-release" }
+    maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
     mavenCentral()
 }
 
@@ -170,7 +170,7 @@ public class GreetingController {
 	}
 ---------------------------------------------------------------------
 +
-Examine this https://docs.spring.io/spring-boot/docs/2.1.0.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details.
+Examine this https://docs.spring.io/spring-boot/docs/2.1.1.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details.
 
 . Another thing we'll have to allow is for bean definitions to be overridden.  Add this line indented exactly two-spaces underneath `spring:` in */cloud-native-spring/src/main/resources/application.yml*
 +
@@ -208,7 +208,7 @@ gradle clean bootRun
 +
 image::images/config-scs.jpg[]
 
-. In the resulting details page, select the _standard_, single tenant plan.  Name the instance *config-server*, select the Space that you've been using to push all your applications.  At this time you don't need to select an application to bind to the service:
+. In the resulting details page, select the _trial_, single tenant plan.  Name the instance *config-server*, select the Space that you've been using to push all your applications.  At this time you don't need to select an application to bind to the service:
 +
 image::images/config-scs1.jpg[]
 
@@ -263,6 +263,7 @@ applications:
   path: ./target/cloud-native-spring-1.0-SNAPSHOT-exec.jar
   buildpacks: 
   - java_buildpack_offline
+  stack: cflinuxfs3
   timeout: 180
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

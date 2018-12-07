@@ -1,11 +1,11 @@
 buildscript {
     ext {
-	   springBootVersion = '2.1.0.RELEASE'
+	   springBootVersion = '2.1.1.RELEASE'
     }
     repositories {
-        maven {
-	        url "https://plugins.gradle.org/m2/"
-	    }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.spring.io/snapshot" }
+	    maven { url "https://repo.spring.io/milestone" }
         mavenCentral()
     }
     dependencies {
@@ -40,14 +40,14 @@ processResources {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.2.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.M3"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.3.RELEASE"
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compileOnly('org.projectlombok:lombok:1.18.2')
+    compileOnly('org.projectlombok:lombok:1.18.4')
     compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -64,9 +64,9 @@ dependencies {
 }
 
 repositories {
-    maven {
-        url "https://repo.spring.io/plugins-release"
-    }
+    maven { url "https://repo.spring.io/plugins-release" }
+    maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
     mavenCentral()
 }
 
