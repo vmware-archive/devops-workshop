@@ -32,7 +32,7 @@ public class CloudNativeSpringApplication {
 +
 [source,bash]
 ---------------------------------------------------------------------
-$ cf create-service p-service-registry standard service-registry
+$ cf create-service p-service-registry trial service-registry
 ---------------------------------------------------------------------
 
 . After you create the service registry instance navigate to your Cloud Foundry space in the Apps Manager UI and refresh the page.  You should now see the newly create Service Registry intance.  Select the Manage link to view the registry dashboard.  Note that there are not any registered applications at the moment:
@@ -95,13 +95,16 @@ As in Lab 1 we will start with a project that has most of what we need to get go
 +
 Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop/labs/my_work/cloud-native-spring-ui_) then click the _Open_ button, then click the _Finish_ button.
 
-. As before, we need to add _spring-cloud-services-starter-service-registry_ to the classpath.  Add this to your _build.gradle_:
+. As before, we need to add _spring-cloud-services-starter-service-registry_ and some collaborating dependencies to the classpath.  Add this to your _build.gradle_:
 +
 [source,groovy]
 ---------------------------------------------------------------------
 dependencies {
-	// add this dependency
-	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+	 // add these dependencies
+	 compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+   compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+   compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+   compile('org.hibernate:hibernate-core:5.3.7.Final')
 }
 
 ---------------------------------------------------------------------
@@ -113,6 +116,42 @@ We'll also be using the Domain object from our main Boot application.  Add that 
 dependencies {
   // add this dependency
   compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
+}
+---------------------------------------------------------------------
++
+If you remember earlier, we disabled security for `cloud-native-spring`, we'll do the same again for `cloud-native-spring-ui`. Open *cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java* for editing and make sure the contents look like so
++
+[source,java]
+---------------------------------------------------------------------
+package io.pivotal;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@EnableDiscoveryClient
+@SpringBootApplication
+public class CloudNativeSpringApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(CloudNativeSpringApplication.class, args);
+	}
+
+	@Configuration
+	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
+
+    	@Override
+    	public void configure(WebSecurity web) throws Exception {
+        	web
+           		.ignoring()
+               		.antMatchers("/**");
+    	}
+	}
+	
 }
 ---------------------------------------------------------------------
 
@@ -140,11 +179,13 @@ We'll also need to add a few annotations to our Spring Boot application:
 +
 [source,java]
 ---------------------------------------------------------------------
-@SpringBootApplication
 @EnableFeignClients
 @EnableDiscoveryClient
+@SpringBootApplication
 public class CloudNativeSpringUiApplication {
 ---------------------------------------------------------------------
++
+Don't forget to add imports!
 
 . Next we'll create a Vaadin UI for rendering our data.  The point of this workshop isn't to go into detail on creating UIs; for now suffice to say that Vaadin is a great tool for quickly creating User Interfaces.  Our UI will consume our Feign client we just created.  Create the class _io.pivotal.AppUi_ (/cloud-native-spring-ui/src/main/java/io/pivotal/AppUi.java) and into it paste the following code:
 +
@@ -223,7 +264,9 @@ applications:
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT-exec.jar
-  buildpack: java_buildpack_offline
+  buildpacks: 
+  - java_buildpack_offline
+  stack: cflinuxfs3
   timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom

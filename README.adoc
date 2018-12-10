@@ -1,6 +1,6 @@
 = DevOps Workshop
 
-image:https://travis-ci.org/Pivotal-Field-Engineering/devops-workshop.svg?branch=spring-cloud-finchley-retread[]
+image:https://travis-ci.org/Pivotal-Field-Engineering/devops-workshop.svg?branch=master[]
 
 A collection of workshop presentations and labs exercises for use at client sites. Focus on Pivotal Application Service, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a link:SCHEDULE.adoc[1-1/2 day period].
 
@@ -19,11 +19,15 @@ A collection of workshop presentations and labs exercises for use at client site
 
 -> https://gradle.org/install/[Gradle] 4.10.2 or better
 
+-> https://maven.apache.org/download.cgi[Maven] 3.6.0 or better
+
 === Recommended
 
 -> https://spring.io/tools[Spring Tools] 4
 
 -> https://www.getpostman.com[Postman] 6.4.2 or better
+
+-> https://httpie.org/#installation[httpie] 1.0.0 or better
 
 
 == Clone this repository

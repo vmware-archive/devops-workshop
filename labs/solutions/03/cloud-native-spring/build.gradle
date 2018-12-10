@@ -1,15 +1,15 @@
 buildscript {
     ext {
-	   springBootVersion = '2.0.6.RELEASE'
+	   springBootVersion = '2.1.1.RELEASE'
     }
     repositories {
-        maven {
-	        url "https://plugins.gradle.org/m2/"
-	    }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.spring.io/snapshot" }
+	    maven { url "https://repo.spring.io/milestone" }
         mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -39,12 +39,14 @@ processResources {
 }
 
 repositories {
+    maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
     mavenCentral()
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compileOnly('org.projectlombok:lombok:1.18.2')
+    compileOnly('org.projectlombok:lombok:1.18.4')
     compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -55,6 +57,7 @@ dependencies {
     compile('org.flywaydb:flyway-core:5.2.0')
     compile('com.zaxxer:HikariCP:3.2.0')
     runtime('com.h2database:h2')
+    runtime('mysql:mysql-connector-java:8.0.13')
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

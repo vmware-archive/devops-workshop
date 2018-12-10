@@ -1,16 +1,12 @@
 ---
 applications:
 - name: cloud-native-spring
-  memory: 1024M
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
   buildpacks: 
   - java_buildpack_offline
   stack: cflinuxfs3
-  timeout: 180 # to give time for the data to import
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
-  services:
-  - config-server
-  - service-registry
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 11.+ } }'

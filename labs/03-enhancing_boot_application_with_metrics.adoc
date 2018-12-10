@@ -16,6 +16,7 @@ dependencies {
 ---------------------------------------------------------------------
 +
 By default Spring Boot does not expose these management endpoints (which is a good thing!).  Though you wouldn't want to expose all of them in production, we'll do so in this sample app to make demonstration a bit easier and simpler.  
+
 . Add the following properties to *cloud-native-spring/src/main/resources/application.yml*.
 +
 [source,yml]
@@ -36,39 +37,39 @@ gradle clean bootRun
 +
 Try out the following endpoints with https://www.getpostman.com[Postman]. The output is omitted here because it can be quite large:
 +
-http://localhost:8080/actuator/health
+http :8080/actuator/health
 +
 -> Displays Application and Datasource health information.  This can be customized based on application functionality, which we'll do later.
 +
-http://localhost:8080/actuator/beans
+http :8080/actuator/beans
 +
 -> Dumps all of the beans in the Spring context.
 +
-http://localhost:8080/actuator/autoconfig
+http :8080/actuator/autoconfig
 +
 -> Dumps all of the auto-configuration performed as part of application bootstrapping.
 +
-http://localhost:8080/actuator/configprops
+http :8080/actuator/configprops
 +
 -> Displays a collated list of all @ConfigurationProperties.
 +
-http://localhost:8080/actuator/env
+http :8080/actuator/env
 +
 -> Dumps the application’s shell environment as well as all Java system properties.
 +
-http://localhost:8080/actuator/mappings
+http :8080/actuator/mappings
 +
 -> Dumps all URI request mappings and the controller methods to which they are mapped.
 +
-http://localhost:8080/actuator/threaddump
+http :8080/actuator/threaddump
 +
 -> Performs a thread dump.
 +
-http://localhost:8080/actuator/httptrace
+http :8080/actuator/httptrace
 +
 -> Displays trace information (by default the last few HTTP requests).
 +
-http://localhost:8080/actuator/flyway
+http :8080/actuator/flyway
 +
 -> Shows any Flyway database migrations that have been applied.
 
@@ -95,7 +96,7 @@ Then, you must edit the file and add the plugin dependency within the _dependenc
 +
 [source,groovy]
 ---------------------------------------------------------------------
-classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:1.5.2")
+classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
 ---------------------------------------------------------------------
 +
 You'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
@@ -119,7 +120,12 @@ The effect of all this configuration is that the _gradle-git-properties_ plugin 
 +
   gradle clean bootRun
 
-. Browse to http://localhost:8080/actuator/info. Git commit information is now included
+. Let's use httpie to verify that Git commit information is now included 
++
+[source,bash]
+---------------------------------------------------------------------
+http :8080/actuator/info
+---------------------------------------------------------------------
 +
 [source,json]
 ---------------------------------------------------------------------
@@ -181,7 +187,12 @@ processResources {
 gradle clean bootRun
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080/actuator/info. Build information is now included.
+. Again we'll use httpie to verify that the Build information is now included 
++
+[source,bash]
+---------------------------------------------------------------------
+http :8080/actuator/info
+---------------------------------------------------------------------
 +
 [source,json]
 ---------------------------------------------------------------------
@@ -238,7 +249,14 @@ We want to expose more detail about the health and well-being of the application
 gradle bootRun
 ---------------------------------------------------------------------
 
-. Browse to http://localhost:8080/actuator/health. Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
+. Use httpie to verify the output of the health endpoint
++
+[source,bash]
+---------------------------------------------------------------------
+http :8080/actuator/health
+--------------------------------------------------------------------- 
++
+Out of the box is a _DiskSpaceHealthIndicator_ that monitors health in terms of available disk space. Would your Ops team like to know if the app is close to running out of disk space? DiskSpaceHealthIndicator can be customized via _DiskSpaceHealthIndicatorProperties_. For instance, setting a different threshold for when to report the status as DOWN.
 +
 [source,json]
 ---------------------------------------------------------------------

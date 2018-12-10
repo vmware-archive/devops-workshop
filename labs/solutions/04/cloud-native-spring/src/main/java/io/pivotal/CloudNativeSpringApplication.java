@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,15 +15,14 @@ public class CloudNativeSpringApplication {
 		SpringApplication.run(CloudNativeSpringApplication.class, args);
 	}
 
-	@Profile("!cloud")
 	@Configuration
-	static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
+	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
 
     	@Override
     	public void configure(WebSecurity web) throws Exception {
         	web
            		.ignoring()
-               	.antMatchers("/**");
+               		.antMatchers("/**");
     	}
 	}
 }

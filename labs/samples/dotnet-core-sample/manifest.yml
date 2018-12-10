@@ -3,5 +3,8 @@ applications:
   - name: dotnet_core_hello_world
     disk_quota: 1536M
     random-route: true
+    buildpacks:
+    - dotnet_core_buildpack
+    stack: cflinuxfs3
     env:
       CACHE_NUGET_PACKAGES: false

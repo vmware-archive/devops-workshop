@@ -70,7 +70,7 @@ feign:
 +
 [source,bash]
 ---------------------------------------------------------------------
-cf create-service p-circuit-breaker-dashboard standard circuit-breaker
+cf create-service p-circuit-breaker-dashboard trial circuit-breaker
 ---------------------------------------------------------------------
 
 . If we view the Circuit Breaker Dashboard (accessible from the _Manage_ link in Apps Manager) you will see that a dashboard has been deployed but is empty (You may get an _Initializing_ message for a few seconds.  This should eventually refresh to a dashboard):
