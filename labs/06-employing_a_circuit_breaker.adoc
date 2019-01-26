@@ -10,7 +10,7 @@ In this lab we'll utilize Spring Boot and Spring Cloud to make our UI Applicatio
 ---------------------------------------------------------------------
 dependencies {
 	// add this dependency
-	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
+	implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
 }
 ---------------------------------------------------------------------
 

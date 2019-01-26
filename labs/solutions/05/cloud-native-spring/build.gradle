@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	   springBootVersion = '2.1.1.RELEASE'
+	   springBootVersion = '2.1.2.RELEASE'
     }
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
@@ -9,7 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -40,30 +40,32 @@ processResources {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.M3"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.3.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.1.0.RELEASE"
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compileOnly('org.projectlombok:lombok:1.18.4')
-    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-data-rest')
-    compile('org.springframework.boot:spring-boot-starter-hateoas')
-    compile('org.springframework.data:spring-data-rest-hal-browser')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.cloud:spring-cloud-starter-openfeign')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
-    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
-    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
-    compile('org.flywaydb:flyway-core:5.2.0')
-    compile('com.zaxxer:HikariCP:3.2.0')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    implementation('org.projectlombok:lombok:1.18.4')
+    implementation('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-data-rest')
+    implementation('org.springframework.boot:spring-boot-starter-hateoas')
+    implementation('org.springframework.data:spring-data-rest-hal-browser')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+    implementation('org.springframework.security:spring-security-config')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+    implementation('org.flywaydb:flyway-core:5.2.4')
+    implementation('com.zaxxer:HikariCP:3.3.0')
     runtime('com.h2database:h2')
-    runtime('mysql:mysql-connector-java:8.0.13')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    runtime('mysql:mysql-connector-java:8.0.14')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {

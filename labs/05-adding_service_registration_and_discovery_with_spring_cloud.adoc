@@ -10,7 +10,7 @@ In this lab we'll utilize Spring Boot and Spring Cloud to configure our applicat
 ---------------------------------------------------------------------
 dependencies {
 	// add this dependency
-	compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+	implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
 }
 
 ---------------------------------------------------------------------
@@ -101,10 +101,10 @@ Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gra
 ---------------------------------------------------------------------
 dependencies {
 	 // add these dependencies
-	 compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
-   compile('org.springframework.cloud:spring-cloud-starter-openfeign')
-   compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
-   compile('org.hibernate:hibernate-core:5.3.7.Final')
+	 implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+   implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
+   implementation('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+   implementation('org.hibernate:hibernate-core:5.4.1.Final')
 }
 
 ---------------------------------------------------------------------
@@ -115,7 +115,7 @@ We'll also be using the Domain object from our main Boot application.  Add that 
 ---------------------------------------------------------------------
 dependencies {
   // add this dependency
-  compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
+  implementation('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
 }
 ---------------------------------------------------------------------
 +
@@ -129,7 +129,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
@@ -141,14 +141,13 @@ public class CloudNativeSpringApplication {
 		SpringApplication.run(CloudNativeSpringApplication.class, args);
 	}
 
+  @Profile("!cloud")
 	@Configuration
 	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
 
     	@Override
-    	public void configure(WebSecurity web) throws Exception {
-        	web
-           		.ignoring()
-               		.antMatchers("/**");
+    	public void configure(HttpSecurity web) throws Exception {
+			  web.authorizeRequests().antMatchers("/**").permitAll();
     	}
 	}
 	

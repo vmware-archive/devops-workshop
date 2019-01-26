@@ -9,7 +9,7 @@ buildscript {
 	mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -48,18 +48,20 @@ dependencyManagement {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compileOnly('org.projectlombok:lombok:1.18.4')
-    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
-    compile('org.springframework.cloud:spring-cloud-starter-openfeign')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
-    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
-    compile('org.hibernate:hibernate-core:5.3.7.Final')
-    compile('com.vaadin:vaadin-spring-boot-starter')
-    compile('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    implementation('org.projectlombok:lombok:1.18.4')
+    implementation('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.security:spring-security-config')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+    implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
+    implementation('org.hibernate:hibernate-core:5.4.1.Final')
+    implementation('com.vaadin:vaadin-spring-boot-starter')
+    implementation('io.pivotal:cloud-native-spring:1.0-SNAPSHOT')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {

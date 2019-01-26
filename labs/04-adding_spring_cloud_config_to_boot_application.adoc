@@ -14,7 +14,7 @@ Adding a dependency management plugin and other miscellaneous configuration.
 ---------------------------------------------------------------------
 buildscript {
     ext {
-	   springBootVersion = '2.1.1.RELEASE'
+	   springBootVersion = '2.1.2.RELEASE'
     }
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
@@ -23,7 +23,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
+	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0")
 	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
@@ -54,26 +54,27 @@ processResources {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.M3"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.3.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.1.0.RELEASE"
     }
 }
 
 dependencies {
-    compileOnly('org.projectlombok:lombok:1.18.4')
-    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-data-rest')
-    compile('org.springframework.boot:spring-boot-starter-hateoas')
-    compile('org.springframework.data:spring-data-rest-hal-browser')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
-    compile('org.flywaydb:flyway-core:5.2.0')
-    compile('com.zaxxer:HikariCP:3.2.0')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    implementation('org.projectlombok:lombok:1.18.4')
+    implementation('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-data-rest')
+    implementation('org.springframework.boot:spring-boot-starter-hateoas')
+    implementation('org.springframework.data:spring-data-rest-hal-browser')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-config-client')
+    implementation('org.flywaydb:flyway-core:5.2.4')
+    implementation('com.zaxxer:HikariCP:3.3.0')
     runtime('com.h2database:h2')
-    runtime('mysql:mysql-connector-java:8.0.13')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    runtime('mysql:mysql-connector-java:8.0.14')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {
@@ -119,7 +120,7 @@ publishing {
     }
 ---------------------------------------------------------------------
 
-. Add a http://static.javadoc.io/org.springframework.cloud/spring-cloud-commons-parent/1.1.9.RELEASE/org/springframework/cloud/context/scope/refresh/RefreshScope.html[@RefreshScope] annotation to the top of the _GreetingController_ class declaration
+. Add a https://cloud.spring.io/spring-cloud-static/spring-cloud-commons/2.1.0.RELEASE/single/spring-cloud-commons.html#refresh-scope[@RefreshScope] annotation to the top of the _GreetingController_ class declaration
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -150,27 +151,35 @@ public class GreetingController {
     public String hello() {
         return String.join(" ", greeting, "World!");
     }
-    
+
 }
 ---------------------------------------------------------------------
 
-. When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  Add the following to conditionally disable security (to ease local workstation deployment) */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java* right underneath the +public static void main+ method implementation
+. When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included at runtime (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  We will need to add the following to conditionally open security (to ease local workstation deployment).
++
+In *build.gradle*, we'll need to add an _implementation_ dependency
++
+[source, bash]
+---------------------------------------------------------------------
+implementation('org.springframework.security:spring-security-config')
+---------------------------------------------------------------------
++
+In */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java* right underneath the +public static void main+ method implementation, add
 +
 [source,java]
 ---------------------------------------------------------------------
-	@Configuration
+	@Profile("!cloud")
+    @Configuration
 	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
 
     	@Override
-    	public void configure(WebSecurity web) throws Exception {
-        	web
-           		.ignoring()
-               	.antMatchers("/**");
+    	public void configure(HttpSecurity web) throws Exception {
+			web.authorizeRequests().antMatchers("/**").permitAll();
     	}
 	}
 ---------------------------------------------------------------------
 +
-Examine this https://docs.spring.io/spring-boot/docs/2.1.1.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details.
+Examine this https://docs.spring.io/spring-boot/docs/2.1.2.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details. (Note: the @Profile annotation above will be activated when the cloud_native_spring application is deployed to PAS because the cloud profile is activated by default). 
 
 . Another thing we'll have to allow is for bean definitions to be overridden.  Add this line indented exactly two-spaces underneath `spring:` in */cloud-native-spring/src/main/resources/application.yml*
 +

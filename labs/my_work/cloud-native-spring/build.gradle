@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	   springBootVersion = '2.1.1.RELEASE'
+	   springBootVersion = '2.1.2.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -28,16 +28,17 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compileOnly('org.projectlombok:lombok:1.18.4')
-    compile('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile('org.springframework.boot:spring-boot-starter-data-rest')
-    compile('org.springframework.boot:spring-boot-starter-hateoas')
-    compile('org.springframework.data:spring-data-rest-hal-browser')
-    compile('org.springframework.boot:spring-boot-starter-web')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    implementation('org.projectlombok:lombok:1.18.4')
+    implementation('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-data-rest')
+    implementation('org.springframework.boot:spring-boot-starter-hateoas')
+    implementation('org.springframework.data:spring-data-rest-hal-browser')
+    implementation('org.springframework.boot:spring-boot-starter-web')
     runtime('com.h2database:h2')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 

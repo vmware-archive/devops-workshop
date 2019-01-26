@@ -9,7 +9,7 @@ Spring Boot includes a number of additional features to help you monitor and man
 [source,groovy]
 ---------------------------------------------------------------------
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
     // other dependencies omitted
 }
 
@@ -96,7 +96,7 @@ Then, you must edit the file and add the plugin dependency within the _dependenc
 +
 [source,groovy]
 ---------------------------------------------------------------------
-classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0-beta1")
+classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0")
 ---------------------------------------------------------------------
 +
 You'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
