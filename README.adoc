@@ -1,6 +1,6 @@
 = DevOps Workshop
 
-image:https://travis-ci.org/Pivotal-Field-Engineering/devops-workshop.svg?branch=master[]
+image:https://travis-ci.org/Pivotal-Field-Engineering/devops-workshop.svg?branch=master[https://travis-ci.org/Pivotal-Field-Engineering/devops-workshop]
 
 A collection of workshop presentations and labs exercises for use at client sites. Focus on Pivotal Application Service, Cloud Native concepts, Microservices design, Spring Boot and Spring Cloud Services, and accelerating software delivery with Concourse CI/CD pipelines. Typically conducted over a link:SCHEDULE.adoc[1-1/2 day period].
 
