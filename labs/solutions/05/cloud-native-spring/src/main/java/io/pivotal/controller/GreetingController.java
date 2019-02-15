@@ -12,7 +12,7 @@ public class GreetingController {
     @Value("${greeting:Hola}")
     private String greeting;
 
-    @RequestMapping("/hello")
+    @GetMapping("/hello")
     public String hello() {
         return String.join(" ", greeting, "World!");
     }
