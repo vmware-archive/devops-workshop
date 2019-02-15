@@ -1,7 +1,7 @@
 package io.pivotal.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class GreetingController {
@@ -10,5 +10,5 @@ public class GreetingController {
     public String hello() {
         return "Hello World!";
     }
-    
+
 }

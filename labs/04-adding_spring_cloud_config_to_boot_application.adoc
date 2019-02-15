@@ -107,7 +107,7 @@ publishing {
 }
 ---------------------------------------------------------------------
 
-. Add an _@Value_ annotation, private field, and update the existing _@RequestMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
+. Add an _@Value_ annotation, private field, and update the existing _@GetMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -136,7 +136,7 @@ Completed:
 package io.pivotal.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
