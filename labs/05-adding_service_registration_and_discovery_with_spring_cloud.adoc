@@ -123,16 +123,6 @@ If you remember earlier, we disabled security for `cloud-native-spring`, we'll d
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-
 @EnableDiscoveryClient
 @SpringBootApplication
 public class CloudNativeSpringApplication {
@@ -141,6 +131,7 @@ public class CloudNativeSpringApplication {
 		SpringApplication.run(CloudNativeSpringApplication.class, args);
 	}
 
+  @Order(101)
   @Profile("!cloud")
 	@Configuration
 	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
@@ -150,9 +141,11 @@ public class CloudNativeSpringApplication {
 			  web.authorizeRequests().antMatchers("/**").permitAll();
     	}
 	}
-	
+
 }
 ---------------------------------------------------------------------
++
+Don't forget to adjust the imports!
 
 . Since this UI is going to consume REST services it's an awesome opportunity to use Feign.  Feign will handle *ALL* the work of invoking our services and marshalling/unmarshalling JSON into domain objects.  We'll add a Feign Client interface into our app.  Take note of how Feign references the downstream service; it's only the name of the service it will lookup from Eureka Service Registry.  Create a new interface that resides in the same package as _CloudNativeSpringUiApplication_:
 +
@@ -186,45 +179,52 @@ public class CloudNativeSpringUiApplication {
 +
 Don't forget to add imports!
 
-. Next we'll create a Vaadin UI for rendering our data.  The point of this workshop isn't to go into detail on creating UIs; for now suffice to say that Vaadin is a great tool for quickly creating User Interfaces.  Our UI will consume our Feign client we just created.  Create the class _io.pivotal.AppUi_ (/cloud-native-spring-ui/src/main/java/io/pivotal/AppUi.java) and into it paste the following code:
+. Next we'll create a https://vaadin.com/docs/flow/Overview.html[Vaadin Flow] UI for rendering our data.  The point of this workshop isn't to go into detail on creating UIs; for now suffice to say that Vaadin is a great tool for quickly creating User Interfaces.  Our UI will consume our Feign client we just created.  Create the class _io.pivotal.AppUi_ (/cloud-native-spring-ui/src/main/java/io/pivotal/AppUi.java) and into it paste the following code:
 +
 [source,java]
 ---------------------------------------------------------------------
 package io.pivotal;
 
-import com.vaadin.annotations.Theme;
-
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.UI;
-import io.pivotal.domain.City;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
-@SpringUI
-@Theme("valo")
-public class AppUi extends UI {
+import javax.annotation.PostConstruct;
+
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.material.Material;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import io.pivotal.domain.City;
+
+@Route("cities-ui")
+@Theme(Material.class)
+@PWA(name = "Cities UI, Vaadin Flow with Spring", shortName = "Cities UI")
+public class CitiesUI extends VerticalLayout {
+
+    private static final long serialVersionUID = 1L;
 
     private final CityClient client;
-    private final Grid<City> grid;
 
     @Autowired
-    public AppUi(CityClient client) {
+    public CitiesUI(CityClient client) {
         this.client = client;
-        this.grid = new Grid<>(City.class);
     }
 
-    @Override
-    protected void init(VaadinRequest request) {
-        setContent(grid);
-        grid.setWidth(100, Unit.PERCENTAGE);
-        grid.setHeight(100, Unit.PERCENTAGE);
-        Collection<City> collection = new ArrayList<>();
-        client.getCities().forEach(collection::add);
-        grid.setItems(collection);
+    @PostConstruct
+    protected void init() {
+        Grid<City> grid = new Grid<>(City.class);
+        Collection<City> cities = new ArrayList<>();
+        // fetch cities from back-end service
+        client.getCities().forEach(cities::add);
+        grid.setItems(cities);
+        // influence order of column headers for display
+        grid.setColumns("id", "name", "county", "stateCode", "postalCode", "latitude", "longitude");
+        add(grid);
     }
 }
 ---------------------------------------------------------------------
@@ -263,7 +263,7 @@ applications:
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT-exec.jar
-  buildpacks: 
+  buildpacks:
   - java_buildpack_offline
   stack: cflinuxfs3
   timeout: 180 # to give time for the data to import
@@ -280,7 +280,7 @@ applications:
 cf push
 ---------------------------------------------------------------------
 
-. Test your application by navigating to the root URL of the application, which will invoke Vaadin UI.  You should now see a table listing the first set of rows returned from the cities microservice:
+. Test your application by navigating to the `/cities-ui` endpoint, which will invoke the Vaadin UI.  You should now see a table listing the first set of rows returned from the cities microservice:
 +
 image::images/ui.jpg[]
 
@@ -290,10 +290,10 @@ image::images/ui.jpg[]
 ---------------------------------------------------------------------
 cf stop cloud-native-spring
 ---------------------------------------------------------------------
-. Refresh the UI app.  
+. Refresh the UI app.
 +
 *What happens?*
-+  
++
 Now you get a nasty error that is not very user friendly!
 +
 -> Next we'll learn how to make our UI Application more resilient in the case that our downstream services are unavailable.

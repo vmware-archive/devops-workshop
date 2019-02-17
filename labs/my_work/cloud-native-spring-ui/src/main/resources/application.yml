@@ -5,7 +5,7 @@ spring:
 management:
   endpoints:
     web:
-      exposure: 
+      exposure:
         include: "*"
   endpoint:
     health:
@@ -13,12 +13,6 @@ management:
   info:
     git:
       mode: full
-
-info: # add this section
-  build:
-    name: @application.name@
-    description: @application.description@
-    version: @application.version@
 
 ---
 spring:

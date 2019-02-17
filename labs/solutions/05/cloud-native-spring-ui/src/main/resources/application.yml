@@ -14,12 +14,6 @@ management:
     git:
       mode: full
 
-info: # add this section
-  build:
-    name: @application.name@
-    description: @application.description@
-    version: @application.version@
-
 ---
 spring:
   profiles: cloud
