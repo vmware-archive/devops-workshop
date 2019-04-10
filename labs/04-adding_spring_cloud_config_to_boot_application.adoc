@@ -168,7 +168,6 @@ In */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.j
 +
 [source,java]
 ---------------------------------------------------------------------
-	@Order(105)
     @Profile("!cloud")
     @Configuration
 	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
