@@ -154,10 +154,9 @@ By including the _gradle-git-properties_ plugin, details about git commit inform
 ---------------------------------------------------------------------
 info: # add this section
   build:
-    artifact: @project.artifactId@
-    name: @project.name@
-    description: @project.description@
-    version: @project.version@
+    name: @application.name@
+    description: @application.description@
+    version: @application.version@
 ---------------------------------------------------------------------
 +
 Note we're defining token delimited value-placeholders for each property.  In order to have these properties replaced, we'll need to add some further instructions to the _build.gradle_ file.
