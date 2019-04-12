@@ -441,7 +441,7 @@ cf stop cloud-native-spring
 
 == Binding to a MySQL database in Cloud Foundry
 
-. Let's create a MySQL database instance. Hopefully, you will have [p.mysql](https://network.pivotal.io/products/pivotal-mysql) service available in CF Marketplace.
+. Let's create a MySQL database instance. Hopefully, you will have https://network.pivotal.io/products/pivotal-mysql[p.mysql] service available in CF Marketplace.
 +
 [source,bash]
 ---------------------------------------------------------------------
