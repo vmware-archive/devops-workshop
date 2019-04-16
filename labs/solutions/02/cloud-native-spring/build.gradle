@@ -1,6 +1,6 @@
 buildscript {
     ext {
-	   springBootVersion = '2.1.3.RELEASE'
+	   springBootVersion = '2.1.4.RELEASE'
     }
     repositories {
         maven { url "https://repo.spring.io/snapshot" }
@@ -28,8 +28,8 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    annotationProcessor('org.projectlombok:lombok:1.18.4')
-    implementation('org.projectlombok:lombok:1.18.4')
+    annotationProcessor('org.projectlombok:lombok:1.18.6')
+    implementation('org.projectlombok:lombok:1.18.6')
     implementation('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
@@ -47,7 +47,7 @@ dependencies {
 
 jar {
     enabled = true
-    excludes = ['**/application.yml']
+    excludes = ['**/application.yml', 'io/pivotal/CloudNativeSpringApplication*.class']
 }
 
 bootJar {

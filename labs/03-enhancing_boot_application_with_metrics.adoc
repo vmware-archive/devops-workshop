@@ -450,7 +450,7 @@ management:
 ---------------------------------------------------------------------
 jar {
     enabled = true
-    excludes = ['**/application.yml']
+    excludes = ['**/application.yml', 'io/pivotal/CloudNativeSpringApplication*.class']
 }
 
 bootJar {
