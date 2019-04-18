@@ -1,6 +1,6 @@
 plugins {
     id 'com.gorylenko.gradle-git-properties' version '2.0.0'
-    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'org.springframework.boot' version '2.0.9.RELEASE'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'java'
     id 'com.devsoap.vaadin-flow' version '1.1.1'
@@ -15,12 +15,13 @@ gitProperties {
 dependencyManagement {
     imports {
         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.1.2.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR3"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.3.RELEASE"
     }
 }
 
 dependencies {
+    implementation('org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438')
     annotationProcessor('org.projectlombok:lombok:1.18.6')
     implementation('org.projectlombok:lombok:1.18.6')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
