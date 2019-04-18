@@ -9,7 +9,7 @@ plugins {
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
-    dotGitDirectory = "${project.rootDir}/../../../.."
+    dotGitDirectory = "${project.rootDir}/../../.."
 }
 
 dependencyManagement {
