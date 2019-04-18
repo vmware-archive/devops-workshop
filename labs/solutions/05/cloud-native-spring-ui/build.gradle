@@ -1,29 +1,10 @@
-buildscript {
-    ext {
-	    springBootVersion = '2.1.4.RELEASE'
-        vaadinFlowPluginVersion = '1.1.1'
-    }
-    repositories {
-	    maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://repo.spring.io/snapshot" }
-	    maven { url "https://repo.spring.io/milestone" }
-	    mavenCentral()
-    }
-    dependencies {
-	    classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0")
-	    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("com.devsoap:gradle-vaadin-flow-plugin:${vaadinFlowPluginVersion}")
-    }
+plugins {
+    id 'com.gorylenko.gradle-git-properties' version '2.0.0'
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    id 'java'
+    id 'com.devsoap.vaadin-flow' version '1.1.1'
 }
-
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'com.gorylenko.gradle-git-properties'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'com.devsoap.vaadin-flow'
 
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
@@ -33,16 +14,15 @@ gitProperties {
 
 dependencyManagement {
     imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1"
         mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.1.2.RELEASE"
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
     annotationProcessor('org.projectlombok:lombok:1.18.6')
     implementation('org.projectlombok:lombok:1.18.6')
-    implementation('javax.xml.bind:jaxb-api:2.4.0-b180725.0427')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.boot:spring-boot-starter-hateoas')
@@ -55,26 +35,13 @@ dependencies {
     implementation vaadin.platform()
     implementation vaadin.lumoTheme()
     implementation('com.vaadin:vaadin-spring-boot-starter')
-    implementation('io.pivotal:cloud-native-spring-solution-5:1.0-SNAPSHOT')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
 repositories {
     maven { url "https://repo.spring.io/plugins-release" }
-    maven { url "https://repo.spring.io/snapshot" }
-	maven { url "https://repo.spring.io/milestone" }
     vaadin.repositories()
     mavenCentral()
-    mavenLocal()
-}
-
-jar {
-    enabled = false
-}
-
-bootJar {
-    enabled = true
-    classifier = 'exec'
 }
 
 bootRun {
@@ -85,17 +52,5 @@ bootRun {
 tasks.withType(Test) {
     if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
         jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'io.pivotal'
-            from components.java
-        }
-    }
-    repositories {
-        mavenLocal()
     }
 }

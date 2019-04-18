@@ -13,18 +13,11 @@ Use `Ctrl+C` to shutdown when you're done.
   
 . We will employ the https://www.jfrog.com/confluence/display/RTF/Gradle+Artifactory+Plugin[Gradle Artifactory Plugin].  Scan the labs directory and sub-directories.  Replace occurrences of `mavenCentral()` with `jcenter()` in all `build.gradle` files.
 
-. Add the following dependency to the _dependencies{}_ section of the _buildscript{}_ block within each `build.gradle` file
+. Add the following dependency to the _plugins{}_ section within each `build.gradle` file
 +
 [source, groovy]
 ---------------------------------------------------------------------------
-classpath ("org.jfrog.buildinfo:build-info-extractor-gradle:latest.release")
----------------------------------------------------------------------------
-+
-Then activate the Gradle Artifactory plugin by adding an _apply plugin_ instruction beneath the _buildscript{}_ block
-+
-[source, groovy]
----------------------------------------------------------------------------
-apply plugin: 'com.jfrog.artifactory'
+  id "com.jfrog.artifactory" version "4.9.5"
 ---------------------------------------------------------------------------
 
 . Add the following section at the end of each `build.gradle` file.

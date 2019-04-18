@@ -4,8 +4,8 @@ spring:
       connection-timeout: 60000
       maximum-pool-size: 5
   main:
-    allow-bean-definition-overriding: true
-      
+    allow-bean-definition-overriding: false
+
 management:
   endpoints:
     web:

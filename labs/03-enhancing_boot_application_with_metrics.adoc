@@ -24,7 +24,7 @@ By default Spring Boot does not expose these management endpoints (which is a go
 management:
   endpoints:
     web:
-      exposure: 
+      exposure:
         include: "*"
 ---------------------------------------------------------------------
 
@@ -81,30 +81,21 @@ Spring Boot provides an endpoint (http://localhost:8080/actuator/info) that allo
 
 One thing that _actuator_ does well is expose information about the specific build and version control coordinates for a given deployment.
 
-. Edit the following file: */cloud-native-spring/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build. 
+. Edit the following file: */cloud-native-spring/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build.
 +
-First, you'll need to be able to resolve the plugin so add the following to the _repositories{}_ section of the _buildscript{}_ block.
+First, you'll need to be able to resolve the plugin so add the following to the _plugins{}_ section
 +
 [source,groovy]
 ---------------------------------------------------------------------
-maven {
-    url "https://plugins.gradle.org/m2/"
+plugins {
+    id 'com.gorylenko.gradle-git-properties' version '2.0.0'
 }
 ---------------------------------------------------------------------
-+
-Then, you must edit the file and add the plugin dependency within the _dependencies{}_ section of the _buildscript{}_ block. 
-+
-[source,groovy]
----------------------------------------------------------------------
-classpath("gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.0.0")
----------------------------------------------------------------------
-+
-You'll also activate the plugin and add a _gitProperties{}_ block just underneath the last _apply plugin:_ line.
-+
-[source,groovy]
----------------------------------------------------------------------
-apply plugin: 'com.gorylenko.gradle-git-properties'
 
+You'll also configure the plugin by adding a _gitProperties{}_ block.
++
+[source,groovy]
+---------------------------------------------------------------------
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
@@ -120,7 +111,7 @@ The effect of all this configuration is that the _gradle-git-properties_ plugin 
 +
   gradle clean bootRun
 
-. Let's use httpie to verify that Git commit information is now included 
+. Let's use https://httpie.org[httpie] to verify that Git commit information is now included 
 +
 [source,bash]
 ---------------------------------------------------------------------
@@ -186,7 +177,7 @@ processResources {
 gradle clean bootRun
 ---------------------------------------------------------------------
 
-. Again we'll use httpie to verify that the Build information is now included 
+. Again we'll use httpie to verify that the Build information is now included
 +
 [source,bash]
 ---------------------------------------------------------------------
@@ -444,29 +435,12 @@ management:
     skip-ssl-validation: true
 ---------------------------------------------------------------------
 
-. Let's review */cloud-native-spring/build.gradle*.  Note these lines:
-+
-[source, groovy]
----------------------------------------------------------------------
-jar {
-    enabled = true
-    excludes = ['**/application.yml', 'io/pivotal/CloudNativeSpringApplication*.class']
-}
-
-bootJar {
-    enabled = true
-    classifier = 'exec'
-}
----------------------------------------------------------------------
-+
--> Note the _bootJar_ plugin repackages the original artifact and creates a separate classified artifact. We wind up with 2 .jar files.
-
 . Push application into Cloud Foundry
 +
   gradle build
   cf push
 
-. Find the URL created for your app in the health status report. Browse to your app.  Also view your application details in the Apps Manager UI:
+. Visit the route created for your app and append /actuator/health to see the health status report. See the same details in the Apps Manager UI:
 +
 image::images/appsman.jpg[]
 

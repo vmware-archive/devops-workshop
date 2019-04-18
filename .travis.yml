@@ -19,7 +19,6 @@ script:
 - "./gradlew clean build"
 - "cd ../../05/cloud-native-spring"
 - "./gradlew clean build"
-- "./gradlew publishToMavenLocal"
 - "cd ../cloud-native-spring-ui"
 - "./gradlew clean build -x test"
 - "cd ../../06/cloud-native-spring-ui"

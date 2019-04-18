@@ -58,13 +58,6 @@ image::images/registry1.jpg[]
 gradle build
 ---------------------------------------------------------------------
 
-. For the 2nd half of this lab we'll need to have this artifact in our local repository, so install it with the following command:
-+
-[source,bash]
----------------------------------------------------------------------
-gradle publishToMavenLocal
----------------------------------------------------------------------
-
 . Push application into Cloud Foundry
 +
 [source,bash]
@@ -262,7 +255,7 @@ applications:
   memory: 1024M
   random-route: true
   instances: 1
-  path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT-exec.jar
+  path: ./build/libs/cloud-native-spring-ui-1.0-SNAPSHOT.jar
   buildpacks:
   - java_buildpack_offline
   stack: cflinuxfs3
