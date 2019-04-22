@@ -1,17 +1,16 @@
 package io.pivotal;
 
-import org.springframework.context.annotation.Profile;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@EnableFeignClients
+import io.pivotal.domain.City;
+
 @EnableDiscoveryClient
 @SpringBootApplication
 public class CloudNativeSpringApplication {
@@ -20,14 +19,25 @@ public class CloudNativeSpringApplication {
 		SpringApplication.run(CloudNativeSpringApplication.class, args);
 	}
 
-	@Profile("!cloud")
+	@Configuration
+	// @see https://stackoverflow.com/questions/24839760/spring-boot-responsebody-doesnt-serialize-entity-id
+	static class RepositoryConfiguration extends RepositoryRestConfigurerAdapter {
+
+		@Override
+		public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+			config.exposeIdsFor(City.class);
+		}
+	}
+
 	@Configuration
 	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
 
-    	@Override
-    	public void configure(HttpSecurity web) throws Exception {
-			web.authorizeRequests().antMatchers("/**").permitAll();
-    	}
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.csrf().disable();
+			http.authorizeRequests().antMatchers("/**").permitAll();
+		}
+
 	}
 
 }

@@ -146,26 +146,19 @@ In */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.j
 +
 [source,java]
 ---------------------------------------------------------------------
-    @Profile("!cloud")
+
     @Configuration
 	static class ApplicationSecurityOverride extends WebSecurityConfigurerAdapter {
 
     	@Override
-    	public void configure(HttpSecurity web) throws Exception {
-			web.authorizeRequests().antMatchers("/**").permitAll();
+    	public void configure(HttpSecurity http) throws Exception {
+			http.csrf().disable();
+            http.authorizeRequests().antMatchers("/**").permitAll();
     	}
 	}
 ---------------------------------------------------------------------
 +
-Examine this https://docs.spring.io/spring-boot/docs/2.1.3.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details. (Note: the @Profile annotation above will be activated when the cloud_native_spring application is deployed to PAS because the cloud profile is activated by default). 
-
-. Another thing we'll have to allow is for bean definitions to be overridden.  Add this line indented exactly two-spaces underneath `spring:` in */cloud-native-spring/src/main/resources/application.yml*
-+
-[source,yml]
----------------------------------------------------------------------
-  main:
-    allow-bean-definition-overriding: true
----------------------------------------------------------------------
+Examine this https://docs.spring.io/spring-boot/docs/2.1.3.RELEASE/reference/htmlsingle/#boot-features-security-mvc[Spring Boot reference] for further details. We're going to disable cross-site request forgery.  We are also explicitly deactivating security, allowing unauthorized requests to all endpoints.
 
 . We'll also want to give our Spring Boot App a name so that it can lookup application-specific configuration from the config server later.  Add the following configuration to */cloud-native-spring/src/main/resources/bootstrap.yml*. (You'll need to create this file.)
 +
