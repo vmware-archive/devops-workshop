@@ -13,10 +13,6 @@ While we could visit https://start.spring.io to create a new Spring Boot project
   cd /devops-workshop/labs/my_work/cloud-native-spring
 
 . Open this project in your editor/IDE of choice.
-+
-*_STS Import Help_*
-+
-Select _File > Import…_. In the susequent dialog choose _Gradle > Existing Gradle Project_ then click the _Next_ button. In the _Import Gradle Project_ dialog browse to the _cloud-native-spring_ directory (e.g. _devops-workshop/labs/my_work/cloud-native-spring_) then click the _Open_ button, then click the _Finish_ button.
 
 == Add an Endpoint
 
@@ -66,7 +62,7 @@ public class GreetingController {
     public String hello() {
         return "Hello World!";
     }
-    
+
 }
 ---------------------------------------------------------------------
 
@@ -75,10 +71,12 @@ public class GreetingController {
 
 Return to the Terminal session you opened previously and make sure your working directory is set to be _devops-workshop/labs/my_work/cloud-native-spring_
 
+We're going to use https://gradle.org[Gradle] to build and package artifacts. If you don't already have Gradle installed, don't worry, we have you covered. You can use the embedded Gradle Wrapper.  From here onwards, if you see occurences of _gradle_ just replace with _./gradlew_ if you're running a Mac or Linux OS, or _gradlew_ if you're running Windows.
+
 . Find out what tasks are available to you with
 +
   gradle tasks
-  
+
 . First we'll run tests
 +
   gradle test
@@ -86,7 +84,7 @@ Return to the Terminal session you opened previously and make sure your working 
 . Next we'll package the application as a libary artifact (it cannot be run on its own)
 +
   gradle jar
-  
+
 . Next we'll package the application as an executable artifact (that can be run on its own because it will include all transitive dependencies along with embedding a servlet container)
 +
   gradle build
@@ -129,7 +127,7 @@ applications:
 - name: cloud-native-spring
   random-route: true
   instances: 1
-  path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
+  path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT.jar
   buildpacks: 
   - java_buildpack_offline
   stack: cflinuxfs3

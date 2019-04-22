@@ -22,7 +22,7 @@ public class City implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
@@ -66,7 +66,7 @@ You’ll need to use your IDE’s features to add the appropriate import stateme
 +
 -> Hint: imports should start with `org.springframework.data.rest.core.annotation` and `org.springframework.data.repository`
 
-== Use Flyway to manage schema 
+== Use Flyway to manage schema
 
 . Edit _build.gradle_ and add the following dependencies within the _dependencies {}_ block
 +
@@ -157,7 +157,7 @@ Next we'll import some data.
 
 == Importing Data
 
-. Copy the https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_. Rename the file to be +V1_1__seed_data.sql+. (This is a small subset of a larger dataset containing all of the postal codes in the United States and its territories). 
+. Copy the https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_. Rename the file to be +V1_1__seed_data.sql+. (This is a small subset of a larger dataset containing all of the postal codes in the United States and its territories).
 
 . Restart the application.
 +
@@ -474,15 +474,15 @@ Creating service instance mysql-database in org zoo-labs / space development as 
 OK
 ---------------------------------------------------------------------
 +
-So long as the name of the service contains `mysql` the https://dev.mysql.com/downloads/connector/j/[mysql-connector] JDBC driver will https://github.com/cloudfoundry/java-buildpack/blob/master/docs/framework-maria_db_jdbc.md#mariadb-jdbc-framework[automatically be added] as a runtime dependency. 
+So long as the name of the service contains `mysql` the https://dev.mysql.com/downloads/connector/j/[mysql-connector] JDBC driver will https://github.com/cloudfoundry/java-buildpack/blob/master/docs/framework-maria_db_jdbc.md#mariadb-jdbc-framework[automatically be added] as a runtime dependency.
 +
 However, we're going to explicitly define a runtime dependency on the MySQL JDBC driver.  Open `build.gradle` for editing and add the following to the `dependencies` section
 +
 [source,json]
 ---------------------------------------------------------------------
-runtime('mysql:mysql-connector-java:8.0.14')
+runtime('mysql:mysql-connector-java:8.0.15')
 ---------------------------------------------------------------------
-+ 
++
 And, of course we must rebuild and repackage the application to have the application recognize the new dependency at runtime
 +
 [source,bash]
@@ -521,7 +521,7 @@ cf push cloud-native-spring
 ---------------------------------------------------------------------
 cf logs cloud-native-spring --recent
 ---------------------------------------------------------------------
-+ 
++
 Sample output:
 +
 [source,bash]
@@ -546,7 +546,7 @@ applications:
   memory: 1024M
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT-exec.jar
-  buildpacks: 
+  buildpacks:
   - java_buildpack_offline
   timeout: 180 # to give time for the data to import
   env:
@@ -562,7 +562,7 @@ applications:
 cf push
 ---------------------------------------------------------------------
 
-. Let's have a look at how we can interact with the database 
+. Let's have a look at how we can interact with the database
 
 Visit https://github.com/pivotal-cf/PivotalMySQLWeb[Pivotal MySQL*Web] then follow these instructions for building the application.
 +
