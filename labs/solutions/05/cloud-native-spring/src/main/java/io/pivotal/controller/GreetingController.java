@@ -16,5 +16,5 @@ public class GreetingController {
     public String hello() {
         return String.join(" ", greeting, "World!");
     }
-    
+
 }

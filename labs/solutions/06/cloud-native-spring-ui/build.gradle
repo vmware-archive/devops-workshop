@@ -36,6 +36,7 @@ dependencies {
     implementation vaadin.platform()
     implementation vaadin.lumoTheme()
     implementation('com.vaadin:vaadin-spring-boot-starter')
+    implementation('org.vaadin.crudui:crudui:3.8.1')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
