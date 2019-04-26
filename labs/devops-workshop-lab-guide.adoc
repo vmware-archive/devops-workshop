@@ -6,6 +6,7 @@
 :revyear: 2018
 :subject: DevOps Workshop
 :keywords: DevOps, Spring Boot, Spring Cloud
+:source-highlighter: rouge
 
 = DevOps Workshop Lab Guide
 

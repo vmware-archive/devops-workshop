@@ -16,7 +16,7 @@ dependencies {
 ---------------------------------------------------------------------
 +
 
-. Thanks to Spring Cloud instructing your application to register with Eureka is as simple as adding a single annotation to your app! Add an _@EnableDiscoveryClient_ annotation to the class _io.pivotal.CloudNativeSpringApplication_ (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeApplication.java):
+. Thanks to Spring Cloud instructing your application to register with Eureka is as simple as adding a single annotation to your app! Add an _@EnableDiscoveryClient_ annotation to the class _io.pivotal.cns.CloudNativeSpringApplication_ (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeApplication.java):
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -177,7 +177,7 @@ Don't forget to adjust the imports!
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal;
+package io.pivotal.cns;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.hateoas.Resources;
@@ -189,7 +189,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.pivotal.domain.City;
+import io.pivotal.cns.domain.City;
 
 @FeignClient(name = "https://cloud-native-spring")
 public interface CityClient {
@@ -208,11 +208,11 @@ public interface CityClient {
 }
 ---------------------------------------------------------------------
 
-. Next we'll create a https://vaadin.com/docs/flow/Overview.html[Vaadin Flow] UI for rendering our data.  The point of this workshop isn't to go into detail on creating UIs; for now suffice to say that Vaadin is a great tool for quickly creating User Interfaces.  Our UI will consume our Feign client we just created.  Create the class _io.pivotal.AppUi_ (/cloud-native-spring-ui/src/main/java/io/pivotal/AppUi.java) and into it paste the following code:
+. Next we'll create a https://vaadin.com/docs/flow/Overview.html[Vaadin Flow] UI for rendering our data.  The point of this workshop isn't to go into detail on creating UIs; for now suffice to say that Vaadin is a great tool for quickly creating User Interfaces.  Our UI will consume our Feign client we just created.  Create the class _io.pivotal.cns.AppUi_ (/cloud-native-spring-ui/src/main/java/io/pivotal/AppUi.java) and into it paste the following code:
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal;
+package io.pivotal.cns;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -230,7 +230,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resources;
 import org.vaadin.crudui.crud.impl.GridCrud;
 
-import io.pivotal.domain.City;
+import io.pivotal.cns.domain.City;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

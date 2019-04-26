@@ -9,11 +9,11 @@ This application will allow us to create, read update and delete records in an h
 
 == Add the domain object - City
 
-. Create the package `io.pivotal.domain` and in that package create the class `City`. Into that file you can paste the following source code, which represents cities based on postal codes, global coordinates, etc:
+. Create the package `io.pivotal.cns.domain` and in that package create the class `City`. Into that file you can paste the following source code, which represents cities based on postal codes, global coordinates, etc:
 +
 [source, java, numbered]
 ---------------------------------------------------------------------
-package io.pivotal.domain;
+package io.pivotal.cns.domain;
 
 @Data
 @Entity
@@ -51,11 +51,11 @@ Notice that we're using http://docs.oracle.com/javaee/6/tutorial/doc/bnbpz.html[
 +
 -> Hint: imports should start with `javax.persistence` and `lombok`
 
-. Create the package +io.pivotal.repositories+ and in that package create the interface +CityRepository+. Paste the following code and add appropriate imports:
+. Create the package +io.pivotal.cns.repositories+ and in that package create the interface +CityRepository+. Paste the following code and add appropriate imports:
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal.repositories;
+package io.pivotal.cns.repositories;
 
 @RepositoryRestResource(collectionResourceRel = "cities", path = "cities")
 public interface CityRepository extends PagingAndSortingRepository<City, Long> {

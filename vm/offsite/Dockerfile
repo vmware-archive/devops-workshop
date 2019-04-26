@@ -9,8 +9,8 @@ RUN wget http://www.eu.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven
 tar -xvzf apache-maven-3.6.0-bin.tar.gz -C /opt
 
 # Install Gradle
-RUN wget https://services.gradle.org/distributions/gradle-5.4-bin.zip && \
-unzip -d /opt gradle-5.4-bin.zip
+RUN wget https://services.gradle.org/distributions/gradle-5.4.1-bin.zip && \
+unzip -d /opt gradle-5.4.1-bin.zip
 
 # Add Gradle and Maven to PATH
 RUN echo export PATH=/opt/apache-maven-3.6.0/bin:/opt/gradle-5.2.1/bin:\$PATH >> /root/.bashrc
