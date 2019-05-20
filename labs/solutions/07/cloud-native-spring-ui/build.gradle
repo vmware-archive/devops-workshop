@@ -1,0 +1,62 @@
+plugins {
+    id 'com.gorylenko.gradle-git-properties' version '2.0.0'
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    id 'java'
+    id 'com.devsoap.vaadin-flow' version '1.1.2'
+}
+
+ext {
+	set('lombok.version', '1.18.6')
+	set('vaadinVersion', '13.0.7')
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormatTimeZone = "UTC"
+    dotGitDirectory = "${project.rootDir}/../../../.."
+}
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.1.3.RELEASE"
+    }
+}
+
+dependencies {
+    annotationProcessor('org.projectlombok:lombok')
+    implementation('org.projectlombok:lombok')
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-hateoas')
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
+    implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
+    implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
+    implementation('org.hibernate:hibernate-core:5.4.2.Final')
+    implementation vaadin.bom()
+    implementation vaadin.platform()
+    implementation('com.vaadin:vaadin-spring-boot-starter')
+    implementation('org.vaadin.crudui:crudui:3.8.1')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+}
+
+repositories {
+    maven { url "https://repo.spring.io/plugins-release" }
+    vaadin.repositories()
+    mavenCentral()
+}
+
+bootRun {
+    // support passing -Dsystem.property=value to bootRun task
+    systemProperties = System.properties
+}
+
+tasks.withType(Test) {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
+    }
+}
