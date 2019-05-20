@@ -1,6 +1,6 @@
 plugins {
     id 'com.gorylenko.gradle-git-properties' version '2.0.0'
-    id 'org.springframework.boot' version '2.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'java'
 }
@@ -32,12 +32,6 @@ repositories {
 }
 
 dependencies {
-    implementation('org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438')
-    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
-        implementation('org.javassist:javassist:3.23.0-GA')
-    } else {
-        implementation('org.javassist:javassist:3.22.0-GA')
-    }
     annotationProcessor('org.projectlombok:lombok:1.18.6')
     implementation('org.projectlombok:lombok:1.18.6')
     implementation('org.springframework.boot:spring-boot-starter-actuator')

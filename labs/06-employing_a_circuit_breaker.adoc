@@ -14,7 +14,7 @@ dependencies {
 }
 ---------------------------------------------------------------------
 
-. The first thing we need to add to our application is an _@EnableCircuitBreaker_ annotation to the Spring Boot application.  Add this annotation below the other ones on the _CloudNativeSpringUiApplication_ declaration in the class _io.pivotal.CloudNativeSpringUiApplication_ (/cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java):
+. The first thing we need to add to our application is an _@EnableCircuitBreaker_ annotation to the Spring Boot application.  Add this annotation below the other ones on the _CloudNativeSpringUiApplication_ declaration in the class _io.pivotal.cns.CloudNativeSpringUiApplication_ (/cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java):
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -25,7 +25,7 @@ dependencies {
 public class CloudNativeSpringUiApplication {
 ---------------------------------------------------------------------
 
-. When we introduced an _@FeignClient_ into our application we were only required to provide an interface.  We'll implement a factory that creates a fallback implementation (that way we get a handle on any exception so we can log out what caused the fallback to occur).  We'll also reference that class as a fallback in our _@FeignClient_ annotation.  First, create this class in the _io.pivotal_ package:
+. When we introduced an _@FeignClient_ into our application we were only required to provide an interface.  We'll implement a factory that creates a fallback implementation (that way we get a handle on any exception so we can log out what caused the fallback to occur).  We'll also reference that class as a fallback in our _@FeignClient_ annotation.  First, create this class in the _io.pivotal.cns_ package:
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -59,7 +59,7 @@ class CityClientFallbackFactory implements FallbackFactory<CityClient> {
 }
 ---------------------------------------------------------------------
 +
-Hint: imports should start with `java.util`, `io.pivotal`, `feign.hystrix`, `lombok.extern.slf4j`, `org.springframework.stereotype`, and `org.springframework.hateoas`.
+Hint: imports should start with `java.util`, `io.pivotal.cns`, `feign.hystrix`, `lombok.extern.slf4j`, `org.springframework.stereotype`, and `org.springframework.hateoas`.
 
 . Also modify the _@FeignClient_ annotation to reference this factory implementation in case of failure:
 +

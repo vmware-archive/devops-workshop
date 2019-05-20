@@ -14,7 +14,7 @@ repositories {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId 'io.pivotal'
+            groupId 'io.pivotal.cns'
             from components.java
         }
     }

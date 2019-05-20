@@ -1,0 +1,38 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+    discovery:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      mode: full
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+
+---
+spring:
+  profiles: cloud
+
+  cloud:
+    config:
+      enabled: true
+    discovery:
+      enabled: true
+
+management:
+  cloudfoundry:
+    enabled: true
+    skip-ssl-validation: true

@@ -9,9 +9,9 @@ A collection of workshop presentations and labs exercises for use at client site
 
 === Minimum requirements
 
--> https://docs.pivotal.io/pivotalcf/2-4/pcf-release-notes/runtime-rn.html[Pivotal Application Service] 2.3.x or 2.4.x
+-> https://docs.pivotal.io/pivotalcf/2-5/pcf-release-notes/runtime-rn.html[Pivotal Application Service] 2.5.x
 
--> https://docs.pivotal.io/spring-cloud-services/2-0/common/[Pivotal Spring Cloud Services] tile 2.0.x
+-> https://docs.pivotal.io/spring-cloud-services/3-0/common/[Pivotal Spring Cloud Services] tile 3.0.x
 
 -> https://docs.cloudfoundry.org/cf-cli/install-go-cli.html[CF-CLI] 6.42 or better
 

@@ -18,15 +18,15 @@ While we could visit https://start.spring.io to create a new Spring Boot project
 
 Within your editor/IDE complete the following steps:
 
-. Create a new package _io.pivotal.controller_ underneath _src/main/java_.
+. Create a new package _io.pivotal.cns.controller_ underneath _src/main/java_.
 
 . Create a new class named _GreetingController_ in the aforementioned package.
 
-. Add an _@RestController_ annotation to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
+. Add an _@RestController_ annotation to the class _io.pivotal.cns.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal.controller;
+package io.pivotal.cns.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +36,7 @@ public class GreetingController {
 }
 ---------------------------------------------------------------------
 
-. Add the following request handler to the class _io.pivotal.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
+. Add the following request handler to the class _io.pivotal.cns.controller.GreetingController_ (i.e., _/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java_).
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -50,7 +50,7 @@ Completed:
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal.controller;
+package io.pivotal.cns.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;

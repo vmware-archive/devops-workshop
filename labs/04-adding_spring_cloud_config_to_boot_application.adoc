@@ -4,9 +4,9 @@ In this lab we'll utilize Spring Boot and Spring Cloud to configure our applicat
 
 == Update _Hello_ REST service
 
-These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.  
+These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.
 
-. Delete your exisiting Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes. Create a new */cloud-native-spring/build.gradle* then cut-and-paste the content below into it and save. 
+. Delete your exisiting Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes. Create a new */cloud-native-spring/build.gradle* then cut-and-paste the content below into it and save.
 +
 Adding a dependency management plugin and other miscellaneous configuration.
 +
@@ -14,7 +14,7 @@ Adding a dependency management plugin and other miscellaneous configuration.
 ---------------------------------------------------------------------
 plugins {
     id 'com.gorylenko.gradle-git-properties' version '2.0.0'
-    id 'org.springframework.boot' version '2.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.1.5.RELEASE'
     id 'io.spring.dependency-management' version '1.0.7.RELEASE'
     id 'java'
 }
@@ -38,18 +38,13 @@ processResources {
 dependencyManagement {
     imports {
         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR3"
-        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.0.3.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1"
+        mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:2.1.3.RELEASE"
+
     }
 }
 
 dependencies {
-    implementation('org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438')
-    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
-        implementation('org.javassist:javassist:3.23.0-GA')
-    } else {
-        implementation('org.javassist:javassist:3.22.0-GA')
-    }
     annotationProcessor('org.projectlombok:lombok:1.18.6')
     implementation('org.projectlombok:lombok:1.18.6')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
@@ -85,7 +80,7 @@ tasks.withType(Test) {
 
 ---------------------------------------------------------------------
 
-. Add an _@Value_ annotation, private field, and update the existing _@GetMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
+. Add an _@Value_ annotation, private field, and update the existing _@GetMapping_ annotated method to employ it in _io.pivotal.cns.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
 [source,java]
 ---------------------------------------------------------------------
@@ -111,7 +106,7 @@ Completed:
 +
 [source,java]
 ---------------------------------------------------------------------
-package io.pivotal.controller;
+package io.pivotal.cns.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
