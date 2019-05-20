@@ -97,7 +97,7 @@ dependencies {
 	 implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
    implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
    implementation('org.springframework.cloud:spring-cloud-starter-netflix-ribbon')
-   implementation('org.hibernate:hibernate-core:5.4.1.Final')
+   implementation('org.hibernate:hibernate-core:5.4.2.Final')
 }
 
 ---------------------------------------------------------------------

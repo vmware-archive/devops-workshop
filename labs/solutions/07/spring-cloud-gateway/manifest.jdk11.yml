@@ -1,0 +1,17 @@
+---
+applications:
+- name: spring-cloud-gateway
+  memory: 1024M
+  random-route: true
+  instances: 1
+  path: ./build/libs/spring-cloud-gateway-solution-7-1.0-SNAPSHOT.jar
+  buildpacks: 
+  - java_buildpack_offline
+  stack: cflinuxfs3
+  timeout: 180 # to give time for the data to import
+  env:
+    JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 11.+ } }'
+  services:
+  - config-server
+  - service-registry
