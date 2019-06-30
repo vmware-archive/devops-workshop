@@ -73,30 +73,92 @@ Return to the Terminal session you opened previously and make sure your working 
 
 We're going to use https://gradle.org[Gradle] to build and package artifacts. If you don't already have Gradle installed, don't worry, we have you covered. You can use the embedded Gradle Wrapper.  From here onwards, if you see occurences of _gradle_ just replace with _./gradlew_ if you're running a Mac or Linux OS, or _gradlew_ if you're running Windows.
 
+If you are using Maven, the alternative commands usually will follow the gradle equivlent
+
 . Find out what tasks are available to you with
-+
-  gradle tasks
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle tasks
+....
++++ </div></details> +++
 
 . First we'll run tests
-+
-  gradle test
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle test
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn test
+....
++++ </div></details> +++
 
 . Next we'll package the application as a libary artifact (it cannot be run on its own)
-+
-  gradle jar
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle jar
+....
++++ </div></details> +++
 
 . Next we'll package the application as an executable artifact (that can be run on its own because it will include all transitive dependencies along with embedding a servlet container)
-+
-  gradle build
 
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle build
+....
++++ </div></details> +++
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn package
+....
++++ </div></details> +++
 
 == Run the _cloud-native-spring_ application
 
 Now we're ready to run the application
 
 . Run the application with
-+
-  gradle bootRun
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle bootRun
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn spring-boot:run
+....
++++ </div></details> +++
 
 . You should see the application start up an embedded Apache Tomcat server on port 8080 (review terminal output):
 +
@@ -128,14 +190,14 @@ applications:
   random-route: true
   instances: 1
   path: ./build/libs/cloud-native-spring-1.0-SNAPSHOT.jar
-  buildpacks: 
+  buildpacks:
   - java_buildpack_offline
   stack: cflinuxfs3
   env:
     JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
 ---------------------------------------------------------------------
 +
-The above manifest entries will work with Java Buildpack 4.x series and JDK 8.  If you built the app with JDK 11 and want to deploy it you will need to make an additional entry in your manifest, just below `JAVA_OPTS`, add 
+The above manifest entries will work with Java Buildpack 4.x series and JDK 8.  If you built the app with JDK 11 and want to deploy it you will need to make an additional entry in your manifest, just below `JAVA_OPTS`, add
 +
 [source,bash]
 ---------------------------------------------------------------------
@@ -150,7 +212,7 @@ The above manifest entries will work with Java Buildpack 4.x series and JDK 8.  
 -> To specify an alternate manifest and buildpack, you could update the above to be e.g.,
 +
   cf push -f manifest.yml -b java_buildpack
-+ 
++
 Assuming the offline buildpack was installed and available for use with your targeted foundation.  You can check for which buildpacks are available by executing
 +
   cf buildpacks
