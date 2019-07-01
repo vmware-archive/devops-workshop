@@ -3,8 +3,6 @@
 == Set up the Actuator
 
 Spring Boot includes a number of additional features to help you monitor and manage your application when it’s pushed to production. These features are added by adding _spring-boot-starter-actuator_ to the classpath.  Our initial project setup already included it as a dependency.
-
-. Verify the Spring Boot Actuator dependency the in following file: */cloud-native-spring/build.gradle* You should see the following dependency in the list:
 +
 [source,groovy]
 ---------------------------------------------------------------------
@@ -14,6 +12,37 @@ dependencies {
 }
 
 ---------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* Verify the Spring Boot Actuator dependency the in following file: */cloud-native-spring/build.gradle* You should see the following dependency in the list:
+
+[source, groovy]
+....
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    // other dependencies omitted
+}
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Verify the Spring Boot Actuator dependency in the following file: **cloud-native-spring/pom.xml**. you will need to add this.
+
+[source, xml]
+....
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+....
++++ </div></details> +++
+
 +
 By default Spring Boot does not expose these management endpoints (which is a good thing!).  Though you wouldn't want to expose all of them in production, we'll do so in this sample app to make demonstration a bit easier and simpler.  
 
@@ -29,11 +58,25 @@ management:
 ---------------------------------------------------------------------
 
 . Run the updated application
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle clean bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
+
 +
 Try out the following endpoints with https://www.getpostman.com[Postman]. The output is omitted here because it can be quite large:
 +
@@ -81,35 +124,102 @@ Spring Boot provides an endpoint (http://localhost:8080/actuator/info) that allo
 
 One thing that _actuator_ does well is expose information about the specific build and version control coordinates for a given deployment.
 
-. Edit the following file: */cloud-native-spring/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build.
-+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* Edit the following file: */cloud-native-spring/build.gradle* Add the https://github.com/n0mer/gradle-git-properties[gradle-git-properties] plugin to your Gradle build.
+
 First, you'll need to be able to resolve the plugin so add the following to the _plugins{}_ section
-+
-[source,groovy]
----------------------------------------------------------------------
+
+[source, groovy]
+....
 plugins {
     id 'com.gorylenko.gradle-git-properties' version '2.0.0'
 }
----------------------------------------------------------------------
+....
 
-You'll also configure the plugin by adding a _gitProperties{}_ block.
-+
-[source,groovy]
----------------------------------------------------------------------
+* You'll also configure the plugin by adding a _gitProperties{}_ block.
+
+[source, groovy]
+....
 gitProperties {
     dateFormat = "yyyy-MM-dd'T'HH:mmZ"
     dateFormatTimeZone = "UTC"
     dotGitDirectory = "${project.rootDir}/../../.."
 }
----------------------------------------------------------------------
+....
+
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Edit the following file: **cloud-native-spring/pom.xml**
+
+[source, xml]
+....
+<pluginRepositories>
+	<pluginRepository>
+	    <id>sonatype-snapshots</id>
+		<name>Sonatype Snapshots</name>
+        <url>"https://oss.sonatype.org/content/repositories/snapshots/"</url>
+	</pluginRepository>
+</pluginRepositories>
+....
+
+* Then, you must edit the file and add the plugin dependency within <build> block.
+
+[source, xml]
+....
+    <build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+....
+
++++ </div></details> +++
+
 +
 -> Note too that we are updating the path to the _.git_ directory.
 +
 The effect of all this configuration is that the _gradle-git-properties_ plugin adds Git branch and commit coordinates to the */actuator/info* endpoint.
 
-. Run the _cloud-native-spring_ application:
-+
-  gradle clean bootRun
+* Run the _cloud-native-spring_ application:
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle clean bootRun
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Let's use https://httpie.org[httpie] to verify that Git commit information is now included 
 +
@@ -154,10 +264,14 @@ Note we're defining token delimited value-placeholders for each property.  In or
 +
 -> if STS https://jira.spring.io/browse/STS-4201[reports a problem] with the application.yml due to @ character, the problem can safely be ignored.
 
-. Add the following directly underneath the _gitProperties{}_ block within *cloud-native-spring/build.gradle*
-+
-[source,groovy]
----------------------------------------------------------------------
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* Add the following directly underneath the _gitProperties{}_ block within *cloud-native-spring/build.gradle*
+
+[source, groovy]
+....
 import org.apache.tools.ant.filters.*
 
 processResources {
@@ -167,15 +281,28 @@ processResources {
         "application.version": project.property("version")
     ]
 }
----------------------------------------------------------------------
-
+....
++++ </div></details> +++
 
 . Build and run the _cloud-native-spring_ application:
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle clean bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Again we'll use httpie to verify that the Build information is now included
 +
@@ -232,12 +359,25 @@ We want to expose more detail about the health and well-being of the application
       show-details: always
 ---------------------------------------------------------------------
 
-. Run the cloud-native-spring application:
-+
-[source,bash]
----------------------------------------------------------------------
+* Run the cloud-native-spring application:
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn spring-boot:run
+....
++++ </div></details> +++
 
 . Use httpie to verify the output of the health endpoint
 +
@@ -305,12 +445,25 @@ public class FlappingHealthIndicator implements HealthIndicator {
 +
 This demo health indicator will randomize the health check.
 
-. Build and run the _cloud-native-spring_ application:
-+
-[source,bash]
----------------------------------------------------------------------
-$ gradle clean bootRun
----------------------------------------------------------------------
+* Build and run the _cloud-native-spring_ application:
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle clean bootRun
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Browse to http://localhost:8080/actuator/health and verify that the output is similar to the following (and changes randomly!).
 +
@@ -436,9 +589,26 @@ management:
 ---------------------------------------------------------------------
 
 . Push application into Cloud Foundry
-+
-  gradle build
-  cf push
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle build
+cf push
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn package
+cf push
+....
++++ </div></details> +++
 
 . Visit the route created for your app and append /actuator/health to see the health status report. See the same details in the Apps Manager UI:
 +
