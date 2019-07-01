@@ -68,13 +68,41 @@ You’ll need to use your IDE’s features to add the appropriate import stateme
 
 == Use Flyway to manage schema
 
-. Edit _build.gradle_ and add the following dependencies within the _dependencies {}_ block
-+
-[source,bash]
----------------------------------------------------------------------
+* Add Flyway dependencies
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* Edit _build.gradle_ and add the following dependencies within the _dependencies {}_ block
+
+[source, bash]
+....
 implementation('org.flywaydb:flyway-core:5.2.4')
 implementation('com.zaxxer:HikariCP:3.3.0')
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Edit **pom.xml** and add the following dependencies within the `dependencies`
+
+[source, xml]
+....
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>5.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+....
++++ </div></details> +++
 
 . Create a new file named +V1_0__init_database.sql+ underneath _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_, add the following lines and save.
 +
@@ -110,11 +138,24 @@ spring:
 . Return to the Terminal session you opened previously
 
 . Run the application
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle clean bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Access the application using +curl+ or your web browser using the newly added REST repository endpoint at http://localhost:8080/cities. You'll see that the primary endpoint automatically exposes the ability to page, size, and sort the response JSON.
 +
@@ -160,11 +201,24 @@ Next we'll import some data.
 . Copy the https://raw.githubusercontent.com/Pivotal-Field-Engineering/devops-workshop/master/labs/import.sql[import.sql] file found in *devops-workshop/labs/* to _devops-workshop/labs/my_work/cloud-native-spring/src/main/resources/db/migration_. Rename the file to be +V1_1__seed_data.sql+. (This is a small subset of a larger dataset containing all of the postal codes in the United States and its territories).
 
 . Restart the application.
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle clean bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Access the application again. Notice the appropriate hypermedia is included for +next+, +previous+, and +self+. You can also select pages and page size by utilizing +?size=n&page=n+ on the URL string. Finally, you can sort the data utilizing +?sort=fieldName+ (replace fieldName with a cities attribute).
 +
@@ -264,11 +318,24 @@ Page<City> findByStateCode(@Param("stateCode") String stateCode, Pageable pageab
 -> Hint: imports should start with `org.springframework.data.domain`, `org.springframework.data.rest.core.annotation`, `org.springframework.data.repository.query`, and `org.springframework.data.jpa.repository`
 
 . Run the application
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle clean bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Access the application again. Notice that hypermedia for a new +search+ endpoint has appeared.
 +
@@ -375,11 +442,23 @@ http://localhost:8080/cities/search/nameContains?q=West&size=1
 == Pushing to Cloud Foundry
 
 . Build the application
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle build
----------------------------------------------------------------------
+....
++++ </div></details> +++
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn package
+....
++++ </div></details> +++
 
 . You should already have an application manifest, +manifest.yml+, created in Lab 1; this can be reused.  You'll want to add a timeout param so that our service has enough time to initialize with its data loading:
 +
@@ -477,18 +556,55 @@ OK
 So long as the name of the service contains `mysql` the https://dev.mysql.com/downloads/connector/j/[mysql-connector] JDBC driver will https://github.com/cloudfoundry/java-buildpack/blob/master/docs/framework-maria_db_jdbc.md#mariadb-jdbc-framework[automatically be added] as a runtime dependency.
 +
 However, we're going to explicitly define a runtime dependency on the MySQL JDBC driver.  Open `build.gradle` for editing and add the following to the `dependencies` section
-+
-[source,json]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+Open `build.gradle` for editing and add the following to the `dependencies` section
+
+[source, json]
+....
 runtime('mysql:mysql-connector-java:8.0.15')
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+Open **pom.xml** for editing and add the following to the *dependencies* section
+
+[source, xml]
+....
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.14</version>
+    <scope>runtime</scope>
+</dependency>
+....
++++ </div></details> +++
+
 +
 And, of course we must rebuild and repackage the application to have the application recognize the new dependency at runtime
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle build
----------------------------------------------------------------------
+....
++++ </div></details> +++
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn package
+....
++++ </div></details> +++
 
 . Let's bind the service to the application, e.g.
 +
