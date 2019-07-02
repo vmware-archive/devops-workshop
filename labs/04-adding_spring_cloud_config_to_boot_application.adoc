@@ -4,14 +4,18 @@ In this lab we'll utilize Spring Boot and Spring Cloud to configure our applicat
 
 == Update _Hello_ REST service
 
-These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.  
+These features are added by adding _spring-cloud-services-starter-config-client_ to the classpath.   
 
-. Delete your exisiting Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes. Create a new */cloud-native-spring/build.gradle* then cut-and-paste the content below into it and save. 
-+
-Adding a dependency management plugin and other miscellaneous configuration.
-+
-[source,groovy]
----------------------------------------------------------------------
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+. Delete your exisiting Gradle build file, found here: */cloud-native-spring/build.gradle*.  We're going to make a few changes. Create a new */cloud-native-spring/build.gradle* then cut-and-paste the content below into it and save.
+
+. Adding a dependency management plugin and other miscellaneous configuration.
+
+[source, groovy]
+....
 plugins {
     id 'com.gorylenko.gradle-git-properties' version '2.0.0'
     id 'org.springframework.boot' version '2.0.9.RELEASE'
@@ -82,8 +86,116 @@ tasks.withType(Test) {
         jvmArgs += ["--add-opens", "java.base/java.lang=ALL-UNNAMED"]
     }
 }
+....
++++ </div></details> +++
 
----------------------------------------------------------------------
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Lets Add a few changes to our pom.xml file. First Up , update the properties to include the spring cloud version.
+
+[source, xml]
+....
+	<properties>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+	</properties>
+....
+
+* Add  a Dependency management section as  below
+
+[source, xml]
+....
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+....
+
+* Next , add the spring-cloud-starter-config dependency.
+
+[source, xml]
+....
+<dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-rest-hal-browser</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>5.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.pivotal.spring.cloud</groupId>
+            <artifactId>spring-cloud-services-starter-config-client</artifactId>
+            <version>2.1.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+            <version>2.1.1.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+    </dependencies>
+....
+
++++ </div></details> +++
+
+Code changes
 
 . Add an _@Value_ annotation, private field, and update the existing _@GetMapping_ annotated method to employ it in _io.pivotal.controller.GreetingController_ (/cloud-native-spring/src/main/java/io/pivotal/controller/GreetingController.java):
 +
@@ -134,13 +246,63 @@ public class GreetingController {
 ---------------------------------------------------------------------
 
 . When we introduced the Spring Cloud Services Starter Config Client dependency Spring Security will also be included at runtime (Config servers will be protected by OAuth2).  However, this will also enable basic authentication to all our service endpoints.  We will need to add the following to conditionally open security (to ease local workstation deployment).
-+
-In *build.gradle*, we'll need to add an _implementation_ dependency
-+
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
 [source, bash]
----------------------------------------------------------------------
+....
 implementation('org.springframework.security:spring-security-config')
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, xml]
+....
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* In *build.gradle*, we'll need to add an _implementation_ dependency
+[source, bash]
+....
+implementation('org.flywaydb:flyway-core:5.2.4')
+implementation('com.zaxxer:HikariCP:3.3.0')
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Edit **pom.xml** and add the following dependencies within the `dependencies`
+
+[source, xml]
+....
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>5.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+....
+
 +
 In */cloud-native-spring/src/main/java/io/pivotal/CloudNativeSpringApplication.java* right underneath the +public static void main+ method implementation, add
 +
@@ -172,11 +334,25 @@ spring:
 == Run the _cloud-native-spring_ Application and verify dynamic config is working
 
 . Run the application
-+
-[source,bash]
----------------------------------------------------------------------
+
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle clean bootRun
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Browse to http://localhost:8080/hello and verify you now see your new greeting.
 
@@ -254,11 +430,24 @@ applications:
 == Deploy and test application
 
 . Build the application
-+
-[source,bash]
----------------------------------------------------------------------
-gradle clean build
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle clean bootRun
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn clean spring-boot:run
+....
++++ </div></details> +++
 
 . Push application into Cloud Foundry
 +
