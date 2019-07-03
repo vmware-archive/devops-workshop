@@ -4,17 +4,39 @@ In this lab we'll utilize Spring Boot and Spring Cloud to configure our applicat
 
 == Update _Cloud-Native-Spring_ Boot Application to Register with Eureka
 
-. These features are added by adding _spring-cloud-services-starter-service-registry_ to the classpath. Open your Gradle build file, found here: */cloud-native-spring/build.gradle*. Add the following spring cloud services dependency:
-+
-[source,groovy]
----------------------------------------------------------------------
+. These features are added by adding _spring-cloud-services-starter-service-registry_ to the classpath.  Add the following spring cloud services dependency:
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* Open your Gradle build file, found here: */cloud-native-spring/build.gradle*.
+
+* Edit _build.gradle_ and add the following dependencies within the _dependencies {}_ block
+
+[source, groovy]
+....
 dependencies {
 	// add this dependency
 	implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry')
 }
+....
++++ </div></details> +++
 
----------------------------------------------------------------------
-+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Edit **pom.xml** and add the following dependencies within the `dependencies`
+
+[source, xml]
+....
+        <dependency>
+            <groupId>io.pivotal.spring.cloud</groupId>
+            <artifactId>spring-cloud-services-starter-service-registry</artifactId>
+        </dependency>
+....
++++ </div></details> +++
 
 . Thanks to Spring Cloud instructing your application to register with Eureka is as simple as adding a single annotation to your app! Add an _@EnableDiscoveryClient_ annotation to the class _io.pivotal.CloudNativeSpringApplication_ (/cloud-native-spring/src/main/java/io/pivotal/CloudNativeApplication.java):
 +
@@ -57,6 +79,24 @@ image::images/registry1.jpg[]
 ---------------------------------------------------------------------
 gradle build
 ---------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
+gradle build
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn package
+....
++++ </div></details> +++
 
 . Push application into Cloud Foundry
 +
@@ -306,12 +346,25 @@ spring:
 == Deploy and test application
 
 . Build the application.  We have to skip the tests otherwise we may fail because of having 2 spring boot apps on the classpath
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle build -x test
----------------------------------------------------------------------
-+
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn -Dmaven.test.skip=true package
+....
++++ </div></details> +++
+
 -> Note that we're skipping tests here (because we now have a dependency on a running instance of _cloud-native-spring_).
 
 . Create an application manifest in the root folder /cloud-native-spring-ui
