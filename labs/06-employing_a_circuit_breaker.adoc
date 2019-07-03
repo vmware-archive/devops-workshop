@@ -4,15 +4,39 @@ In this lab we'll utilize Spring Boot and Spring Cloud to make our UI Applicatio
 
 == Define a Circuit Breaker within the _UI Application_
 
-. These features are added by adding _spring-cloud-services-starter-circuit-breaker_ to the classpath.  Open your Gradle build file, found here: */cloud-native-spring-ui/build.gradle*.  Add the following Spring Cloud Services dependency:
-+
-[source,groovy]
----------------------------------------------------------------------
+. These features are added by adding _spring-cloud-services-starter-circuit-breaker_ to the classpath.  Add the following Spring Cloud Services dependency:
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+
+* Open your Gradle build file, found here: */cloud-native-spring-ui/build.gradle*.
+
+* Edit _build.gradle_ and add the following dependencies within the _dependencies {}_ block
+
+[source, groovy]
+....
 dependencies {
 	// add this dependency
 	implementation('io.pivotal.spring.cloud:spring-cloud-services-starter-circuit-breaker')
 }
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+
+* Edit **pom.xml** and add the following dependencies within the `dependencies`
+
+[source, xml]
+....
+        <dependency>
+            <groupId>io.pivotal.spring.cloud</groupId>
+            <artifactId>spring-cloud-services-starter-circuit-breaker</artifactId>
+        </dependency>
+....
++++ </div></details> +++
 
 . The first thing we need to add to our application is an _@EnableCircuitBreaker_ annotation to the Spring Boot application.  Add this annotation below the other ones on the _CloudNativeSpringUiApplication_ declaration in the class _io.pivotal.CloudNativeSpringUiApplication_ (/cloud-native-spring-ui/src/main/java/io/pivotal/CloudNativeSpringUiApplication.java):
 +
@@ -102,11 +126,24 @@ image::images/dash.jpg[]
 == Deploy and test application
 
 . Build the application
-+
-[source,bash]
----------------------------------------------------------------------
+
++++ <details open><summary> +++
+*gradle*
++++ </summary><div> +++
+[source, bash]
+....
 gradle build -x test
----------------------------------------------------------------------
+....
++++ </div></details> +++
+
++++ <details open><summary> +++
+*maven*
++++ </summary><div> +++
+[source, bash]
+....
+mvn -Dmaven.test.skip=true package
+....
++++ </div></details> +++
 
 . Push application into Cloud Foundry
 +

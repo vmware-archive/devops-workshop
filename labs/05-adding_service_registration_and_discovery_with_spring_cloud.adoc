@@ -74,11 +74,6 @@ image::images/registry1.jpg[]
 == Deploy and test application
 
 . Build the application
-+
-[source,bash]
----------------------------------------------------------------------
-gradle build
----------------------------------------------------------------------
 
 +++ <details open><summary> +++
 *gradle*
